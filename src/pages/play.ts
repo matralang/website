@@ -8,25 +8,17 @@ export default defaultLayout(matra`
         p.eyebrow { "LIVE WORKBENCH" }
         h1 { "Playground" }
       }
-      p { "Matra sourceを編集すると、AST・HTML・previewをその場で更新します。" }
+      p { "統合構文のMatra sourceを編集すると、AST・HTML・previewをその場で更新します。" }
     }
     div.playground-workspace {
       section.editor-panel[aria-label="Matra editor"] {
         header.panel-header {
           div.panel-title { span.status-dot {} strong { "SOURCE" } }
-          div.editor-tools {
-            label[for="syntax-mode"] { "Mode" }
-            select#syntax-mode {
-              option[value="mixed"] { "mixed" }
-              option[value="document"] { "document" }
-              option[value="application"] { "application" }
-            }
-          }
+          div.editor-tools { span { "Unified syntax" } }
         }
         div.example-bar[aria-label="Examples"] {
           button.example-button[type="button" data-example="card"] { "Card" }
           button.example-button[type="button" data-example="list"] { "List" }
-          button.example-button[type="button" data-example="function"] { "Function" }
         }
         label.sr-only[for="matra-source"] { "Matra source" }
         textarea#matra-source[spellcheck="false" aria-describedby="playground-status"]~article.card {
@@ -34,6 +26,7 @@ export default defaultLayout(matra`
   h2\`Structure first.\`
   p\`Edit this source and watch it render.\`
   a.button.primary[href="/spec/"] \`Read the spec\`
+  hr;
 }~
         footer.editor-footer {
           span#playground-status[role="status" aria-live="polite"] { "Ready" }

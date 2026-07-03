@@ -1,9 +1,7 @@
 import { parse } from "@matra/core"
 import { toHTML } from "@matra/html"
-import type { ParseOptions } from "@matra/core"
 
 const source = required<HTMLTextAreaElement>("matra-source")
-const mode = required<HTMLSelectElement>("syntax-mode")
 const status = required<HTMLElement>("playground-status")
 const stats = required<HTMLElement>("source-stats")
 const astOutput = required<HTMLElement>("ast-output")
@@ -19,6 +17,7 @@ const examples: Record<string, string> = {
   h2\`Structure first.\`
   p\`Edit this source and watch it render.\`
   a.button.primary[href="/spec/"] \`Read the spec\`
+  hr;
 }`,
   list: `$root {
   h2\`Specification\`
@@ -29,12 +28,6 @@ const examples: Record<string, string> = {
     li\`Parser\`
   }
 }`,
-  function: `section(
-  h2("Function syntax"),
-  p("Props become attributes."),
-  button("Run", type="button"),
-  class="demo"
-)`,
 }
 
 let activePanel = "preview"
@@ -46,7 +39,7 @@ function render(): void {
   stats.textContent = `${value.length} chars · ${value.split("\n").length} lines`
 
   try {
-    const ast = parse(value, { syntaxMode: mode.value } as ParseOptions)
+    const ast = parse(value)
     const html = toHTML(ast)
     latestOutputs = { ast: JSON.stringify(ast, null, 2), html }
     astOutput.textContent = latestOutputs.ast
@@ -81,12 +74,9 @@ function selectPanel(name: string): void {
 }
 
 source.addEventListener("input", scheduleRender)
-mode.addEventListener("change", render)
-
 document.querySelectorAll<HTMLButtonElement>(".example-button").forEach(button => {
   button.addEventListener("click", () => {
     source.value = examples[button.dataset.example ?? "card"]
-    mode.value = button.dataset.example === "function" ? "application" : "mixed"
     render()
     source.focus()
   })
