@@ -1,6 +1,7 @@
 import { parse } from "@matra/core"
 import { toSVG } from "@matra/graphics"
 import { toHTML } from "@matra/html"
+import { numericEvaluateProps } from "@matra/math-compute-engine"
 
 const source = required<HTMLTextAreaElement>("matra-source")
 const status = required<HTMLElement>("playground-status")
@@ -61,11 +62,12 @@ function render(): void {
   stats.textContent = `${value.length} chars · ${value.split("\n").length} lines`
 
   try {
-    const ast = parse(value)
-    const html = toHTML(ast)
+    const parsedAst = parse(value, { locations: true, sourceId: "playground.matra" })
     const mode = renderMode.value === "auto"
-      ? (ast.tag === "svg" || (ast.tag === "$root" && ast.children.some(child => isNode(child) && child.tag === "svg")) ? "svg" : "html")
+      ? (parsedAst.tag === "svg" || (parsedAst.tag === "$root" && parsedAst.children.some(child => isNode(child) && child.tag === "svg")) ? "svg" : "html")
       : renderMode.value as "html" | "svg"
+    const ast = mode === "svg" ? numericEvaluateProps(parsedAst) : parsedAst
+    const html = mode === "html" ? toHTML(ast) : ""
     const svg = mode === "svg" ? toSVG(ast, { pretty: true }) : ""
     latestMode = mode
     latestOutputs = { ast: JSON.stringify(ast, null, 2), html, svg }
