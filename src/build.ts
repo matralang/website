@@ -152,6 +152,7 @@ async function handler() {
     alias: {
       "@matra/core": path.resolve(process.cwd(), "../matra/packages/core/dist/index.js"),
       "@matra/graphics": path.resolve(process.cwd(), "../matra/packages/graphics/dist/index.js"),
+      "@matra/math-compute-engine": path.resolve(process.cwd(), "../matra/packages/math-compute-engine/dist/index.js"),
     },
   })
   console.log(`Generated browser bundle at: ${path.join(assetsDir, "playground.js")}`)
