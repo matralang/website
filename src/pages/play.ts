@@ -33,7 +33,7 @@ export default defaultLayout(matra`
   p.eyebrow\`MATRA / HTML\`
   h2\`Structure first.\`
   p\`Edit this source and watch it render.\`
-  a.button.primary[href="/docs/"] \`Read the spec\`
+  a.button.primary[href="/spec/"] \`Read the spec\`
 }~
         footer.editor-footer {
           span#playground-status[role="status" aria-live="polite"] { "Ready" }

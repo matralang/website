@@ -12,7 +12,7 @@ const page = defaultLayout(matra`
           "小さくドメイン非依存な言語です。"
         }
         div.actions {
-          a.button.primary[href="/docs/"] { "仕様を読む" }
+          a.button.primary[href="/docs/"] { "ドキュメントを見る" }
           a.button.secondary[href="https://github.com/matralang/matra"] { "ソースを見る" }
         }
       }
@@ -65,10 +65,10 @@ const page = defaultLayout(matra`
         h2 { "4つの仕様から始める" }
       }
       ol.spec-mini-list {
-        li { a[href="/docs/data-model/"] { span { "01" } strong { "Data Model" } } }
-        li { a[href="/docs/ast/"] { span { "02" } strong { "AST" } } }
-        li { a[href="/docs/grammar/"] { span { "03" } strong { "Grammar" } } }
-        li { a[href="/docs/parser/"] { span { "04" } strong { "Parser" } } }
+        li { a[href="/spec/data-model/"] { span { "01" } strong { "Data Model" } } }
+        li { a[href="/spec/ast/"] { span { "02" } strong { "AST" } } }
+        li { a[href="/spec/grammar/"] { span { "03" } strong { "Grammar" } } }
+        li { a[href="/spec/parser/"] { span { "04" } strong { "Parser" } } }
       }
     }
   }

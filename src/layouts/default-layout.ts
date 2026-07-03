@@ -14,8 +14,9 @@ const nav = matra`
         span { "Matra" }
       }
       nav.site-nav[aria-label="メインナビゲーション"] {
-        a[href="/docs/"] { "Specification" }
-        a[href="/playground/"] { "Playground" }
+        a[href="/docs/"] { "Docs" }
+        a[href="/spec/"] { "Specification" }
+        a[href="/play/"] { "Playground" }
         a[href="https://github.com/matralang/matra"] { "GitHub" }
       }
     }

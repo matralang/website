@@ -1,31 +1,27 @@
-# @matra/site
+# Matra Website
 
-Matra の公式サイトです。`@matra/core` でpage sourceをparseし、`@matra/html`で
-静的HTMLを生成します。Matra Specification v0.2の入口もこのappにまとめます。
+Matraの公式サイトです。現在はGitHub Pagesでpreviewし、最終的に
+`https://matralang.org` をcanonical domainとして運用します。
 
-## 開発
-
-リポジトリのルートで依存関係をインストールし、次のコマンドを実行します。
+## Development
 
 ```sh
-npm run site:build
-npm run site:serve
+npm install
+npm run build
+npm run serve
 ```
 
-GitHub Pages向けのサブパス付き出力は、リポジトリのルートで次のように確認できます。
+## Information architecture
 
-```sh
-SITE_BASE_PATH=/matra npm run site:build
-```
+| Primary URL | Purpose | Future subdomain |
+| --- | --- | --- |
+| `/` | 公式トップ・入口 | `matralang.org` |
+| `/docs/` | ドキュメント入口 | `docs.matralang.org` |
+| `/spec/` | 言語仕様 | `docs.matralang.org/spec/` |
+| `/play/` | Playground | `play.matralang.org` |
+| `/examples/` | 作例 | — |
+| `/packages/` | パッケージ一覧 | `api.matralang.org` |
+| `/blog/` | 開発記録 | `blog.matralang.org` |
 
-`main`ブランチへのサイト関連の変更、または手動実行でGitHub Pagesへデプロイされます。
-初回のみ、GitHubのリポジトリ設定でPagesのSourceを「GitHub Actions」にしてください。
-
-ページは `src/pages`、共通レイアウトは `src/layouts`、スタイルは `src/styles` に置きます。
-page moduleはMatra source stringをdefault exportします。
-
-## 拡張方針
-
-- 公式サイト: `src/pages/index.ts`
-- 仕様書: `/docs/` 以下
-- Playground: `/playground/`（Core parserとHTML rendererをbrowser bundleでも使用）
+ページは`src/pages`、共通レイアウトは`src/layouts`、スタイルは`src/styles`に置きます。
+GitHub Pagesのproject pathはworkflowから`SITE_BASE_PATH`として自動設定されます。

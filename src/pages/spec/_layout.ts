@@ -5,10 +5,10 @@ export const specNav = matra`
   aside.docs-nav {
     p { "SPECIFICATION 0.2" }
     nav[aria-label="仕様書"] {
-      a[href="/docs/data-model/"] { span { "01" } "Data Model" }
-      a[href="/docs/ast/"] { span { "02" } "AST" }
-      a[href="/docs/grammar/"] { span { "03" } "Grammar" }
-      a[href="/docs/parser/"] { span { "04" } "Parser" }
+      a[href="/spec/data-model/"] { span { "01" } "Data Model" }
+      a[href="/spec/ast/"] { span { "02" } "AST" }
+      a[href="/spec/grammar/"] { span { "03" } "Grammar" }
+      a[href="/spec/parser/"] { span { "04" } "Parser" }
     }
   }
 `

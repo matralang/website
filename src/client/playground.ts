@@ -18,7 +18,7 @@ const examples: Record<string, string> = {
   p.eyebrow\`MATRA / HTML\`
   h2\`Structure first.\`
   p\`Edit this source and watch it render.\`
-  a.button.primary[href="/docs/"] \`Read the spec\`
+  a.button.primary[href="/spec/"] \`Read the spec\`
 }`,
   list: `$root {
   h2\`Specification\`
