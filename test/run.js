@@ -20,6 +20,10 @@ assert.match(playground, /<title>Playground — Matra/)
 assert.match(playground, /id="matra-source"/)
 assert.match(playground, /\/assets\/playground.js/)
 assert.match(playgroundBundle, /srcdoc/)
+assert.match(playground, /data-example="poster"/)
+assert.match(playground, /id="render-mode"/)
+assert.match(playground, /id="svg-output"/)
+assert.match(playgroundBundle, /image\/svg\+xml/)
 
 execFileSync("npm", ["run", "build"], {
   stdio: "inherit",

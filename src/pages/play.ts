@@ -8,17 +8,26 @@ export default defaultLayout(matra`
         p.eyebrow { "LIVE WORKBENCH" }
         h1 { "Playground" }
       }
-      p { "統合構文のMatra sourceを編集すると、AST・HTML・previewをその場で更新します。" }
+      p { "Matra sourceを編集すると、HTMLまたはSVGのpreview・AST・出力をその場で更新します。" }
     }
     div.playground-workspace {
       section.editor-panel[aria-label="Matra editor"] {
         header.panel-header {
           div.panel-title { span.status-dot {} strong { "SOURCE" } }
-          div.editor-tools { span { "Unified syntax" } }
+          div.editor-tools {
+            label[for="render-mode"] { "Output" }
+            select#render-mode {
+              option[value="auto"] { "Auto" }
+              option[value="html"] { "HTML" }
+              option[value="svg"] { "SVG" }
+            }
+          }
         }
         div.example-bar[aria-label="Examples"] {
           button.example-button[type="button" data-example="card"] { "Card" }
           button.example-button[type="button" data-example="list"] { "List" }
+          button.example-button[type="button" data-example="poster"] { "SVG Poster" }
+          button.example-button[type="button" data-example="orbit"] { "SVG Orbit" }
         }
         label.sr-only[for="matra-source"] { "Matra source" }
         textarea#matra-source[spellcheck="false" aria-describedby="playground-status"]~article.card {
@@ -38,6 +47,8 @@ export default defaultLayout(matra`
           button.result-tab.active#tab-preview[type="button" role="tab" aria-selected="true" data-panel="preview"] { "Preview" }
           button.result-tab#tab-ast[type="button" role="tab" aria-selected="false" data-panel="ast"] { "AST" }
           button.result-tab#tab-html[type="button" role="tab" aria-selected="false" data-panel="html"] { "HTML" }
+          button.result-tab#tab-svg[type="button" role="tab" aria-selected="false" data-panel="svg"] { "SVG" }
+          button.copy-button#download-output[type="button"] { "Download" }
           button.copy-button#copy-output[type="button"] { "Copy" }
         }
         div.result-body {
@@ -46,6 +57,7 @@ export default defaultLayout(matra`
           }
           pre.result-view#panel-ast[role="tabpanel" aria-labelledby="tab-ast"] { code#ast-output {} }
           pre.result-view#panel-html[role="tabpanel" aria-labelledby="tab-html"] { code#html-output {} }
+          pre.result-view#panel-svg[role="tabpanel" aria-labelledby="tab-svg"] { code#svg-output {} }
           div.error-card#playground-error[hidden="true"] {
             strong { "Parse error" }
             pre#playground-error-message {}

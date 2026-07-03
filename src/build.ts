@@ -151,6 +151,7 @@ async function handler() {
     target: ["es2022"],
     alias: {
       "@matra/core": path.resolve(process.cwd(), "../matra/packages/core/dist/index.js"),
+      "@matra/graphics": path.resolve(process.cwd(), "../matra/packages/graphics/dist/index.js"),
     },
   })
   console.log(`Generated browser bundle at: ${path.join(assetsDir, "playground.js")}`)
