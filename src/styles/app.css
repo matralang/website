@@ -131,12 +131,20 @@ code { font-family: "DM Mono", monospace; }
   border: 1px solid #435149; border-radius: 6px; padding: 5px 8px;
   color: #d7ded9; background: #1a251f; font: inherit;
 }
-.example-bar { display: flex; gap: 7px; padding: 12px 18px; border-bottom: 1px solid #2d3a33; }
+.example-browser { padding: 13px 18px 15px; border-bottom: 1px solid #2d3a33; background: #131d18; }
+.example-browser-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 10px; color: #d7ded9; font: 10px "DM Mono", monospace; letter-spacing: .1em; }
+.example-browser-heading small { color: #718078; font: 9px "DM Mono", monospace; letter-spacing: 0; }
+.example-list { display: grid; grid-auto-flow: column; grid-auto-columns: 142px; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-color: #435149 transparent; scrollbar-width: thin; scroll-snap-type: x proximity; }
 .example-button, .result-tab, .copy-button {
   border: 0; color: #98a39d; background: transparent; cursor: pointer; font: 11px "DM Mono", monospace;
 }
-.example-button { padding: 6px 10px; border: 1px solid #3b4941; border-radius: 999px; }
-.example-button:hover { border-color: var(--acid); color: var(--acid); }
+.example-button { min-height: 86px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 10px 11px; border: 1px solid #34423a; border-radius: 9px; text-align: left; scroll-snap-align: start; transition: border-color .15s, background .15s; }
+.example-button:hover { border-color: #718078; background: #19251f; }
+.example-button.active { border-color: var(--acid); color: white; background: #1b281f; box-shadow: inset 0 0 0 1px #c8f13522; }
+.example-button strong { color: #eef2ef; font: 600 12px/1.1 "DM Mono", monospace; }
+.example-button small { color: #77857d; font: 9px/1.25 "DM Mono", monospace; }
+.example-kind { color: #a8c52d; font: 8px/1 "DM Mono", monospace; letter-spacing: .12em; }
+.example-kind.svg { color: #58c5ef; }
 #matra-source {
   width: 100%; min-height: 500px; flex: 1; resize: none; outline: 0; border: 0; padding: 28px;
   color: #ebf0ec; caret-color: var(--acid); background: #101814;

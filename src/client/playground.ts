@@ -33,6 +33,40 @@ const examples: Record<string, string> = {
     li\`Parser\`
   }
 }`,
+  profile: `article.profile {
+  p.eyebrow\`CONTRIBUTOR\`
+  h2\`Ada Lovelace\`
+  p\`Mathematics, poetry, and the first algorithm.\`
+  dl {
+    dt\`Focus\`
+    dd\`Analytical engines\`
+    dt\`Published\`
+    dd\`1843\`
+  }
+}`,
+  navigation: `nav[aria-label="Main navigation"] {
+  a.brand[href="/"] \`MATRA\`
+  ul {
+    li { a[href="/docs/"] \`Docs\` }
+    li { a[href="/examples/"] \`Examples\` }
+    li { a[href="/play/"] \`Playground\` }
+  }
+}`,
+  article: `main {
+  article {
+    header {
+      p.eyebrow\`FIELD NOTE / 04\`
+      h1\`Structure is a way of seeing.\`
+      p\`A small document built from nested Matra nodes.\`
+    }
+    section {
+      h2\`Start with the outline\`
+      p\`Names, attributes, and children make the hierarchy visible.\`
+      blockquote\`Write the shape first; refine the meaning as it emerges.\`
+    }
+    footer { small\`Published with Matra\` }
+  }
+}`,
   poster: `svg(
   defs(linearGradient(stop(offset="0%", stop-color="#c8f135"), stop(offset="100%", stop-color="#39b7ff"), id="glow")),
   rect(x=0, y=0, width=640, height=400, rx=28, fill="#101814"),
@@ -49,6 +83,22 @@ const examples: Record<string, string> = {
   circle(cx=240, cy=158, r=12, fill="#39b7ff"),
   circle(cx=240, cy=240, r=34, fill="#101814"),
   width=480, height=480
+)`,
+  landscape: `svg(
+  rect(x=0, y=0, width=640, height=400, fill="#e9f4f1"),
+  circle(cx=520, cy=92, r=48, fill="#c8f135"),
+  path(d="M0 280 L170 115 L330 280 Z", fill="#315f50"),
+  path(d="M150 310 L390 105 L640 310 Z", fill="#193e30"),
+  path(d="M0 300 Q160 250 320 310 T640 290 V400 H0 Z", fill="#39b7ff", opacity=0.75),
+  width=640, height=400
+)`,
+  signal: `svg(
+  rect(x=0, y=0, width=640, height=360, rx=24, fill="#101814"),
+  line(x1=80, y1=180, x2=560, y2=180, stroke="#435149", stroke-width=2),
+  path(d="M80 180 L150 180 L180 90 L225 270 L270 135 L310 180 L560 180", fill="none", stroke="#c8f135", stroke-width=8, stroke-linecap="round", stroke-linejoin="round"),
+  circle(cx=180, cy=90, r=10, fill="#39b7ff"),
+  text("SIGNAL / 01", x=80, y=65, fill="#ffffff", font-size=18, font-family="monospace"),
+  width=640, height=360
 )`,
 }
 
@@ -107,10 +157,14 @@ source.addEventListener("input", scheduleRender)
 renderMode.addEventListener("change", render)
 document.querySelectorAll<HTMLButtonElement>(".example-button").forEach(button => {
   button.addEventListener("click", () => {
-    source.value = examples[button.dataset.example ?? "card"]
-    if ((button.dataset.example ?? "").startsWith("poster") || button.dataset.example === "orbit") {
-      renderMode.value = "auto"
-    }
+    const example = button.dataset.example ?? "card"
+    source.value = examples[example]
+    renderMode.value = "auto"
+    document.querySelectorAll<HTMLButtonElement>(".example-button").forEach(item => {
+      const active = item === button
+      item.classList.toggle("active", active)
+      item.setAttribute("aria-pressed", String(active))
+    })
     render()
     source.focus()
   })
