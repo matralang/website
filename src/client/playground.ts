@@ -1,4 +1,4 @@
-import { parse } from "@matra/core"
+import { astToMatraJSON, parse, printJSON } from "@matra/core"
 import { toSVG } from "@matra/graphics"
 import { toHTML } from "@matra/html"
 import { numericEvaluateProps } from "@matra/math-compute-engine"
@@ -7,6 +7,7 @@ const source = required<HTMLTextAreaElement>("matra-source")
 const status = required<HTMLElement>("playground-status")
 const stats = required<HTMLElement>("source-stats")
 const astOutput = required<HTMLElement>("ast-output")
+const matraJSONOutput = required<HTMLElement>("matra-json-output")
 const htmlOutput = required<HTMLElement>("html-output")
 const svgOutput = required<HTMLElement>("svg-output")
 const preview = required<HTMLIFrameElement>("preview-frame")
@@ -103,7 +104,7 @@ const examples: Record<string, string> = {
 }
 
 let activePanel = "preview"
-let latestOutputs = { ast: "", html: "", svg: "" }
+let latestOutputs = { ast: "", matraJSON: "", html: "", svg: "" }
 let latestMode: "html" | "svg" = "html"
 let timer = 0
 
@@ -117,11 +118,13 @@ function render(): void {
       ? (parsedAst.tag === "svg" || (parsedAst.tag === "$root" && parsedAst.children.some(child => isNode(child) && child.tag === "svg")) ? "svg" : "html")
       : renderMode.value as "html" | "svg"
     const ast = mode === "svg" ? numericEvaluateProps(parsedAst) : parsedAst
+    const matraJSON = printJSON(astToMatraJSON(ast), { pretty: true })
     const html = mode === "html" ? toHTML(ast) : ""
     const svg = mode === "svg" ? toSVG(ast, { pretty: true }) : ""
     latestMode = mode
-    latestOutputs = { ast: JSON.stringify(ast, null, 2), html, svg }
+    latestOutputs = { ast: JSON.stringify(ast, null, 2), matraJSON, html, svg }
     astOutput.textContent = latestOutputs.ast
+    matraJSONOutput.textContent = matraJSON
     htmlOutput.textContent = html
     svgOutput.textContent = svg || "SVG modeを選択すると、ここにSVG sourceが表示されます。"
     preview.srcdoc = previewDocument(mode === "svg" ? svg : html, mode)
@@ -194,6 +197,7 @@ downloadButton.addEventListener("click", () => {
 
 function outputForPanel(panel: string): string {
   if (panel === "ast") return latestOutputs.ast
+  if (panel === "matra-json") return latestOutputs.matraJSON
   if (panel === "svg") return latestOutputs.svg
   if (panel === "preview") return latestMode === "svg" ? latestOutputs.svg : latestOutputs.html
   return latestOutputs.html

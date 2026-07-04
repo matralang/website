@@ -75,6 +75,7 @@ export default defaultLayout(matra`
         div.result-tabs[role="tablist" aria-label="Output"] {
           button.result-tab.active#tab-preview[type="button" role="tab" aria-selected="true" data-panel="preview"] { "Preview" }
           button.result-tab#tab-ast[type="button" role="tab" aria-selected="false" data-panel="ast"] { "AST" }
+          button.result-tab#tab-matra-json[type="button" role="tab" aria-selected="false" data-panel="matra-json"] { "MatraJSON" }
           button.result-tab#tab-html[type="button" role="tab" aria-selected="false" data-panel="html"] { "HTML" }
           button.result-tab#tab-svg[type="button" role="tab" aria-selected="false" data-panel="svg"] { "SVG" }
           button.copy-button#download-output[type="button"] { "Download" }
@@ -85,6 +86,7 @@ export default defaultLayout(matra`
             iframe#preview-frame[title="Rendered Matra preview" sandbox=""]
           }
           pre.result-view#panel-ast[role="tabpanel" aria-labelledby="tab-ast"] { code#ast-output {} }
+          pre.result-view#panel-matra-json[role="tabpanel" aria-labelledby="tab-matra-json"] { code#matra-json-output {} }
           pre.result-view#panel-html[role="tabpanel" aria-labelledby="tab-html"] { code#html-output {} }
           pre.result-view#panel-svg[role="tabpanel" aria-labelledby="tab-svg"] { code#svg-output {} }
           div.error-card#playground-error[hidden="true"] {

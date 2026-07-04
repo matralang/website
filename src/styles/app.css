@@ -124,6 +124,8 @@ code { font-family: "DM Mono", monospace; }
   min-height: 56px; display: flex; align-items: center; gap: 10px;
   padding: 0 18px; border-bottom: 1px solid #34423a; color: #d7ded9;
 }
+.result-tabs { overflow-x: auto; }
+.result-tabs > * { flex: 0 0 auto; }
 .panel-title { display: flex; align-items: center; gap: 10px; font: 11px "DM Mono", monospace; letter-spacing: .1em; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 0 4px #c8f13516; }
 .editor-tools { display: flex; align-items: center; gap: 8px; margin-left: auto; color: #87948c; font: 11px "DM Mono", monospace; }
