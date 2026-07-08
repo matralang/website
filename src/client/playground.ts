@@ -16,6 +16,10 @@ const errorMessage = required<HTMLElement>("playground-error-message")
 const copyButton = required<HTMLButtonElement>("copy-output")
 const downloadButton = required<HTMLButtonElement>("download-output")
 const renderMode = required<HTMLSelectElement>("render-mode")
+const sourceLanguage = required<HTMLSelectElement>("source-language")
+
+type OutputMode = "html" | "svg"
+type ProgramResult = string | { source: string; mode?: OutputMode }
 
 const examples: Record<string, string> = {
   card: `article.card {
@@ -101,6 +105,35 @@ const examples: Record<string, string> = {
   text("SIGNAL / 01", x=80, y=65, fill="#ffffff", font-size=18, font-family="monospace"),
   width=640, height=360
 )`,
+  "js-card": `// This program is valid JavaScript and TypeScript.
+// Return Matra source; the Playground handles parsing and rendering.
+const title = "Matra from JavaScript"
+const items = ["Structure", "Transform", "Render"]
+
+return {
+  mode: "html",
+  source: \`article.demo {
+  p.eyebrow { "JS / TS API" }
+  h2 { "\${title}" }
+  ul { \${items.map(item => \`li { "\${item}" }\`).join("\\n  ")} }
+}\`,
+}`,
+  "js-graphics": `// Generate Matra graphics source with ordinary JS/TS values.
+const dots = Array.from({ length: 7 }, (_, index) => {
+  const x = 70 + index * 70
+  const radius = 10 + index * 4
+  return \`circle(cx=\${x}, cy=180, r=\${radius}, fill="#c8f135")\`
+})
+
+return {
+  mode: "svg",
+  source: \`svg(
+  rect(x=0, y=0, width=560, height=360, rx=24, fill="#101814"),
+  \${dots.join(",\\n  ")},
+  text("GENERATED / JS + TS", x=48, y=70, fill="#ffffff", font-size=20),
+  width=560, height=360
+)\`,
+}`,
 }
 
 let activePanel = "preview"
@@ -109,14 +142,19 @@ let latestMode: "html" | "svg" = "html"
 let timer = 0
 
 function render(): void {
-  const value = source.value
+  const program = source.value
+  let value = program
   stats.textContent = `${value.length} chars · ${value.split("\n").length} lines`
 
   try {
+    const programResult = sourceLanguage.value === "javascript"
+      ? runJavaScriptProgram(program)
+      : null
+    if (programResult !== null) value = programResult.source
     const parsedAst = parse(value, { locations: true, sourceId: "playground.matra" })
-    const mode = renderMode.value === "auto"
+    const mode = programResult?.mode ?? (renderMode.value === "auto"
       ? (parsedAst.tag === "svg" || (parsedAst.tag === "$root" && parsedAst.children.some(child => isNode(child) && child.tag === "svg")) ? "svg" : "html")
-      : renderMode.value as "html" | "svg"
+      : renderMode.value as OutputMode)
     const ast = mode === "svg" ? numericEvaluateProps(parsedAst) : parsedAst
     const matraJSON = printJSON(astToMatraJSON(ast), { pretty: true })
     const html = mode === "html" ? toHTML(ast) : ""
@@ -129,7 +167,8 @@ function render(): void {
     svgOutput.textContent = svg || "SVG modeを選択すると、ここにSVG sourceが表示されます。"
     preview.srcdoc = previewDocument(mode === "svg" ? svg : html, mode)
     errorCard.hidden = true
-    status.textContent = `Valid Matra · ${mode.toUpperCase()}`
+    const language = sourceLanguage.value === "javascript" ? "JS / TS" : "Matra"
+    status.textContent = `Valid ${language} · ${mode.toUpperCase()}`
     status.classList.remove("is-error")
   } catch (error) {
     errorMessage.textContent = error instanceof Error ? error.message : String(error)
@@ -157,11 +196,13 @@ function selectPanel(name: string): void {
 }
 
 source.addEventListener("input", scheduleRender)
+sourceLanguage.addEventListener("change", render)
 renderMode.addEventListener("change", render)
 document.querySelectorAll<HTMLButtonElement>(".example-button").forEach(button => {
   button.addEventListener("click", () => {
     const example = button.dataset.example ?? "card"
     source.value = examples[example]
+    sourceLanguage.value = button.dataset.language ?? "matra"
     renderMode.value = "auto"
     document.querySelectorAll<HTMLButtonElement>(".example-button").forEach(item => {
       const active = item === button
@@ -213,6 +254,21 @@ function previewDocument(output: string, mode: "html" | "svg"): string {
 
 function isNode(value: unknown): value is { tag: string } {
   return typeof value === "object" && value !== null && "tag" in value
+}
+
+function runJavaScriptProgram(program: string): { source: string; mode?: OutputMode } {
+  // The editor intentionally uses the JavaScript subset shared by JS and TS.
+  // eslint-disable-next-line no-new-func
+  const execute = new Function(`"use strict";\n${program}`) as () => ProgramResult
+  const result = execute()
+  if (typeof result === "string") return { source: result }
+  if (!result || typeof result.source !== "string") {
+    throw new TypeError("JavaScript / TypeScript code must return a Matra source string or { source, mode }.")
+  }
+  if (result.mode !== undefined && result.mode !== "html" && result.mode !== "svg") {
+    throw new TypeError('mode must be either "html" or "svg".')
+  }
+  return result
 }
 
 function required<T extends HTMLElement>(id: string): T {

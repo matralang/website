@@ -15,6 +15,11 @@ export default defaultLayout(matra`
         header.panel-header {
           div.panel-title { span.status-dot {} strong { "SOURCE" } }
           div.editor-tools {
+            label[for="source-language"] { "Language" }
+            select#source-language {
+              option[value="matra"] { "Matra" }
+              option[value="javascript"] { "JavaScript / TypeScript" }
+            }
             label[for="render-mode"] { "Output" }
             select#render-mode {
               option[value="auto"] { "Auto" }
@@ -55,6 +60,12 @@ export default defaultLayout(matra`
             }
             button.example-button[type="button" data-example="signal" aria-pressed="false"] {
               span.example-kind.svg { "SVG" } strong { "Signal" } small { "Lines and opacity" }
+            }
+            button.example-button[type="button" data-example="js-card" data-language="javascript" aria-pressed="false"] {
+              span.example-kind.js { "JS / TS" } strong { "HTML API" } small { "Build from a template" }
+            }
+            button.example-button[type="button" data-example="js-graphics" data-language="javascript" aria-pressed="false"] {
+              span.example-kind.js { "JS / TS" } strong { "Graphics API" } small { "Generate SVG" }
             }
           }
         }
@@ -100,5 +111,5 @@ export default defaultLayout(matra`
   script[type="module" src="/assets/playground.js"] {}
 `, {
   title: "Playground — Matra",
-  description: "Matra sourceをASTとHTMLへ変換できるブラウザPlaygroundです。",
+  description: "Matra sourceやJavaScript・TypeScript互換コードをAST、HTML、SVGへ変換できるブラウザPlaygroundです。",
 })
