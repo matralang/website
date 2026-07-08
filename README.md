@@ -1,5 +1,7 @@
 # Matra Website
 
+[English](./README.md) | [日本語](./README.ja.md)
+
 Matraの公式サイトです。現在はGitHub Pagesでpreviewし、最終的に
 `https://matralang.org` をcanonical domainとして運用します。
 
