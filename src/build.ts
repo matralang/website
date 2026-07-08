@@ -150,7 +150,7 @@ async function handler() {
     sourcemap: true,
     target: ["es2022"],
     alias: {
-      "@matra/core": path.resolve(process.cwd(), "../matra/packages/core/dist/index.js"),
+      "@matra/core": path.resolve(process.cwd(), "src", "client", "core-browser.ts"),
       "@matra/graphics": path.resolve(process.cwd(), "../matra/packages/graphics/dist/index.js"),
       "@matra/math-compute-engine": path.resolve(process.cwd(), "../matra/packages/math-compute-engine/dist/index.js"),
     },
