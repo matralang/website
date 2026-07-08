@@ -19,6 +19,7 @@ export default defaultLayout(matra`
             select#source-language {
               option[value="matra"] { "Matra" }
               option[value="javascript"] { "JavaScript / TypeScript" }
+              option[value="math"] { "Math" }
             }
             label[for="render-mode"] { "Output" }
             select#render-mode {
@@ -61,6 +62,9 @@ export default defaultLayout(matra`
             button.example-button[type="button" data-example="signal" aria-pressed="false"] {
               span.example-kind.svg { "SVG" } strong { "Signal" } small { "Lines and opacity" }
             }
+            button.example-button[type="button" data-example="compute-engine" data-language="math" aria-pressed="false"] {
+              span.example-kind.math { "MATH" } strong { "Compute Engine" } small { "Matra math input" }
+            }
             button.example-button[type="button" data-example="js-card" data-language="javascript" aria-pressed="false"] {
               span.example-kind.js { "JS / TS" } strong { "HTML API" } small { "Build from a template" }
             }
@@ -87,6 +91,7 @@ export default defaultLayout(matra`
           button.result-tab.active#tab-preview[type="button" role="tab" aria-selected="true" data-panel="preview"] { "Preview" }
           button.result-tab#tab-ast[type="button" role="tab" aria-selected="false" data-panel="ast"] { "AST" }
           button.result-tab#tab-matra-json[type="button" role="tab" aria-selected="false" data-panel="matra-json"] { "MatraJSON" }
+          button.result-tab#tab-math[type="button" role="tab" aria-selected="false" data-panel="math"] { "Math" }
           button.result-tab#tab-html[type="button" role="tab" aria-selected="false" data-panel="html"] { "HTML" }
           button.result-tab#tab-svg[type="button" role="tab" aria-selected="false" data-panel="svg"] { "SVG" }
           button.copy-button#download-output[type="button"] { "Download" }
@@ -98,6 +103,7 @@ export default defaultLayout(matra`
           }
           pre.result-view#panel-ast[role="tabpanel" aria-labelledby="tab-ast"] { code#ast-output {} }
           pre.result-view#panel-matra-json[role="tabpanel" aria-labelledby="tab-matra-json"] { code#matra-json-output {} }
+          pre.result-view#panel-math[role="tabpanel" aria-labelledby="tab-math"] { code#math-output {} }
           pre.result-view#panel-html[role="tabpanel" aria-labelledby="tab-html"] { code#html-output {} }
           pre.result-view#panel-svg[role="tabpanel" aria-labelledby="tab-svg"] { code#svg-output {} }
           div.error-card#playground-error[hidden="true"] {

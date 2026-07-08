@@ -1,13 +1,14 @@
 import { astToMatraJSON, parse, printJSON } from "@matra/core"
 import { toSVG } from "@matra/graphics"
 import { toHTML } from "@matra/html"
-import { numericEvaluateProps } from "@matra/math-compute-engine"
+import { evaluateMatra, numericEvaluateMatra, numericEvaluateProps, simplifyMatra } from "@matra/math-compute-engine"
 
 const source = required<HTMLTextAreaElement>("matra-source")
 const status = required<HTMLElement>("playground-status")
 const stats = required<HTMLElement>("source-stats")
 const astOutput = required<HTMLElement>("ast-output")
 const matraJSONOutput = required<HTMLElement>("matra-json-output")
+const mathOutput = required<HTMLElement>("math-output")
 const htmlOutput = required<HTMLElement>("html-output")
 const svgOutput = required<HTMLElement>("svg-output")
 const preview = required<HTMLIFrameElement>("preview-frame")
@@ -19,6 +20,7 @@ const renderMode = required<HTMLSelectElement>("render-mode")
 const sourceLanguage = required<HTMLSelectElement>("source-language")
 
 type OutputMode = "html" | "svg"
+type ResultMode = OutputMode | "math"
 type ProgramResult = string | { source: string; mode?: OutputMode }
 
 const examples: Record<string, string> = {
@@ -105,6 +107,7 @@ const examples: Record<string, string> = {
   text("SIGNAL / 01", x=80, y=65, fill="#ffffff", font-size=18, font-family="monospace"),
   width=640, height=360
 )`,
+  "compute-engine": `Add(Power(2, 10), Factorial(5), Sin(Divide(Pi, 2)))`,
   "js-card": `// This program is valid JavaScript and TypeScript.
 // Return Matra source; the Playground handles parsing and rendering.
 const title = "Matra from JavaScript"
@@ -139,8 +142,8 @@ return {
 }
 
 let activePanel = "preview"
-let latestOutputs = { ast: "", matraJSON: "", html: "", svg: "" }
-let latestMode: "html" | "svg" = "html"
+let latestOutputs = { ast: "", matraJSON: "", math: "", html: "", svg: "" }
+let latestMode: ResultMode = "html"
 let timer = 0
 
 function render(): void {
@@ -149,6 +152,10 @@ function render(): void {
   stats.textContent = `${value.length} chars · ${value.split("\n").length} lines`
 
   try {
+    if (sourceLanguage.value === "math") {
+      renderMath(program)
+      return
+    }
     const programResult = sourceLanguage.value === "javascript"
       ? runJavaScriptProgram(program)
       : null
@@ -162,9 +169,10 @@ function render(): void {
     const html = mode === "html" ? toHTML(ast) : ""
     const svg = mode === "svg" ? toSVG(ast, { pretty: true }) : ""
     latestMode = mode
-    latestOutputs = { ast: JSON.stringify(ast, null, 2), matraJSON, html, svg }
+    latestOutputs = { ast: JSON.stringify(ast, null, 2), matraJSON, math: "", html, svg }
     astOutput.textContent = latestOutputs.ast
     matraJSONOutput.textContent = matraJSON
+    mathOutput.textContent = "Math languageを選択すると、ここにCompute Engineの結果が表示されます。"
     htmlOutput.textContent = html
     svgOutput.textContent = svg || "SVG modeを選択すると、ここにSVG sourceが表示されます。"
     preview.srcdoc = previewDocument(mode === "svg" ? svg : html, mode)
@@ -178,6 +186,37 @@ function render(): void {
     status.textContent = "Invalid source"
     status.classList.add("is-error")
   }
+}
+
+function renderMath(program: string): void {
+  const evaluated = evaluateMatra(program)
+  const simplified = simplifyMatra(program)
+  const numeric = numericEvaluateMatra(program)
+  const result = [
+    "Input",
+    program,
+    "",
+    "Evaluate",
+    formatValue(evaluated),
+    "",
+    "Simplify",
+    formatValue(simplified),
+    "",
+    "Numeric",
+    formatValue(numeric),
+  ].join("\n")
+
+  latestMode = "math"
+  latestOutputs = { ast: "", matraJSON: "", math: result, html: "", svg: "" }
+  astOutput.textContent = "Math input is parsed as Matra application syntax, not document AST."
+  matraJSONOutput.textContent = formatValue(simplified)
+  mathOutput.textContent = result
+  htmlOutput.textContent = ""
+  svgOutput.textContent = ""
+  preview.srcdoc = previewDocument(result, "math")
+  errorCard.hidden = true
+  status.textContent = "Valid Math · Compute Engine"
+  status.classList.remove("is-error")
 }
 
 function scheduleRender(): void {
@@ -228,9 +267,9 @@ copyButton.addEventListener("click", async () => {
 })
 
 downloadButton.addEventListener("click", () => {
-  const content = latestMode === "svg" ? latestOutputs.svg : latestOutputs.html
-  const extension = latestMode === "svg" ? "svg" : "html"
-  const blob = new Blob([content], { type: latestMode === "svg" ? "image/svg+xml" : "text/html" })
+  const content = latestMode === "svg" ? latestOutputs.svg : latestMode === "math" ? latestOutputs.math : latestOutputs.html
+  const extension = latestMode === "svg" ? "svg" : latestMode === "math" ? "txt" : "html"
+  const blob = new Blob([content], { type: latestMode === "svg" ? "image/svg+xml" : latestMode === "math" ? "text/plain" : "text/html" })
   const link = document.createElement("a")
   link.href = URL.createObjectURL(blob)
   link.download = `matra-output.${extension}`
@@ -241,17 +280,34 @@ downloadButton.addEventListener("click", () => {
 function outputForPanel(panel: string): string {
   if (panel === "ast") return latestOutputs.ast
   if (panel === "matra-json") return latestOutputs.matraJSON
+  if (panel === "math") return latestOutputs.math
   if (panel === "svg") return latestOutputs.svg
+  if (latestMode === "math") return latestOutputs.math
   if (panel === "preview") return latestMode === "svg" ? latestOutputs.svg : latestOutputs.html
   return latestOutputs.html
 }
 
-function previewDocument(output: string, mode: "html" | "svg"): string {
+function previewDocument(output: string, mode: ResultMode): string {
   return `<!doctype html><html><head><style>
     :root{font-family:system-ui,sans-serif;color:#101814;background:#fbfaf5}
-    body{margin:0;padding:32px}.graphics-preview{min-height:calc(100vh - 64px);display:grid;place-items:center}.graphics-preview svg{display:block;max-width:100%;height:auto;max-height:calc(100vh - 64px);filter:drop-shadow(0 18px 36px #10181422)}.card,.demo{max-width:520px;padding:28px;border:1px solid #d9d9cf;border-radius:14px;background:white}
+    body{margin:0;padding:32px}.graphics-preview{min-height:calc(100vh - 64px);display:grid;place-items:center}.graphics-preview svg{display:block;max-width:100%;height:auto;max-height:calc(100vh - 64px);filter:drop-shadow(0 18px 36px #10181422)}.math-preview{max-width:680px;margin:0;padding:28px;border:1px solid #d9d9cf;border-radius:14px;background:white;white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}.card,.demo{max-width:520px;padding:28px;border:1px solid #d9d9cf;border-radius:14px;background:white}
     .eyebrow{color:#657800;font:12px monospace;letter-spacing:.12em}.button{display:inline-block;margin-top:10px;padding:10px 16px;border-radius:999px;background:#101814;color:white;text-decoration:none}
-  </style></head><body>${mode === "svg" ? `<main class="graphics-preview">${output}</main>` : output}</body></html>`
+  </style></head><body>${mode === "svg" ? `<main class="graphics-preview">${output}</main>` : mode === "math" ? `<pre class="math-preview">${escapeHTML(output)}</pre>` : output}</body></html>`
+}
+
+function formatValue(value: unknown): string {
+  if (typeof value === "string") return value
+  if (typeof value === "number" || typeof value === "boolean" || value === null) return String(value)
+  return printJSON(value, { pretty: true })
+}
+
+function escapeHTML(value: string): string {
+  return value.replace(/[&<>"]/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+  }[character] ?? character))
 }
 
 function isNode(value: unknown): value is { tag: string } {

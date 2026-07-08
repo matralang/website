@@ -166,6 +166,7 @@ code { font-family: "DM Mono", monospace; }
 .example-kind { color: #a8c52d; font: 8px/1 "DM Mono", monospace; letter-spacing: .12em; }
 .example-kind.svg { color: #58c5ef; }
 .example-kind.js { color: #ffbf69; }
+.example-kind.math { color: #f06a4d; }
 #matra-source {
   width: 100%; min-height: 500px; flex: 1; resize: none; outline: 0; border: 0; padding: 28px;
   color: #ebf0ec; caret-color: var(--acid); background: #101814;
