@@ -30,9 +30,7 @@ const page = defaultLayout(matra`
           div.example-code-pair {
             div.code-window.example-code[aria-label="TypeScript HTML example"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "TS" }
                 small { "render-html.ts" }
               }
               pre { code~import { parse } from "@matra/core"
@@ -50,9 +48,7 @@ console.log(html)~ }
             }
             div.code-window.example-code[aria-label="Matra HTML source"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "MATRA" }
                 small { "article.matra" }
               }
               pre { code~article(
@@ -71,9 +67,7 @@ console.log(html)~ }
           div.example-code-pair {
             div.code-window.example-code[aria-label="TypeScript SVG example"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "TS" }
                 small { "render-svg.ts" }
               }
               pre { code~import { compile } from "@matra/graphics"
@@ -91,9 +85,7 @@ const svg = compile(source, { pretty: true })~ }
             }
             div.code-window.example-code[aria-label="Matra SVG source"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "MATRA" }
                 small { "badge.matra" }
               }
               pre { code~svg(
@@ -114,9 +106,7 @@ const svg = compile(source, { pretty: true })~ }
           div.example-code-pair {
             div.code-window.example-code[aria-label="TypeScript AST example"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "TS" }
                 small { "transform.ts" }
               }
               pre { code~import { parse, transform } from "@matra/core"
@@ -136,9 +126,7 @@ const normalized = transform(ast, node =>
             }
             div.code-window.example-code[aria-label="Matra menu source"] {
               div.window-bar {
-                span {}
-                span {}
-                span {}
+                span.window-label { "MATRA" }
                 small { "menu.matra" }
               }
               pre { code~menu(

@@ -51,9 +51,12 @@ h1, h2, h3, p { margin-top: 0; }
 .button.secondary:hover { background: var(--panel); }
 
 .code-window { overflow: hidden; border: 1px solid #2a352f; border-radius: 18px; color: #e9eee9; background: var(--ink); box-shadow: 0 30px 70px #1d2a221f; }
-.window-bar { display: flex; align-items: center; gap: 7px; padding: 15px 18px; border-bottom: 1px solid #324039; }
-.window-bar span { width: 8px; height: 8px; border-radius: 50%; background: #5e6b64; }
-.window-bar span:first-child { background: var(--acid); }
+.window-bar { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #324039; }
+.window-label {
+  display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px;
+  border: 1px solid #405047; border-radius: 4px; color: var(--acid); background: #19231e;
+  font: 10px/1 "DM Mono", monospace; letter-spacing: .08em;
+}
 .window-bar small { margin-left: auto; color: #829087; font: 11px "DM Mono", monospace; }
 pre { overflow-x: auto; margin: 22px 0; padding: 24px; border-radius: 12px; color: #eaf0eb; background: var(--ink); font: 14px/1.8 "DM Mono", monospace; }
 .code-window pre { min-height: 260px; margin: 0; padding: 32px; border-radius: 0; }

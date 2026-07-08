@@ -18,9 +18,7 @@ const page = defaultLayout(matra`
       }
       div.code-window[aria-label="Matraコード例"] {
         div.window-bar {
-          span {}
-          span {}
-          span {}
+          span.window-label { "SOURCE" }
           small { "hello.matra" }
         }
         pre { code~group(
