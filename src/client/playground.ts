@@ -113,10 +113,12 @@ const items = ["Structure", "Transform", "Render"]
 return {
   mode: "html",
   source: \`article.demo {
-  p.eyebrow { "JS / TS API" }
-  h2 { "\${title}" }
-  ul { \${items.map(item => \`li { "\${item}" }\`).join("\\n  ")} }
-}\`,
+    p.eyebrow { "JS / TS API" }
+    h2 { "\${title}" }
+    ul {
+      \${items.map(item => \`li { "\${item}" }\`).join("\\n      ")}
+    }
+  }\`,
 }`,
   "js-graphics": `// Generate Matra graphics source with ordinary JS/TS values.
 const dots = Array.from({ length: 7 }, (_, index) => {
@@ -128,11 +130,11 @@ const dots = Array.from({ length: 7 }, (_, index) => {
 return {
   mode: "svg",
   source: \`svg(
-  rect(x=0, y=0, width=560, height=360, rx=24, fill="#101814"),
-  \${dots.join(",\\n  ")},
-  text("GENERATED / JS + TS", x=48, y=70, fill="#ffffff", font-size=20),
-  width=560, height=360
-)\`,
+    rect(x=0, y=0, width=560, height=360, rx=24, fill="#101814"),
+    \${dots.join(",\\n    ")},
+    text("GENERATED / JS + TS", x=48, y=70, fill="#ffffff", font-size=20),
+    width=560, height=360
+  )\`,
 }`,
 }
 
