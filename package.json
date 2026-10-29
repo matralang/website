@@ -7,13 +7,16 @@
     "test": "node test/run.js",
     "dev": "npm run build && npm run serve",
     "build": "node src/build.mjs",
-    "serve": "serve dist"
+    "serve": "serve dist",
+    "lint": "biome lint .",
+    "format": "biome format --write ."
   },
   "dependencies": {
     "@matra/core": "0.3.0-alpha.1",
     "@matra/html": "0.3.0-alpha.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.2",
     "esbuild": "0.28.2",
     "serve": "^14.2.5"
   }

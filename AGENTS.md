@@ -6,6 +6,8 @@
 - インストール: `npm ci`
 - テスト: `npm test`
 - ビルド: `npm run build`
+- Lint: `npm run lint`
+- Format: `npm run format`
 - ローカル表示: `npm run serve`（先にbuildが必要）
 - buildしてローカル表示: `npm run dev`
 
