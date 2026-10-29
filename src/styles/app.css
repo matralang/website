@@ -121,5 +121,6 @@ code { font-family: var(--mono); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* biome-ignore lint/complexity/noImportantStyles: Override animations to honor the user's motion preference. */
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }

@@ -218,62 +218,6 @@ const examplesEn = {
   noticeLinkLabel: "Installation",
 }
 
-const docsJa = {
-  title: "導入・ドキュメント — Matra",
-  description: "Node.jsで実験的なMatra v0.3を導入し、掲載例を実行する手順。",
-  eyebrow: "はじめる",
-  heading: "Node.jsで、HTML出力まで試す。",
-  intro: "v0.3の公開Core・HTML packageを固定versionで導入します。literate APIはNode.js向けの実験的APIです。Node.js 22または24を使い、信頼した自作文書だけを実行してください。",
-  actions: [
-    { href: "/examples/", label: "実行例を見る", className: "button primary" },
-    { href: `${spec}/literate-modules.ja.md`, label: "API契約を読む", className: "button secondary" },
-  ],
-  releaseNote: "literateの実行にRustは不要です。Core package自体のbuildにはRustが必要です。",
-  sampleEyebrow: "Install",
-  sampleTitle: "versionを固定して導入",
-  sampleDescription: "以下のpackage versionはwebsiteが検証に使うalpha版です。安定版としての互換性は保証されません。",
-  featuresEyebrow: "最小の実行経路",
-  featuresTitle: "buildして、HTMLを出力する。",
-  cards: [
-    { index: "01", title: "依存を導入する", text: "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0", links: [] },
-    { index: "02", title: "名前付きfenceを用意する", text: "MarkdownのFrontMatterにmatra.entryと必要なmatra.valuesを明示します。入口は.matra、値は.js.partです。", links: [{ href: "/examples/", label: "実行する作例 →" }] },
-    { index: "03", title: "APIからHTMLを生成する", text: "buildLiterate()、runLiterate()、staticValueToAST()、toHTML()の順でHTMLを作ります。CLIはmatra-literateです。", links: [{ href: `${spec}/literate-modules.ja.md`, label: "完全な手順と制限 →" }] },
-  ],
-  noticeEyebrow: "重要な制限",
-  noticeTitle: "信頼した文書だけを実行してください。",
-  notice: "JavaScript値と関数はrun時に実行されます。OS sandboxやtimeoutは保証されず、標準.js module import、npm/Python連携、browser APIも提供しません。",
-  noticeLink: `${spec}/literate-modules.ja.md`,
-  noticeLinkLabel: "公開API契約",
-}
-
-const docsEn = {
-  title: "Get started — Matra",
-  description: "Install experimental Matra v0.3 for Node.js and run the published example.",
-  eyebrow: "GET STARTED",
-  heading: "Try the HTML output with Node.js.",
-  intro: "Install the published v0.3 Core and HTML packages at exact versions. The literate API is experimental and Node.js-only. Use Node.js 22 or 24, and run only documents you trust.",
-  actions: [
-    { href: "/en/examples/", label: "See the runnable example", className: "button primary" },
-    { href: `${spec}/literate-modules.md`, label: "Read the API contract", className: "button secondary" },
-  ],
-  releaseNote: "Running the literate API does not require Rust. Building the Core package itself does.",
-  sampleEyebrow: "Install",
-  sampleTitle: "Install exact versions",
-  sampleDescription: "These package versions are the alpha release used by this website for verification. Stable compatibility is not promised.",
-  featuresEyebrow: "The minimal path",
-  featuresTitle: "Build, then render HTML.",
-  cards: [
-    { index: "01", title: "Install dependencies", text: "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0", links: [] },
-    { index: "02", title: "Add named fences", text: "Declare matra.entry and selected matra.values in Markdown FrontMatter. The entry is .matra; values are .js.part.", links: [{ href: "/en/examples/", label: "Run the example →" }] },
-    { index: "03", title: "Render HTML through the API", text: "Use buildLiterate(), runLiterate(), staticValueToAST(), and toHTML(). The CLI is matra-literate.", links: [{ href: `${spec}/literate-modules.md`, label: "Full steps and limitations →" }] },
-  ],
-  noticeEyebrow: "Important limitation",
-  noticeTitle: "Run only documents you trust.",
-  notice: "JavaScript values and functions execute at run time. There is no OS sandbox or timeout guarantee, and no standard .js module import, npm/Python integration, or browser API.",
-  noticeLink: `${spec}/literate-modules.md`,
-  noticeLinkLabel: "Public API contract",
-}
-
 const playJa = {
   title: "Playground — Matra",
   description: "WorkerでHTML modeを試せる、制限を明示したMatra browser Playgroundです。",
@@ -527,8 +471,6 @@ const packagesCopy = (locale) => locale === "ja"
     }
 
 const playCopy = (locale) => locale === "ja" ? playJa : playEn
-const examplesCopy = (locale) => locale === "ja" ? examplesJa : examplesEn
-const aboutCopy = (locale) => locale === "ja" ? aboutJa : aboutEn
 
 function withSample(copy) {
   return {
