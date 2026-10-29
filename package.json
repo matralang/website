@@ -5,23 +5,15 @@
   "type": "module",
   "scripts": {
     "test": "node test/run.js",
-    "dev": "npm run css:dev",
-    "css:dev": "tailwindcss -i ./src/styles/app.css -o ./dist/app.css --watch",
-    "css:build": "tailwindcss -i ./src/styles/app.css -o ./dist/app.css",
-    "build": "node --import tsx src/build.ts && npm run css:build",
+    "dev": "npm run build && npm run serve",
+    "build": "node src/build.mjs",
     "serve": "serve dist"
   },
   "dependencies": {
-    "@matra/core": "^0.2.0",
-    "@matra/graphics": "file:../matra/packages/graphics",
-    "@matra/html": "^0.1.0",
-    "@matra/math-compute-engine": "file:../matra/packages/math-compute-engine"
+    "@matra/core": "0.3.0-alpha.0",
+    "@matra/html": "0.3.0-alpha.0"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.18",
-    "esbuild": "^0.27.7",
-    "serve": "^14.2.5",
-    "tailwindcss": "^4.1.18",
-    "tsx": "^4.20.6"
+    "serve": "^14.2.5"
   }
 }
