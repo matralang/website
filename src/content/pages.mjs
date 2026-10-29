@@ -1,6 +1,6 @@
 const github = "https://github.com/matralang/matra"
 const spec = `${github}/tree/develop/spec`
-const install = "npm install --save-exact @matra/core@0.3.0-alpha.0 @matra/html@0.3.0-alpha.0"
+const install = "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0"
 
 const locales = {
   ja: {
@@ -37,6 +37,7 @@ function page(locale, route, languageRoute, copy) {
   const local = locales[locale]
   return {
     ...local,
+    playgroundEnabled: false,
     ...copy,
     route,
     languageUrl: languageRoute,
@@ -57,7 +58,7 @@ const homeJa = {
     { href: "/about/", label: "Matraとは", className: "button primary" },
     { href: "/examples/", label: "作例を見る", className: "button secondary" },
   ],
-  releaseNote: "現在は v0.3.0-alpha.0。Node.js向けの実験版です。",
+  releaseNote: "Core v0.3.0-alpha.1 / HTML v0.3.0-alpha.0。Node.js向けの実験版です。",
   sampleEyebrow: "書く文書 / 生成されるページ",
   sampleTitle: "小さな記述から、HTMLを生成する",
   sampleDescription: "このサイトのbuildでは、名前付きコードfenceを持つMarkdown文書を実行し、Matra ASTをHTMLへ変換しています。",
@@ -85,7 +86,7 @@ const homeEn = {
     { href: "/en/about/", label: "What is Matra?", className: "button primary" },
     { href: "/en/examples/", label: "See examples", className: "button secondary" },
   ],
-  releaseNote: "Currently v0.3.0-alpha.0, an experimental release for Node.js.",
+  releaseNote: "Core v0.3.0-alpha.1 / HTML v0.3.0-alpha.0, experimental releases for Node.js.",
   sampleEyebrow: "The document / The generated page",
   sampleTitle: "Generate HTML from a small description",
   sampleDescription: "This site's build runs a Markdown document with named code fences, then renders the Matra document value as HTML.",
@@ -234,7 +235,7 @@ const docsJa = {
   featuresEyebrow: "最小の実行経路",
   featuresTitle: "buildして、HTMLを出力する。",
   cards: [
-    { index: "01", title: "依存を導入する", text: "npm install --save-exact @matra/core@0.3.0-alpha.0 @matra/html@0.3.0-alpha.0", links: [] },
+    { index: "01", title: "依存を導入する", text: "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0", links: [] },
     { index: "02", title: "名前付きfenceを用意する", text: "MarkdownのFrontMatterにmatra.entryと必要なmatra.valuesを明示します。入口は.matra、値は.js.partです。", links: [{ href: "/examples/", label: "実行する作例 →" }] },
     { index: "03", title: "APIからHTMLを生成する", text: "buildLiterate()、runLiterate()、staticValueToAST()、toHTML()の順でHTMLを作ります。CLIはmatra-literateです。", links: [{ href: `${spec}/literate-modules.ja.md`, label: "完全な手順と制限 →" }] },
   ],
@@ -262,7 +263,7 @@ const docsEn = {
   featuresEyebrow: "The minimal path",
   featuresTitle: "Build, then render HTML.",
   cards: [
-    { index: "01", title: "Install dependencies", text: "npm install --save-exact @matra/core@0.3.0-alpha.0 @matra/html@0.3.0-alpha.0", links: [] },
+    { index: "01", title: "Install dependencies", text: "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0", links: [] },
     { index: "02", title: "Add named fences", text: "Declare matra.entry and selected matra.values in Markdown FrontMatter. The entry is .matra; values are .js.part.", links: [{ href: "/en/examples/", label: "Run the example →" }] },
     { index: "03", title: "Render HTML through the API", text: "Use buildLiterate(), runLiterate(), staticValueToAST(), and toHTML(). The CLI is matra-literate.", links: [{ href: `${spec}/literate-modules.md`, label: "Full steps and limitations →" }] },
   ],
@@ -275,58 +276,92 @@ const docsEn = {
 
 const playJa = {
   title: "Playground — Matra",
-  description: "現行v0.3に対応したbrowser Playgroundは検証中です。",
+  description: "WorkerでHTML modeを試せる、制限を明示したMatra browser Playgroundです。",
   eyebrow: "BROWSER PLAYGROUND",
-  heading: "現行版は準備中です。",
-  intro: "以前のbrowser Playgroundは旧parser APIと旧構文に依存していました。v0.3の文書モデルを使うbrowser実行、停止・再実行、preview隔離、実browserでの計測が未検証のため、旧版を現行Playgroundとしては公開していません。",
+  heading: "文書を、HTMLで試す。",
+  intro: "現行v0.3のCore browser APIでMatra文書を実行し、HTML previewを生成する試作です。実行はWorkerで行い、応答がない場合は10秒で停止します。",
   actions: [
-    { href: "/examples/", label: "Node.jsで作例を実行", className: "button primary" },
+    { href: "/play/#playground", label: "Playgroundを試す", className: "button primary" },
+    { href: "/examples/", label: "Node.jsの作例", className: "button secondary" },
     { href: "/docs/", label: "導入手順", className: "button secondary" },
   ],
-  releaseNote: "これは未対応機能を隠さず、日英の静的な入口を先行して提供するための一時的な案内です。",
-  sampleEyebrow: "使える代替導線",
-  sampleTitle: "ローカルで再現できる例",
-  sampleDescription: "websiteの作例はbuildで実行し、その出力をHTMLとして掲載しています。Node.js環境で同じAPIを試せます。",
-  featuresEyebrow: "未確認の項目",
-  featuresTitle: "browser移行の判断は後続です。",
+  releaseNote: "HTML modeのみ。SVG・Math・JavaScript module importは対象外です。",
+  sampleEyebrow: "HTML PLAYGROUND",
+  sampleTitle: "Matraを編集して実行",
+  sampleDescription: "実行は明示操作です。Workerを停止でき、出力はscriptとnetworkを無効にしたsandboxed iframeに表示します。",
+  playgroundEnabled: true,
+  playgroundLabel: "Matra document",
+  playgroundRunLabel: "実行",
+  playgroundStopLabel: "停止",
+  playgroundPreviewLabel: "HTML preview",
+  playgroundHelp: "MatraのHTML文書だけを実行します。JavaScriptは実行されず、一般的なsecurity sandboxではありません。",
+  playgroundInitialStatus: "実行するとHTML previewを表示します。",
+  playgroundSource: `article {
+  h1 { "こんにちは、Matra。" }
+  p { "文書を編集して、実行してください。" }
+  ul {
+    ...for (item in ["HTML", "Worker", "Preview"]) {
+      li { item }
+    }
+  }
+}`,
+  featuresEyebrow: "試作の対応範囲",
+  featuresTitle: "HTMLだけを、明示的に実行。",
   cards: [
-    { index: "01", title: "HTML / SVG / Math mode", text: "旧browser modeは現行v0.3との互換性を確認していません。Mathも独自domainの検証経路が必要です。", links: [] },
-    { index: "02", title: "JavaScript編集", text: "Node.js用literate APIをbrowserへ持ち込む設計ではありません。browserでのコード実行・sandbox安全性も提供していません。", links: [] },
-    { index: "03", title: "停止・応答計測", text: "Worker等での停止、timeout、構文・実行診断、初回読込量と応答時間を実browserで確認してから採用範囲を判断します。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "移行計画 →" }] },
+    { index: "01", title: "HTML文書", text: "現行Coreのparse・evaluate・document AST変換とHTML rendererを使用します。", links: [] },
+    { index: "02", title: "Workerで停止", text: "同期loopも停止操作または10秒の期限でWorkerごと終了します。構文・実行エラーは画面に表示します。", links: [] },
+    { index: "03", title: "明示的な制限", text: "JavaScript、SVG、Math、copy/download、汎用sandboxは提供しません。previewはscriptとnetworkを制限します。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "v0.3計画 →" }] },
   ],
-  noticeEyebrow: "開発状況",
-  noticeTitle: "旧文法を現行版として扱いません。",
-  notice: "browser試作が完了するまでPlayground assetは配信せず、機能を提供中と誤解させない方針です。更新時は対応するmodeと制限を明示します。",
+  noticeEyebrow: "実験版の注意",
+  noticeTitle: "信頼できないコードの安全な実行環境ではありません。",
+  notice: "Workerの停止とiframeの制限は一般的なsecurity sandbox保証ではありません。機密情報を含む入力や、信頼できないsourceを実行しないでください。",
   noticeLink: "/examples/",
-  noticeLinkLabel: "作例を確認",
+  noticeLinkLabel: "Node.js作例を見る",
 }
 
 const playEn = {
   title: "Playground — Matra",
-  description: "A browser Playground compatible with current v0.3 is still under verification.",
+  description: "An explicitly limited Matra browser Playground for trying HTML mode in a Worker.",
   eyebrow: "BROWSER PLAYGROUND",
-  heading: "The current version is not ready yet.",
-  intro: "The former browser Playground depended on the old parser API and syntax. Browser execution with the v0.3 document model, interruption and reruns, isolated previews, and real-browser measurements have not been verified, so the legacy version is not presented as the current Playground.",
+  heading: "Try a document as HTML.",
+  intro: "This prototype runs Matra documents with the current v0.3 Core browser API and renders an HTML preview. Execution runs in a Worker and stops after 10 seconds if it does not respond.",
   actions: [
-    { href: "/en/examples/", label: "Run an example with Node.js", className: "button primary" },
+    { href: "/en/play/#playground", label: "Open the Playground", className: "button primary" },
+    { href: "/en/examples/", label: "Node.js examples", className: "button secondary" },
     { href: "/en/docs/", label: "Setup instructions", className: "button secondary" },
   ],
-  releaseNote: "This notice makes the unsupported scope explicit while the bilingual static site is delivered first.",
-  sampleEyebrow: "Available alternative",
-  sampleTitle: "Reproducible examples on your machine",
-  sampleDescription: "The website runs its example during the build and publishes the resulting HTML. You can try the same API with Node.js.",
-  featuresEyebrow: "Not yet verified",
-  featuresTitle: "Browser migration is a separate decision.",
+  releaseNote: "HTML mode only. SVG, Math, and JavaScript module imports are out of scope.",
+  sampleEyebrow: "HTML PLAYGROUND",
+  sampleTitle: "Edit and run Matra",
+  sampleDescription: "Execution requires an explicit action. A Worker can be stopped, and output is shown in a sandboxed iframe with scripts and network access disabled.",
+  playgroundEnabled: true,
+  playgroundLabel: "Matra document",
+  playgroundRunLabel: "Run",
+  playgroundStopLabel: "Stop",
+  playgroundPreviewLabel: "HTML preview",
+  playgroundHelp: "Runs Matra HTML documents only. JavaScript is not executed; this is not a general-purpose security sandbox.",
+  playgroundInitialStatus: "Run the document to update the HTML preview.",
+  playgroundSource: `article {
+  h1 { "Hello, Matra." }
+  p { "Edit this document, then run it." }
+  ul {
+    ...for (item in ["HTML", "Worker", "Preview"]) {
+      li { item }
+    }
+  }
+}`,
+  featuresEyebrow: "Prototype scope",
+  featuresTitle: "HTML only, with explicit execution.",
   cards: [
-    { index: "01", title: "HTML / SVG / Math modes", text: "Legacy browser modes have not been checked against current v0.3. Math also needs a separately verified domain path.", links: [] },
-    { index: "02", title: "JavaScript editing", text: "The Node.js literate API is not being brought into the browser. Browser code execution and sandbox guarantees are not provided.", links: [] },
-    { index: "03", title: "Interruption and performance", text: "The supported scope will be decided after real-browser tests for Worker-based stopping, timeout and diagnostics, initial size, and response time.", links: [{ href: `${spec}/release-v0.3.md`, label: "Migration plan →" }] },
+    { index: "01", title: "HTML documents", text: "Uses the current Core parser, evaluator, document AST conversion, and HTML renderer.", links: [] },
+    { index: "02", title: "Stop the Worker", text: "The Worker is terminated by the stop button or a 10-second deadline. Syntax and runtime errors are shown on the page.", links: [] },
+    { index: "03", title: "Explicit limitations", text: "JavaScript, SVG, Math, copy/download, and a general-purpose sandbox are not provided. The preview restricts scripts and network access.", links: [{ href: `${spec}/release-v0.3.md`, label: "v0.3 plan →" }] },
   ],
-  noticeEyebrow: "Status",
-  noticeTitle: "Legacy syntax is not labeled as current.",
-  notice: "No Playground client asset is shipped until the browser prototype is complete. Future support will list the covered modes and limitations.",
+  noticeEyebrow: "Experimental",
+  noticeTitle: "This is not a safe execution environment for untrusted code.",
+  notice: "Worker termination and iframe restrictions are not a general-purpose security sandbox. Do not run untrusted source or input containing sensitive information.",
   noticeLink: "/en/examples/",
-  noticeLinkLabel: "Browse examples",
+  noticeLinkLabel: "View Node.js examples",
 }
 
 const docsCards = (locale) => locale === "ja"
@@ -439,12 +474,12 @@ const specCopy = (locale) => locale === "ja"
 
 const packageCards = (locale) => locale === "ja"
   ? [
-      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、Morphion変換、experimental/literate API。v0.3.0-alpha.0。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、Morphion変換、browser API、experimental/literate API。v0.3.0-alpha.1。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
       { index: "02", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応。v0.3.0-alpha.0。", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "別domain package", text: "Graphics・Math・Compute Engineは個別の検証対象です。このsiteの依存として、すべてを公開済み・完成済みとは扱いません。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "優先度と範囲 →" }] },
     ]
   : [
-      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, Morphion conversion, and the experimental literate API. v0.3.0-alpha.0.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, Morphion conversion, browser API, and the experimental literate API. v0.3.0-alpha.1.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
       { index: "02", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. v0.3.0-alpha.0.", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "Other domain packages", text: "Graphics, Math, and Compute Engine have separate verification scopes; this site does not present them all as published or complete.", links: [{ href: `${spec}/release-v0.3.md`, label: "Priorities and scope →" }] },
     ]

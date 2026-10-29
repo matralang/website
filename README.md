@@ -26,7 +26,7 @@ The site is generated from named Matra/JavaScript fences in `src/content/site.md
 | `/examples/`, `/en/examples/` | Example executed during the build |
 | `/docs/`, `/en/docs/` | Setup and documentation |
 | `/spec/`, `/en/spec/` | v0.3 specifications and release scope |
-| `/play/`, `/en/play/` | Current v0.3 Playground status |
+| `/play/`, `/en/play/` | HTML-only browser Playground |
 | `/packages/`, `/en/packages/` | Published packages |
 | `/blog/`, `/en/blog/` | Development log |
 
@@ -34,6 +34,10 @@ The existing `/spec/data-model/`, `/spec/ast/`, `/spec/grammar/`, and `/spec/par
 
 ## Scope
 
-Website dependencies are pinned to the published `@matra/core@0.3.0-alpha.0` and `@matra/html@0.3.0-alpha.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated website is static HTML/CSS.
+Website dependencies are pinned to the published `@matra/core@0.3.0-alpha.1` and `@matra/html@0.3.0-alpha.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus small Playground client and Worker assets.
 
-The browser Playground is not published because v0.3 compatibility, interruption and reruns, isolated previews, and real-browser measurements have not been verified. Node.js examples provide the alternative path. The literate API does not provide an OS sandbox or timeout guarantee.
+`/play/` and `/en/play/` provide an HTML-only browser Playground prototype. It bundles the Core browser API and HTML renderer into a Worker, with explicit Run, manual stop, a 10-second timeout, syntax/runtime error display, and a sandboxed iframe preview.
+
+A representative integrated Chromium measurement was 3,374 bytes for the client (1,464 bytes gzip) and 17,588 bytes for the Worker (5,722 bytes gzip). A short sample responded in 25 ms on its first run and 16–18 ms over the next four runs. These are local observations, not performance guarantees.
+
+The Playground is experimental and does not provide SVG, Math, JavaScript module imports, copy/download, or a general-purpose security sandbox. Worker termination and iframe sandboxing do not guarantee isolation from malicious source. Do not run untrusted source or input containing sensitive information. The `@matra/core/experimental/literate` API is also Node.js-only and provides no OS sandbox or timeout guarantee.

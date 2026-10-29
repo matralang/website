@@ -26,7 +26,7 @@ npm run serve
 | `/examples/`、`/en/examples/` | buildで実行する作例 |
 | `/docs/`、`/en/docs/` | 導入・ドキュメント |
 | `/spec/`、`/en/spec/` | v0.3仕様とrelease範囲 |
-| `/play/`、`/en/play/` | v0.3対応Playgroundの状況 |
+| `/play/`、`/en/play/` | HTML限定のbrowser Playground |
 | `/packages/`、`/en/packages/` | 公開package |
 | `/blog/`、`/en/blog/` | 開発記録 |
 
@@ -34,6 +34,10 @@ npm run serve
 
 ## 対応範囲
 
-websiteの依存は公開済みの`@matra/core@0.3.0-alpha.0`と`@matra/html@0.3.0-alpha.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSです。
+websiteの依存は公開済みの`@matra/core@0.3.0-alpha.1`と`@matra/html@0.3.0-alpha.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground用の小さなclient/Worker assetです。
 
-Browser Playgroundは現行v0.3との互換性、停止・再実行、隔離preview、実browserでの計測が未検証のため公開していません。Node.jsで実行できる作例を代替導線として案内します。literate APIにOS sandboxやtimeout保証はありません。
+`/play/`と`/en/play/`ではHTML mode限定のbrowser Playgroundを提供します。Core browser APIとHTML rendererをWorker内でbundleし、明示的なRun、手動停止、10秒timeout、構文・実行error表示、sandboxed iframe previewを実装しています。
+
+Integrated Chromiumでの代表計測はclient 3,374 bytes（gzip 1,464 bytes）、Worker 17,588 bytes（gzip 5,722 bytes）です。短い作例の初回応答は25 ms、続く4回は16–18 msでした。これはローカル環境での測定値であり、性能保証ではありません。
+
+Playgroundは実験的な試作で、SVG・Math・JavaScript module import、copy/download、汎用security sandboxは提供しません。Worker終了とiframe sandboxは悪意あるsourceの隔離保証ではありません。信頼できないsourceや機密情報を含む入力は実行しないでください。`@matra/core/experimental/literate`もNode.js向けで、OS sandboxやtimeout保証はありません。

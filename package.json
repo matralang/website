@@ -10,10 +10,11 @@
     "serve": "serve dist"
   },
   "dependencies": {
-    "@matra/core": "0.3.0-alpha.0",
+    "@matra/core": "0.3.0-alpha.1",
     "@matra/html": "0.3.0-alpha.0"
   },
   "devDependencies": {
+    "esbuild": "0.28.2",
     "serve": "^14.2.5"
   }
 }

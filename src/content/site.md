@@ -19,6 +19,9 @@ html(lang=content.lang) {
     meta(name="theme-color" content="#f5f4ed") {}
     title { content.title }
     link(rel="stylesheet" href="/app.css") {}
+    if (content.playgroundEnabled) {
+      script(src="/assets/playground.js" type="module") {}
+    }
   }
   body {
     header(class="site-header") {
@@ -58,20 +61,70 @@ html(lang=content.lang) {
             h2 { content.sampleTitle }
             p { content.sampleDescription }
           }
-          div(class="showcase-grid") {
-            article(class="code-card") {
-              header(class="code-header") {
-                span { "MATRA" }
-                small { "main.matra" }
+          if (!content.playgroundEnabled) {
+            div(class="showcase-grid") {
+              article(class="code-card") {
+                header(class="code-header") {
+                  span { "MATRA" }
+                  small { "main.matra" }
+                }
+                pre { code { content.sampleSource } }
               }
-              pre { code { content.sampleSource } }
+              article(class="code-card") {
+                header(class="code-header") {
+                  span { "HTML" }
+                  small { "generated output" }
+                }
+                pre { code { content.sampleOutput } }
+              }
             }
-            article(class="code-card") {
-              header(class="code-header") {
-                span { "HTML" }
-                small { "generated output" }
+          }
+          if (content.playgroundEnabled) {
+            div(class="playground-panel" id="playground" data-playground="true") {
+              div(class="playground-heading") {
+                div {
+                  p(class="eyebrow") { "MATRA DOCUMENT" }
+                  h3 { content.playgroundLabel }
+                }
+                div(class="playground-actions") {
+                  button(id="playground-run" class="button primary" type="button") {
+                    content.playgroundRunLabel
+                  }
+                  button(id="playground-stop" class="button secondary" type="button" disabled=true) {
+                    content.playgroundStopLabel
+                  }
+                }
               }
-              pre { code { content.sampleOutput } }
+              p(class="playground-help") { content.playgroundHelp }
+              div(class="playground-grid") {
+                div(class="playground-editor") {
+                  label(for="playground-source") { content.playgroundLabel }
+                  textarea(
+                    id="playground-source"
+                    rows="16"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    autocomplete="off"
+                    aria-label=content.playgroundLabel
+                  ) { content.playgroundSource }
+                }
+                div(class="playground-output") {
+                  p(class="playground-output-label") { content.playgroundPreviewLabel }
+                  iframe(
+                    id="playground-preview"
+                    title=content.playgroundPreviewLabel
+                    sandbox=""
+                    referrerpolicy="no-referrer"
+                  ) {}
+                }
+              }
+              p(
+                class="playground-status"
+                id="playground-status"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              ) { content.playgroundInitialStatus }
             }
           }
         }

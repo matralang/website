@@ -1,5 +1,6 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
+import { build as buildBrowserAssets } from "esbuild"
 import { extractMatraMarkdown, staticValueToAST } from "@matra/core"
 import { buildLiterate, runLiterate } from "@matra/core/experimental/literate"
 import { toHTML } from "@matra/html"
@@ -38,6 +39,7 @@ async function main() {
   for (const page of pages) {
     const data = {
       ...page,
+      playgroundEnabled: page.playgroundEnabled ?? false,
       sampleSource: exampleSource,
       sampleOutput: exampleOutput,
     }
@@ -53,6 +55,19 @@ async function main() {
   }
 
   await cp(path.join(root, "src", "styles", "app.css"), path.join(outputDir, "app.css"))
+  await buildBrowserAssets({
+    entryPoints: [
+      path.join(root, "src", "playground", "playground.js"),
+      path.join(root, "src", "playground", "playground-worker.js"),
+    ],
+    outdir: path.join(outputDir, "assets"),
+    bundle: true,
+    entryNames: "[name]",
+    format: "esm",
+    minify: true,
+    platform: "browser",
+    target: "es2020",
+  })
 }
 
 main().catch(error => {

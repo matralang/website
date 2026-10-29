@@ -57,6 +57,8 @@ const englishPlay = await readPage("en/play/index.html")
 const spec = await readPage("spec/index.html")
 const legacyModelRoute = await readPage("spec/data-model/index.html")
 const css = await readPage("app.css")
+const playgroundClient = await readPage("assets/playground.js")
+const playgroundWorker = await readPage("assets/playground-worker.js")
 
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
@@ -72,22 +74,50 @@ assert.match(examples, /実際のrenderer出力/)
 assert.match(englishExamples, /actual renderer output/)
 assert.match(index, /&lt;article&gt;&lt;h2&gt;A page with Matra&lt;\/h2&gt;/)
 assert.match(index, /article \{\s+h2 \{ content\.title \}/)
-assert.match(play, /旧版を現行Playgroundとしては公開していません/)
-assert.match(englishPlay, /legacy version is not presented as the current Playground/)
+assert.match(play, /id="playground"/)
+assert.match(englishPlay, /id="playground"/)
+assert.match(play, /src="\/assets\/playground\.js" type="module"/)
+assert.match(play, /sandbox=""/)
+assert.match(play, /HTML modeのみ/)
+assert.match(englishPlay, /HTML mode only/)
+assert.doesNotMatch(play, /content\.title/)
 assert.match(spec, /文書Morphionと数式Morphionは別の概念/)
 assert.match(legacyModelRoute, /文書Morphion規則/)
 assert.match(index, /0\.3\.0-alpha\.0/)
 assert.doesNotMatch(index, /v0\.2/)
-assert.doesNotMatch(play, /assets\/playground\.js/)
+assert.doesNotMatch(index, /assets\/playground\.js/)
+assert.match(playgroundClient, /playground-worker\.js/)
+assert.match(playgroundWorker, /Expected Matra source text/)
+assert.doesNotMatch(playgroundWorker, /node:(fs|path|url)/)
+assert.ok(
+  Buffer.byteLength(playgroundClient) < 12_000,
+  `Playground client bundle should stay under 12 KB (was ${Buffer.byteLength(playgroundClient)} bytes)`,
+)
+assert.ok(
+  Buffer.byteLength(playgroundWorker) < 128_000,
+  `Playground Worker bundle should stay under 128 KB (was ${Buffer.byteLength(playgroundWorker)} bytes)`,
+)
 assert.match(css, /prefers-reduced-motion/)
 await verifyInternalLinks()
 
 const originalHash = createHash("sha256").update(index).digest("hex")
+const playgroundClientHash = createHash("sha256").update(playgroundClient).digest("hex")
+const playgroundWorkerHash = createHash("sha256").update(playgroundWorker).digest("hex")
 build()
 assert.equal(
   createHash("sha256").update(await readPage("index.html")).digest("hex"),
   originalHash,
   "repeated builds should produce byte-identical home pages",
+)
+assert.equal(
+  createHash("sha256").update(await readPage("assets/playground.js")).digest("hex"),
+  playgroundClientHash,
+  "repeated builds should produce byte-identical Playground client assets",
+)
+assert.equal(
+  createHash("sha256").update(await readPage("assets/playground-worker.js")).digest("hex"),
+  playgroundWorkerHash,
+  "repeated builds should produce byte-identical Playground Worker assets",
 )
 
 build("/website")
@@ -97,8 +127,10 @@ assert.match(basePathIndex, /href="\/website\/app\.css"/)
 assert.match(basePathIndex, /href="\/website\/docs\/"/)
 assert.match(basePathIndex, /href="\/website\/en\/"/)
 assert.match(basePathPlay, /href="\/website\/examples\/"/)
+assert.match(basePathPlay, /src="\/website\/assets\/playground\.js"/)
 assert.doesNotMatch(basePathIndex, /href="\/(?!website\/|https?:\/\/)/)
 await verifyInternalLinks("/website")
-await assert.rejects(access(path.join(root, "dist", "assets", "playground.js")))
+await access(path.join(root, "dist", "assets", "playground.js"))
+await access(path.join(root, "dist", "assets", "playground-worker.js"))
 
 console.log("site build test passed")
