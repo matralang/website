@@ -83,7 +83,19 @@ assert.match(englishPlay, /HTML mode only/)
 assert.doesNotMatch(play, /content\.title/)
 assert.match(spec, /文書Morphionと数式Morphionは別の概念/)
 assert.match(legacyModelRoute, /文書Morphion規則/)
-assert.match(index, /0\.3\.0-alpha\.0/)
+for (const page of [index, englishIndex]) {
+  assert.match(page, /Core v0\.3\.0 \/ HTML v0\.3\.0/)
+}
+for (const locale of ["", "en/"]) {
+  const examples = await readPage(`${locale}examples/index.html`)
+  const packages = await readPage(`${locale}packages/index.html`)
+  assert.match(examples, /npm install --save-exact @matra\/core@0\.3\.0 @matra\/html@0\.3\.0/)
+  assert.doesNotMatch(packages, /alpha|prerelease|先行配布版/)
+  assert.match(packages, /v0\.3\.0/)
+}
+for (const file of await htmlFiles(path.join(root, "dist"))) {
+  assert.doesNotMatch(await readFile(file, "utf8"), /0\.3\.0-alpha/)
+}
 assert.doesNotMatch(index, /v0\.2/)
 assert.doesNotMatch(index, /assets\/playground\.js/)
 assert.match(playgroundClient, /playground-worker\.js/)

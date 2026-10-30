@@ -34,7 +34,7 @@ The existing `/spec/data-model/`, `/spec/ast/`, `/spec/grammar/`, and `/spec/par
 
 ## Scope
 
-Website dependencies are pinned to the published `@matra/core@0.3.0-alpha.1` and `@matra/html@0.3.0-alpha.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus small Playground client and Worker assets.
+Website dependencies are pinned to the published `@matra/core@0.3.0` and `@matra/html@0.3.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus small Playground client and Worker assets.
 
 `/play/` and `/en/play/` provide an HTML-only browser Playground prototype. It bundles the Core browser API and HTML renderer into a Worker, with explicit Run, manual stop, a 10-second timeout, syntax/runtime error display, and a sandboxed iframe preview.
 

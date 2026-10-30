@@ -34,7 +34,7 @@ npm run serve
 
 ## 対応範囲
 
-websiteの依存は公開済みの`@matra/core@0.3.0-alpha.1`と`@matra/html@0.3.0-alpha.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground用の小さなclient/Worker assetです。
+websiteの依存は公開済みの`@matra/core@0.3.0`と`@matra/html@0.3.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground用の小さなclient/Worker assetです。
 
 `/play/`と`/en/play/`ではHTML mode限定のbrowser Playgroundを提供します。Core browser APIとHTML rendererをWorker内でbundleし、明示的なRun、手動停止、10秒timeout、構文・実行error表示、sandboxed iframe previewを実装しています。
 

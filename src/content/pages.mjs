@@ -1,6 +1,6 @@
 const github = "https://github.com/matralang/matra"
 const spec = `${github}/tree/develop/spec`
-const install = "npm install --save-exact @matra/core@0.3.0-alpha.1 @matra/html@0.3.0-alpha.0"
+const install = "npm install --save-exact @matra/core@0.3.0 @matra/html@0.3.0"
 
 const locales = {
   ja: {
@@ -58,7 +58,7 @@ const homeJa = {
     { href: "/about/", label: "Matraとは", className: "button primary" },
     { href: "/examples/", label: "作例を見る", className: "button secondary" },
   ],
-  releaseNote: "Core v0.3.0-alpha.1 / HTML v0.3.0-alpha.0。Node.js向けの実験版です。",
+  releaseNote: "Core v0.3.0 / HTML v0.3.0。Node.js向けの実験版です。",
   sampleEyebrow: "書く文書 / 生成されるページ",
   sampleTitle: "小さな記述から、HTMLを生成する",
   sampleDescription: "このサイトのbuildでは、名前付きコードfenceを持つMarkdown文書を実行し、Matra ASTをHTMLへ変換しています。",
@@ -86,7 +86,7 @@ const homeEn = {
     { href: "/en/about/", label: "What is Matra?", className: "button primary" },
     { href: "/en/examples/", label: "See examples", className: "button secondary" },
   ],
-  releaseNote: "Core v0.3.0-alpha.1 / HTML v0.3.0-alpha.0, experimental releases for Node.js.",
+  releaseNote: "Core v0.3.0 / HTML v0.3.0, experimental releases for Node.js.",
   sampleEyebrow: "The document / The generated page",
   sampleTitle: "Generate HTML from a small description",
   sampleDescription: "This site's build runs a Markdown document with named code fences, then renders the Matra document value as HTML.",
@@ -326,7 +326,7 @@ const docsCopy = (locale) => locale === "ja"
       description: "Matra v0.3の導入、作例、仕様、packageの入口。",
       eyebrow: "ドキュメント",
       heading: "使い始めるための入口。",
-      intro: "versionを固定した導入手順、buildで実行できる作例、公式仕様へのリンクをまとめています。v0.3 alphaの範囲と制限を確認して利用してください。",
+      intro: "versionを固定した導入手順、buildで実行できる作例、公式仕様へのリンクをまとめています。v0.3の範囲と制限を確認して利用してください。",
       actions: [{ href: "/examples/", label: "実行例を見る", className: "button primary" }, { href: "/spec/", label: "仕様を読む", className: "button secondary" }],
       releaseNote: "対応環境: Node.js 22/24。literate APIは実験的なNode.js APIです。",
       sampleEyebrow: "最初の一歩",
@@ -346,7 +346,7 @@ const docsCopy = (locale) => locale === "ja"
       description: "Entry points for Matra v0.3 setup, examples, specifications, and packages.",
       eyebrow: "DOCUMENTATION",
       heading: "A clear place to start.",
-      intro: "Find the pinned installation steps, a build-executed example, and links to the official specifications. Review the v0.3 alpha scope and limitations before using it.",
+      intro: "Find the pinned installation steps, a build-executed example, and links to the official specifications. Review the v0.3 scope and limitations before using it.",
       actions: [{ href: "/en/examples/", label: "Run the example", className: "button primary" }, { href: "/en/spec/", label: "Read the specs", className: "button secondary" }],
       releaseNote: "Supported setup: Node.js 22/24. The literate API is experimental and Node.js-only.",
       sampleEyebrow: "First step",
@@ -418,13 +418,13 @@ const specCopy = (locale) => locale === "ja"
 
 const packageCards = (locale) => locale === "ja"
   ? [
-      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、Morphion変換、browser API、experimental/literate API。v0.3.0-alpha.1。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
-      { index: "02", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応。v0.3.0-alpha.0。", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
+      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、Morphion変換、browser API、experimental/literate API。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "02", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "別domain package", text: "Graphics・Math・Compute Engineは個別の検証対象です。このsiteの依存として、すべてを公開済み・完成済みとは扱いません。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "優先度と範囲 →" }] },
     ]
   : [
-      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, Morphion conversion, browser API, and the experimental literate API. v0.3.0-alpha.1.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
-      { index: "02", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. v0.3.0-alpha.0.", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
+      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, Morphion conversion, browser API, and the experimental literate API. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "02", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "Other domain packages", text: "Graphics, Math, and Compute Engine have separate verification scopes; this site does not present them all as published or complete.", links: [{ href: `${spec}/release-v0.3.md`, label: "Priorities and scope →" }] },
     ]
 
@@ -434,9 +434,9 @@ const packagesCopy = (locale) => locale === "ja"
       description: "Matra v0.3の公開対象となるCoreとHTML package。",
       eyebrow: "PACKAGES",
       heading: "公開packageと検証範囲。",
-      intro: "websiteの再現可能なHTML出力経路は、npmで公開されたCore・HTML alpha packageをversion固定して利用します。その他のpackageの公開状況や完成度は、それぞれの配布物とrelease記録で確認してください。",
+      intro: "websiteの再現可能なHTML出力経路は、npmで公開されたCore・HTML v0.3.0 packageをversion固定して利用します。その他のpackageの公開状況や完成度は、それぞれの配布物とrelease記録で確認してください。",
       actions: [{ href: "/docs/", label: "導入する", className: "button primary" }, { href: `${github}/tree/develop/packages`, label: "全packageを見る", className: "button secondary" }],
-      releaseNote: "先行配布版。仕様v0.3や全packageの正式releaseを意味しません。",
+      releaseNote: "v0.3.0の正式公開対象はCoreとHTMLです。全packageの完成を意味しません。",
       sampleEyebrow: "検証対象",
       sampleTitle: "websiteのbuildを再現する依存",
       sampleDescription: "正確なversionと配布上の制限を確認してから導入してください。",
@@ -454,9 +454,9 @@ const packagesCopy = (locale) => locale === "ja"
       description: "Published Core and HTML packages in the Matra v0.3 scope.",
       eyebrow: "PACKAGES",
       heading: "Published packages and verification scope.",
-      intro: "The website's reproducible HTML path uses the npm-published Core and HTML alpha packages at pinned versions. Check each package's distribution and release notes for the publication status and completeness of other packages.",
+      intro: "The website's reproducible HTML path uses the npm-published Core and HTML v0.3.0 packages at pinned versions. Check each package's distribution and release notes for the publication status and completeness of other packages.",
       actions: [{ href: "/en/docs/", label: "Get started", className: "button primary" }, { href: `${github}/tree/develop/packages`, label: "Browse all packages", className: "button secondary" }],
-      releaseNote: "These are prerelease packages, not a formal release of specification v0.3 or every package.",
+      releaseNote: "The formal v0.3.0 publication covers Core and HTML, not completion of every package.",
       sampleEyebrow: "Verification target",
       sampleTitle: "Dependencies used by the website build",
       sampleDescription: "Check exact versions and distribution limitations before installing.",

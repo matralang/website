@@ -12,8 +12,8 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@matra/core": "0.3.0-alpha.1",
-    "@matra/html": "0.3.0-alpha.0"
+    "@matra/core": "0.3.0",
+    "@matra/html": "0.3.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.2",
