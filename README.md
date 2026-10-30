@@ -32,6 +32,10 @@ The site is generated from named Matra/JavaScript fences in `src/content/site.md
 
 The existing `/spec/data-model/`, `/spec/ast/`, `/spec/grammar/`, and `/spec/parser/` URLs remain available as overview pages. Set `SITE_BASE_PATH` for GitHub Pages project paths; CI obtains it from the Pages configuration.
 
+## Deployment
+
+GitHub Pages deploys only from `production`. Push the verified commit to `production` to publish, or manually run the Pages workflow on that branch. The `github-pages` environment must allow only the `production` branch. Pushes to `develop` or `main` do not deploy.
+
 ## Scope
 
 Website dependencies are pinned to the published `@matra/core@0.3.0` and `@matra/html@0.3.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus small Playground client and Worker assets.

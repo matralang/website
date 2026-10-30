@@ -32,6 +32,10 @@ npm run serve
 
 既存の`/spec/data-model/`、`/spec/ast/`、`/spec/grammar/`、`/spec/parser/` URLも概要ページへ接続しています。GitHub Pagesのproject pathは`SITE_BASE_PATH`で指定し、CIではPagesの設定から自動取得します。
 
+## デプロイ
+
+GitHub Pagesは`production`からのみデプロイします。検証済みcommitを`production`へpushするか、同branchでPages workflowを手動実行すると公開します。`github-pages` environmentの許可branchも`production`のみに設定します。`develop`や`main`へのpushではデプロイしません。
+
 ## 対応範囲
 
 websiteの依存は公開済みの`@matra/core@0.3.0`と`@matra/html@0.3.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground用の小さなclient/Worker assetです。
