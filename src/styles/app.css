@@ -101,6 +101,13 @@ code { font-family: var(--mono); }
 .text-link { margin-top: auto; color: var(--green); font-size: 13px; font-weight: 700; }
 .text-link + .text-link { margin-top: 10px; }
 
+.spec-document { max-width: 860px; }
+.spec-section { padding: 28px 0; border-top: 1px solid var(--line); }
+.spec-section .card-index { margin-bottom: 14px; }
+.spec-section h3 { margin-bottom: 12px; font-size: 24px; letter-spacing: -.04em; }
+.spec-section > p:not(.card-index) { max-width: 780px; margin-bottom: 0; color: var(--muted); line-height: 1.8; overflow-wrap: anywhere; }
+.spec-section pre { margin-top: 18px; border-radius: 8px; background: #19211d; }
+
 .notice-section { padding: 0 0 96px; }
 .notice-card { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: clamp(25px, 5vw, 48px); border-radius: 12px; color: var(--surface); background: var(--green); }
 .notice-card .eyebrow { color: var(--lime); }

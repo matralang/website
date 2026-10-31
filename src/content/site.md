@@ -65,7 +65,21 @@ html(lang=content.lang) {
             h2 { content.sampleTitle }
             p { content.sampleDescription }
           }
-          if (!content.playgroundEnabled) {
+          if (content.specSections) {
+            div(class="spec-document") {
+              ...for (section in content.specSections) {
+                article(class="spec-section") {
+                  p(class="card-index") { section.index }
+                  h3 { section.title }
+                  p { section.text }
+                  if (section.code) {
+                    pre { code { section.code } }
+                  }
+                }
+              }
+            }
+          }
+          if (content.sampleEnabled && !content.playgroundEnabled && !content.specSections) {
             div(class="showcase-grid") {
               article(class="code-card") {
                 header(class="code-header") {
