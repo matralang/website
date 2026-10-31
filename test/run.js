@@ -75,6 +75,13 @@ assert.match(index, /<title>Matra — 言語を学び、構造でつなぐ<\/tit
 assert.match(index, /href="\/en\/" lang="en">English/)
 assert.match(englishIndex, /<html lang="en">/)
 assert.match(englishIndex, /href="\/" lang="ja">日本語/)
+for (const [page, label, hrefs] of [
+  [index, "サイトマップ", ["/about/", "/examples/", "/docs/", "/play/", "/packages/", "/blog/", "/spec/", "/spec/data-model/", "/spec/ast/", "/spec/grammar/", "/spec/parser/"]],
+  [englishIndex, "Site map", ["/en/about/", "/en/examples/", "/en/docs/", "/en/play/", "/en/packages/", "/en/blog/", "/en/spec/", "/en/spec/data-model/", "/en/spec/ast/", "/en/spec/grammar/", "/en/spec/parser/"]],
+]) {
+  assert.match(page, new RegExp(`aria-label="${label}"`))
+  for (const href of hrefs) assert.ok(page.includes(`href="${href}"`), `Missing sitemap link: ${href}`)
+}
 for (const page of [index, about]) {
   assert.match(page, /文書・データ・プログラム/)
   assert.match(page, /ラーニング/)
@@ -212,6 +219,7 @@ const basePathPlay = await readPage("play/index.html")
 assert.match(basePathIndex, /href="\/website\/app\.css"/)
 assert.match(basePathIndex, /href="\/website\/docs\/"/)
 assert.match(basePathIndex, /href="\/website\/en\/"/)
+assert.match(basePathIndex, /href="\/website\/spec\/grammar\/"/)
 assert.match(basePathPlay, /href="\/website\/examples\/"/)
 assert.match(basePathPlay, /src="\/website\/assets\/playground\.js"/)
 for (const locale of ["", "en/"]) {

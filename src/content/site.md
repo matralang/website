@@ -221,13 +221,25 @@ html(lang=content.lang) {
       }
     }
     footer(class="site-footer") {
-      div(class="shell footer-inner") {
-        a(class="brand footer-brand" href=content.homeUrl) {
-          span(class="brand-mark") { "M" }
-          span { "Matra" }
+      div(class="shell footer-layout") {
+        nav(class="footer-sitemap" aria-label=content.sitemapLabel) {
+          ...for (group in content.sitemapGroups) {
+            section(class="footer-group") {
+              h2 { group.title }
+              ...for (item in group.links) {
+                a(href=item.href) { item.label }
+              }
+            }
+          }
         }
-        p { content.footerText }
-        a(href=content.githubUrl) { "GitHub" }
+        div(class="footer-inner") {
+          a(class="brand footer-brand" href=content.homeUrl) {
+            span(class="brand-mark") { "M" }
+            span { "Matra" }
+          }
+          p { content.footerText }
+          a(href=content.githubUrl) { "GitHub" }
+        }
       }
     }
   }

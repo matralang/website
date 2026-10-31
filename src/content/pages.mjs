@@ -14,6 +14,30 @@ const locales = {
       { href: "/examples/", label: "作例" },
       { href: "/docs/", label: "ドキュメント" },
     ],
+    sitemapLabel: "サイトマップ",
+    sitemapGroups: [
+      {
+        title: "サイト",
+        links: [
+          { href: "/about/", label: "Matraとは" },
+          { href: "/examples/", label: "作例" },
+          { href: "/docs/", label: "ドキュメント" },
+          { href: "/play/", label: "Playground" },
+          { href: "/packages/", label: "Packages" },
+          { href: "/blog/", label: "開発記録" },
+        ],
+      },
+      {
+        title: "仕様",
+        links: [
+          { href: "/spec/", label: "仕様一覧" },
+          { href: "/spec/data-model/", label: "データモデル" },
+          { href: "/spec/ast/", label: "AST" },
+          { href: "/spec/grammar/", label: "文法 v0.3" },
+          { href: "/spec/parser/", label: "parseと評価" },
+        ],
+      },
+    ],
     footerText: "言語を学び、構造でつなぐ。",
     brandLabel: "Matra ホーム",
   },
@@ -27,6 +51,30 @@ const locales = {
       { href: "/en/about/", label: "About" },
       { href: "/en/examples/", label: "Examples" },
       { href: "/en/docs/", label: "Docs" },
+    ],
+    sitemapLabel: "Site map",
+    sitemapGroups: [
+      {
+        title: "Explore",
+        links: [
+          { href: "/en/about/", label: "About Matra" },
+          { href: "/en/examples/", label: "Examples" },
+          { href: "/en/docs/", label: "Documentation" },
+          { href: "/en/play/", label: "Playground" },
+          { href: "/en/packages/", label: "Packages" },
+          { href: "/en/blog/", label: "Development log" },
+        ],
+      },
+      {
+        title: "Specifications",
+        links: [
+          { href: "/en/spec/", label: "Specification index" },
+          { href: "/en/spec/data-model/", label: "Data model" },
+          { href: "/en/spec/ast/", label: "AST" },
+          { href: "/en/spec/grammar/", label: "Grammar v0.3" },
+          { href: "/en/spec/parser/", label: "Parsing and evaluation" },
+        ],
+      },
     ],
     footerText: "Learn languages. Connect through structure.",
     brandLabel: "Matra home",
