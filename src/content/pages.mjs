@@ -404,14 +404,14 @@ const docsCopy = (locale) => locale === "ja"
 
 const specCards = (locale) => locale === "ja"
   ? [
-      { index: "01", title: "データモデル", text: "tag・props・childrenで表すnode、JSON互換value、MatraJSONと文書Morphion。", links: [{ href: "/spec/data-model/", label: "データモデルを読む →" }, { href: `${spec}/data-model.ja.md`, label: "規範的な定義 →" }] },
+      { index: "01", title: "データモデル", text: "tag・props・childrenで表すnode、JSON互換value、MatraJSONと、Matra設計者が提唱した文書Morphionの考え方。", links: [{ href: "/spec/data-model/", label: "データモデルを読む →" }, { href: `${spec}/data-model.ja.md`, label: "規範的な定義 →" }] },
       { index: "02", title: "AST", text: "visitor・transformer・rendererが使うobject形式と、MatraJSONとの相互変換。", links: [{ href: "/spec/ast/", label: "ASTを読む →" }, { href: `${spec}/ast.ja.md`, label: "規範的な定義 →" }] },
       { index: "03", title: "文法 v0.3", text: "式、node構築、XML-style markup、parseと静的取得の現行仕様。", links: [{ href: "/spec/grammar/", label: "文法を読む →" }, { href: `${spec}/grammar.ja.md`, label: "規範的な定義 →" }] },
       { index: "04", title: "parseと評価", text: "MatraModule、静的取得、明示的な評価の役割を整理します。", links: [{ href: "/spec/parser/", label: "parseと評価を読む →" }, { href: `${spec}/program.ja.md`, label: "Program仕様 →" }] },
       { index: "05", title: "release範囲", text: "検証対象、既知の制限、公開packageのrelease条件。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "v0.3計画 →" }] },
     ]
   : [
-      { index: "01", title: "Data model", text: "Nodes built from tag, props, and children; JSON-compatible values, MatraJSON, and document Morphion.", links: [{ href: "/en/spec/data-model/", label: "Read the data model →" }, { href: `${spec}/data-model.md`, label: "Normative definition →" }] },
+      { index: "01", title: "Data model", text: "Nodes built from tag, props, and children; JSON-compatible values, MatraJSON, and document Morphion, an original concept proposed by Matra's designer.", links: [{ href: "/en/spec/data-model/", label: "Read the data model →" }, { href: `${spec}/data-model.md`, label: "Normative definition →" }] },
       { index: "02", title: "AST", text: "The object-form representation used by visitors, transformers, and renderers, and its lossless conversion to MatraJSON.", links: [{ href: "/en/spec/ast/", label: "Read about the AST →" }, { href: `${spec}/ast.md`, label: "Normative definition →" }] },
       { index: "03", title: "Grammar v0.3", text: "The current rules for expressions, node construction, XML-style markup, parsing, and static retrieval.", links: [{ href: "/en/spec/grammar/", label: "Read the grammar →" }, { href: `${spec}/grammar.md`, label: "Normative definition →" }] },
       { index: "04", title: "Parsing and evaluation", text: "The roles of MatraModule, static retrieval, and explicit evaluation.", links: [{ href: "/en/spec/parser/", label: "Read about parsing →" }, { href: `${spec}/program.md`, label: "Program specification →" }] },
@@ -464,12 +464,12 @@ const specCopy = (locale) => locale === "ja"
 
 const packageCards = (locale) => locale === "ja"
   ? [
-      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、Morphion変換、browser API、experimental/literate API。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、文書nodeを指数と値の対応で表すMorphion形式への変換、browser API、experimental/literate API。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
       { index: "02", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "別domain package", text: "Graphics・Math・Compute Engineは個別の検証対象です。このsiteの依存として、すべてを公開済み・完成済みとは扱いません。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "優先度と範囲 →" }] },
     ]
   : [
-      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, Morphion conversion, browser API, and the experimental literate API. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, conversion to Matra's proposed exponent-to-value representation of document nodes (Morphion), browser API, and the experimental literate API. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
       { index: "02", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
       { index: "03", title: "Other domain packages", text: "Graphics, Math, and Compute Engine have separate verification scopes; this site does not present them all as published or complete.", links: [{ href: `${spec}/release-v0.3.md`, label: "Priorities and scope →" }] },
     ]
@@ -579,14 +579,14 @@ const specDetails = [
       { index: "02 / VALUE", title: "JSON互換の値", text: "valueはstring、有限number、boolean、null、valueのlist、string-keyed mapです。undefined、function、symbol、bigint、非有限number、循環構造は含みません。childの順序とscalarの型は保持されます。", code: '["group", {}, [\n  ["item", {}, ["one"]],\n  ["item", {}, ["two"]]\n]]' },
       { index: "03 / MATRAJSON", title: "交換形式は3要素配列", text: "MatraJSON nodeは[tag, props, children]で表します。children直下でこの形に合う配列はnodeとして読みますが、property valueなどの配列内部をnodeとして再解釈しません。node形式と紛らわしいvalue配列はmapまたは配列で包んで区別します。", code: '["div", {"data": [["chart", {}, []]]}, []]' },
       { index: "04 / EQUALITY", title: "値と順序を保つ", text: "2つの文書はtag、property key/value、child valueと順序が再帰的に等しいとき等価です。propertyのserialize順序は意味を持ちません。source positionはparser metadataで、等価性と標準MatraJSONには含まれません。", code: null },
-      { index: "05 / MORPHION", title: "文書Morphionは構造上の住所", text: "v0.3で導入された文書Morphionでは、数値指数0がtag、正整数nがchildren[n - 1]、string指数がprops[key]を示します。これは文書構造の位置づけであり、数式の冪や項の計算を意味しません。変換規則と制約は一次資料を参照してください。", code: null },
+      { index: "05 / MATRA独自の提案", title: "文書モーフィオン", text: "モーフィオンはMatra設計者が提唱した独自概念です。文書nodeを「指数から値への有限写像」として捉え、数値指数0をtag、正整数nをchildren[n - 1]、文字列keyをprops[key]に対応させます。ここでの指数は文書構造の位置を示すためのもので、一般に確立した用語や数式の冪演算を意味しません。変換制約を含む正式な定義は一次資料を参照してください。", code: null },
     ],
     enSections: [
       { index: "01 / NODE", title: "A node has tag, props, and children", text: "A document has exactly one root node. Its tag is a string identifying the node; props is a map from string keys to values; children is an ordered list of nodes or values. Tag names have no built-in HTML semantics.", code: '["p", {"class": "lead"}, ["Hello", 0]]' },
       { index: "02 / VALUE", title: "JSON-compatible values", text: "Values are strings, finite numbers, booleans, null, lists of values, and maps with string keys. They exclude undefined, functions, symbols, bigints, non-finite numbers, and cyclic structures. Child order and scalar types are preserved.", code: '["group", {}, [\n  ["item", {}, ["one"]],\n  ["item", {}, ["two"]]\n]]' },
       { index: "03 / MATRAJSON", title: "A three-element exchange form", text: "A MatraJSON node is [tag, props, children]. A matching array directly under children is read as a node, but arrays nested inside property values are not recursively reinterpreted as nodes. Wrap ambiguous value arrays in a map or another array.", code: '["div", {"data": [["chart", {}, []]]}, []]' },
       { index: "04 / EQUALITY", title: "Preserve values and order", text: "Documents are equivalent when their tags, property keys and values, child values, and child order are recursively equal. Property serialization order is not significant. Source positions are parser metadata, excluded from equality and standard MatraJSON.", code: null },
-      { index: "05 / MORPHION", title: "Document Morphion addresses structure", text: "Introduced in v0.3, document Morphion uses numeric exponent 0 for the tag, positive integer n for children[n - 1], and string exponent key for props[key]. These are structural addresses, not mathematical powers or polynomial operations. See the primary source for conversion rules and constraints.", code: null },
+      { index: "05 / MATRA'S PROPOSAL", title: "Document Morphion", text: "Morphion is an original concept proposed by Matra's language designer. It models a document node as a finite mapping from exponents to values: numeric exponent 0 identifies the tag, positive integer n identifies children[n - 1], and string key identifies props[key]. Here, exponents are structural addresses—not an established general term or mathematical power operations. See the primary source for the formal definition and conversion constraints.", code: null },
     ],
   },
   {
