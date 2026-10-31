@@ -64,12 +64,24 @@ const demosClient = await readPage("assets/demos.js")
 
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
-assert.match(index, /<title>Matra — 文書の構造からWebページをつくる<\/title>/)
+assert.match(index, /<title>Matra — 言語を学び、構造でつなぐ<\/title>/)
 assert.match(index, /href="\/en\/" lang="en">English/)
 assert.match(englishIndex, /<html lang="en">/)
 assert.match(englishIndex, /href="\/" lang="ja">日本語/)
-assert.match(about, /文書を、構造として書く/)
-assert.match(englishAbout, /Write documents as structure/)
+for (const page of [index, about]) {
+  assert.match(page, /文書・データ・プログラム/)
+  assert.match(page, /ラーニング/)
+  assert.match(page, /英語や日本語/)
+  assert.match(page, /現在のv0\.3/)
+}
+for (const page of [englishIndex, englishAbout]) {
+  assert.match(page, /documents, data, and programs/)
+  assert.match(page, /learning/)
+  assert.match(page, /English and Japanese/)
+  assert.match(page, /v0\.3/)
+}
+assert.doesNotMatch(about, /初版白書/)
+assert.doesNotMatch(englishAbout, /first whitepaper/i)
 assert.match(about, /whitepaper-v0\.3\.ja\.md/)
 assert.match(englishAbout, /whitepaper-v0\.3\.md/)
 assert.match(examples, /実際のrenderer出力/)
