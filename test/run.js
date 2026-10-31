@@ -72,9 +72,9 @@ const demosClient = await readPage("assets/demos.js")
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
 assert.match(index, /<title>Matra — 言語を学び、構造でつなぐ<\/title>/)
-assert.match(index, /href="\/en\/" lang="en">English/)
+assert.match(index, /href="\/en\/" lang="en" class="language-link">English/)
 assert.match(englishIndex, /<html lang="en">/)
-assert.match(englishIndex, /href="\/" lang="ja">日本語/)
+assert.match(englishIndex, /href="\/" lang="ja" class="language-link">日本語/)
 for (const [page, label, hrefs] of [
   [index, "サイトマップ", ["/about/", "/examples/", "/docs/", "/play/", "/packages/", "/blog/", "/spec/", "/spec/data-model/", "/spec/ast/", "/spec/grammar/", "/spec/parser/"]],
   [englishIndex, "Site map", ["/en/about/", "/en/examples/", "/en/docs/", "/en/play/", "/en/packages/", "/en/blog/", "/en/spec/", "/en/spec/data-model/", "/en/spec/ast/", "/en/spec/grammar/", "/en/spec/parser/"]],

@@ -28,48 +28,48 @@ html(lang=content.lang) {
     }
   }
   body {
-    header(class="site-header") {
-      div(class="shell nav-shell") {
-        a(class="brand" href=content.homeUrl aria-label=content.brandLabel) {
-          span(class="brand-mark") { "M" }
+    header.site-header {
+      div.shell.nav-shell {
+        a.brand(href=content.homeUrl aria-label=content.brandLabel) {
+          span.brand-mark { "M" }
           span { "Matra" }
         }
         nav(aria-label=content.navigationLabel) {
           ...for (item in content.navigation) {
             a(href=item.href) { item.label }
           }
-          a(class="language-link" href=content.languageUrl lang=content.otherLang) {
+          a.language-link(href=content.languageUrl lang=content.otherLang) {
             content.languageLabel
           }
         }
       }
     }
     main {
-      section(class="hero") {
-        div(class="shell hero-inner") {
-          p(class="eyebrow") { content.eyebrow }
+      section.hero {
+        div.shell.hero-inner {
+          p.eyebrow { content.eyebrow }
           h1 { content.heading }
-          p(class="lede") { content.intro }
-          div(class="actions") {
+          p.lede { content.intro }
+          div.actions {
             ...for (action in content.actions) {
               a(class=action.className href=action.href) { action.label }
             }
           }
-          p(class="release-note") { content.releaseNote }
+          p.release-note { content.releaseNote }
         }
       }
-      section(class="showcase") {
-        div(class="shell") {
-          div(class="section-heading") {
-            p(class="eyebrow") { content.sampleEyebrow }
+      section.showcase {
+        div.shell {
+          div.section-heading {
+            p.eyebrow { content.sampleEyebrow }
             h2 { content.sampleTitle }
             p { content.sampleDescription }
           }
           if (content.specSections) {
-            div(class="spec-document") {
+            div.spec-document {
               ...for (section in content.specSections) {
-                article(class="spec-section") {
-                  p(class="card-index") { section.index }
+                article.spec-section {
+                  p.card-index { section.index }
                   h3 { section.title }
                   p { section.text }
                   if (section.code) {
@@ -80,16 +80,16 @@ html(lang=content.lang) {
             }
           }
           if (content.sampleEnabled && !content.playgroundEnabled && !content.specSections) {
-            div(class="showcase-grid") {
-              article(class="code-card") {
-                header(class="code-header") {
+            div.showcase-grid {
+              article.code-card {
+                header.code-header {
                   span { "MATRA" }
                   small { "main.matra" }
                 }
                 pre { code { content.sampleSource } }
               }
-              article(class="code-card") {
-                header(class="code-header") {
+              article.code-card {
+                header.code-header {
                   span { "HTML" }
                   small { "generated output" }
                 }
@@ -98,24 +98,24 @@ html(lang=content.lang) {
             }
           }
           if (content.playgroundEnabled) {
-            div(class="playground-panel" id="playground" data-playground="true") {
-              div(class="playground-heading") {
+            div.playground-panel(id="playground" data-playground="true") {
+              div.playground-heading {
                 div {
-                  p(class="eyebrow") { "MATRA DOCUMENT" }
+                  p.eyebrow { "MATRA DOCUMENT" }
                   h3 { content.playgroundLabel }
                 }
-                div(class="playground-actions") {
-                  button(id="playground-run" class="button primary" type="button") {
+                div.playground-actions {
+                  button.button.primary(id="playground-run" type="button") {
                     content.playgroundRunLabel
                   }
-                  button(id="playground-stop" class="button secondary" type="button" disabled=true) {
+                  button.button.secondary(id="playground-stop" type="button" disabled=true) {
                     content.playgroundStopLabel
                   }
                 }
               }
-              p(class="playground-help") { content.playgroundHelp }
-              div(class="playground-grid") {
-                div(class="playground-editor") {
+              p.playground-help { content.playgroundHelp }
+              div.playground-grid {
+                div.playground-editor {
                   label(for="playground-source") { content.playgroundLabel }
                   textarea(
                     id="playground-source"
@@ -126,8 +126,8 @@ html(lang=content.lang) {
                     aria-label=content.playgroundLabel
                   ) { content.playgroundSource }
                 }
-                div(class="playground-output") {
-                  p(class="playground-output-label") { content.playgroundPreviewLabel }
+                div.playground-output {
+                  p.playground-output-label { content.playgroundPreviewLabel }
                   iframe(
                     id="playground-preview"
                     title=content.playgroundPreviewLabel
@@ -136,8 +136,7 @@ html(lang=content.lang) {
                   ) {}
                 }
               }
-              p(
-                class="playground-status"
+              p.playground-status(
                 id="playground-status"
                 role="status"
                 aria-live="polite"
@@ -148,22 +147,22 @@ html(lang=content.lang) {
         }
       }
       if (content.demosEnabled) {
-        section(class="showcase demo-section" id="demos") {
-          div(class="shell") {
-            div(class="section-heading") {
-              p(class="eyebrow") { "INTERACTIVE DEMOS" }
+        section.showcase.demo-section(id="demos") {
+          div.shell {
+            div.section-heading {
+              p.eyebrow { "INTERACTIVE DEMOS" }
               h2 { content.demosTitle }
               p { content.demosDescription }
             }
-            p(class="playground-help") { content.demosScope }
-            div(class="showcase-grid") {
+            p.playground-help { content.demosScope }
+            div.showcase-grid {
               ...for (demo in content.demos) {
-                article(class="demo-card" data-demo=demo.id data-demo-label=demo.title) {
+                article.demo-card(data-demo=demo.id data-demo-label=demo.title) {
                   h3 { demo.title }
-                  p(class="playground-help") { demo.description }
-                  div(class="demo-controls") {
+                  p.playground-help { demo.description }
+                  div.demo-controls {
                     ...for (control in demo.controls) {
-                      div(class="demo-control") {
+                      div.demo-control {
                         label(for=control.inputId) { control.label }
                         output(for=control.inputId) { control.value }
                         input(
@@ -174,12 +173,12 @@ html(lang=content.lang) {
                       }
                     }
                   }
-                  div(class="demo-preview" data-demo-preview=true) { demo.preview }
-                  p(
-                    id=("demo-status-" + demo.id) class="playground-status"
+                  div.demo-preview(data-demo-preview=true) { demo.preview }
+                  p.playground-status(
+                    id=("demo-status-" + demo.id)
                     data-demo-status=true role="status" aria-live="polite" aria-atomic="true"
                   ) { content.demosInitialStatus }
-                  details(class="demo-source") {
+                  details.demo-source {
                     summary { content.demosSourceLabel }
                     pre { code(data-demo-source=true) { demo.source } }
                   }
@@ -189,42 +188,42 @@ html(lang=content.lang) {
           }
         }
       }
-      section(class="features") {
-        div(class="shell") {
-          div(class="section-heading") {
-            p(class="eyebrow") { content.featuresEyebrow }
+      section.features {
+        div.shell {
+          div.section-heading {
+            p.eyebrow { content.featuresEyebrow }
             h2 { content.featuresTitle }
           }
-          div(class="feature-grid") {
+          div.feature-grid {
             ...for (card in content.cards) {
-              article(class="feature-card") {
-                p(class="card-index") { card.index }
+              article.feature-card {
+                p.card-index { card.index }
                 h3 { card.title }
                 p { card.text }
                 ...for (link in card.links) {
-                  a(class="text-link" href=link.href) { link.label }
+                  a.text-link(href=link.href) { link.label }
                 }
               }
             }
           }
         }
       }
-      section(class="notice-section") {
-        div(class="shell notice-card") {
+      section.notice-section {
+        div.shell.notice-card {
           div {
-            p(class="eyebrow") { content.noticeEyebrow }
+            p.eyebrow { content.noticeEyebrow }
             h2 { content.noticeTitle }
             p { content.notice }
           }
-          a(class="button secondary" href=content.noticeLink) { content.noticeLinkLabel }
+          a.button.secondary(href=content.noticeLink) { content.noticeLinkLabel }
         }
       }
     }
-    footer(class="site-footer") {
-      div(class="shell footer-layout") {
-        nav(class="footer-sitemap" aria-label=content.sitemapLabel) {
+    footer.site-footer {
+      div.shell.footer-layout {
+        nav.footer-sitemap(aria-label=content.sitemapLabel) {
           ...for (group in content.sitemapGroups) {
-            section(class="footer-group") {
+            section.footer-group {
               h2 { group.title }
               ...for (item in group.links) {
                 a(href=item.href) { item.label }
@@ -232,9 +231,9 @@ html(lang=content.lang) {
             }
           }
         }
-        div(class="footer-inner") {
-          a(class="brand footer-brand" href=content.homeUrl) {
-            span(class="brand-mark") { "M" }
+        div.footer-inner {
+          a.brand.footer-brand(href=content.homeUrl) {
+            span.brand-mark { "M" }
             span { "Matra" }
           }
           p { content.footerText }
