@@ -15,7 +15,7 @@ npm run build
 npm run serve
 ```
 
-サイトは`src/content/site.md`の名前付きMatra/JavaScript fenceと`src/content/pages.mjs`の内容から生成します。buildでは`@matra/core/experimental/literate`を使い、Markdown文書を実行して`@matra/html`でHTMLへ変換します。literate APIは実験的なNode.js APIで、信頼したsourceだけをbuildしてください。
+既存ページの多くは`src/content/site.md`の名前付きMatra/JavaScript fenceと`src/content/pages.mjs`の内容から生成します。`/site-generation-preview/`のページは別経路で、`@matra/site-generation`を使い、Markdown front matter、Matra page、共通layout、page dataを試します。他のrouteの既存buildは維持します。どちらのbuildも信頼できるMatra sourceだけを対象にしてください。literate APIは実験的なNode.js APIです。
 
 ## URL
 
@@ -32,13 +32,15 @@ npm run serve
 
 既存の`/spec/data-model/`、`/spec/ast/`、`/spec/grammar/`、`/spec/parser/` URLも概要ページへ接続しています。GitHub Pagesのproject pathは`SITE_BASE_PATH`で指定し、CIではPagesの設定から自動取得します。
 
+試験ページは`/site-generation-preview/`と`/en/site-generation-preview/`です。既存ページやURL生成を置き換えません。
+
 ## デプロイ
 
 GitHub Pagesは`production`からのみデプロイします。検証済みcommitを`production`へpushするか、同branchでPages workflowを手動実行すると公開します。`github-pages` environmentの許可branchも`production`のみに設定します。`develop`や`main`へのpushではデプロイしません。
 
 ## 対応範囲
 
-websiteの依存は公開済みの`@matra/core@0.3.0`と`@matra/html@0.3.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+サイト生成の試験経路は`@matra/core@0.3.1-site.0`と`@matra/site-generation@0.1.0-site.0`のprerelease、および`@matra/html@0.3.0`を使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
 `/examples/`と`/en/examples/`には、円の個数・半径を変えるSVGデモと、係数a・入力xを変えるMathMLの`a × x²`デモがあります。固定のMatra文書に範囲・刻み幅を検証した数値を渡し、Core browser APIとHTML rendererで表示と実行ソースを更新します。任意コードは受け付けず、Workerではなくメインスレッドで実行します。初期結果はbuildで生成するため、JavaScript無効時も閲覧できます（操作は無効）。
 

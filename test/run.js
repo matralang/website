@@ -68,6 +68,8 @@ const css = await readPage("app.css")
 const playgroundClient = await readPage("assets/playground.js")
 const playgroundWorker = await readPage("assets/playground-worker.js")
 const demosClient = await readPage("assets/demos.js")
+const siteGenerationJa = await readPage("site-generation-preview/index.html")
+const siteGenerationEn = await readPage("en/site-generation-preview/index.html")
 
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
@@ -75,6 +77,12 @@ assert.match(index, /<title>Matra — 言語を学び、構造でつなぐ<\/tit
 assert.match(index, /href="\/en\/" lang="en" class="language-link">English/)
 assert.match(englishIndex, /<html lang="en">/)
 assert.match(englishIndex, /href="\/" lang="ja" class="language-link">日本語/)
+assert.match(siteGenerationJa, /<html lang="ja">/)
+assert.match(siteGenerationJa, /<title>サイト生成エンジンの試験ページ — Matra<\/title>/)
+assert.match(siteGenerationJa, /共通レイアウト、ルート出力/)
+assert.match(siteGenerationEn, /<html lang="en">/)
+assert.match(siteGenerationEn, /<title>Site generation engine preview — Matra<\/title>/)
+assert.match(siteGenerationEn, /shared layout, and route output/)
 for (const [page, label, hrefs] of [
   [index, "サイトマップ", ["/about/", "/examples/", "/docs/", "/play/", "/packages/", "/blog/", "/spec/", "/spec/data-model/", "/spec/ast/", "/spec/grammar/", "/spec/parser/"]],
   [englishIndex, "Site map", ["/en/about/", "/en/examples/", "/en/docs/", "/en/play/", "/en/packages/", "/en/blog/", "/en/spec/", "/en/spec/data-model/", "/en/spec/ast/", "/en/spec/grammar/", "/en/spec/parser/"]],

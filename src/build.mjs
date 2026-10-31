@@ -1,9 +1,11 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises"
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import path from "node:path"
-import { build as buildBrowserAssets } from "esbuild"
 import { extractMatraMarkdown, staticValueToAST } from "@matra/core"
 import { buildLiterate, runLiterate } from "@matra/core/experimental/literate"
 import { toHTML } from "@matra/html"
+import { buildSite } from "@matra/site-generation"
+import { build as buildBrowserAssets } from "esbuild"
 import pages from "./content/pages.mjs"
 import { demoDefinitions, renderDemo } from "./demos/render.mjs"
 
@@ -21,6 +23,51 @@ async function renderLiterate(markdown, document) {
   const bundle = await buildLiterate(markdown, { document })
   const value = await runLiterate(bundle)
   return toHTML(staticValueToAST(value), { basePath })
+}
+
+async function buildSiteGenerationPreview() {
+  const project = await mkdtemp(path.join(tmpdir(), "matra-website-site-preview-"))
+  try {
+    await Promise.all([
+      cp(path.join(root, "src", "site-generation-preview", "pages"), path.join(project, "pages"), {
+        recursive: true,
+      }),
+      cp(
+        path.join(root, "src", "site-generation-preview", "layouts"),
+        path.join(project, "layouts"),
+        { recursive: true },
+      ),
+    ])
+    await writeFile(
+      path.join(project, "matra.site.json"),
+      JSON.stringify({
+        version: 1,
+        site: {
+          pages: "pages",
+          layouts: "layouts",
+          defaultLayout: "site",
+          output: "dist",
+          format: "directory",
+          basePath,
+          data: {
+            homeUrl: "/",
+            footerText: "Learn languages. Connect through structure.",
+            githubUrl: "https://github.com/matralang/matra",
+          },
+        },
+      }),
+    )
+    const generated = await buildSite(project)
+    for (const file of generated) {
+      const relativePath = path.relative(path.join(project, "dist"), file)
+      const destination = path.join(outputDir, relativePath)
+      await mkdir(path.dirname(destination), { recursive: true })
+      await cp(file, destination)
+      console.log(`Generated site-generation preview ${relativePath}`)
+    }
+  } finally {
+    await rm(project, { recursive: true, force: true })
+  }
 }
 
 async function main() {
@@ -85,6 +132,7 @@ async function main() {
     platform: "browser",
     target: "es2020",
   })
+  await buildSiteGenerationPreview()
 }
 
 main().catch(error => {
