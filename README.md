@@ -23,7 +23,7 @@ The site is generated from named Matra/JavaScript fences in `src/content/site.md
 | --- | --- |
 | `/`, `/en/` | Japanese and English home pages |
 | `/about/`, `/en/about/` | What Matra is |
-| `/examples/`, `/en/examples/` | Example executed during the build |
+| `/examples/`, `/en/examples/` | Build-time example and interactive SVG/MathML demos |
 | `/docs/`, `/en/docs/` | Setup and documentation |
 | `/spec/`, `/en/spec/` | v0.3 specifications and release scope |
 | `/play/`, `/en/play/` | HTML-only browser Playground |
@@ -38,7 +38,11 @@ GitHub Pages deploys only from `production`. Push the verified commit to `produc
 
 ## Scope
 
-Website dependencies are pinned to the published `@matra/core@0.3.0` and `@matra/html@0.3.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus small Playground client and Worker assets.
+Website dependencies are pinned to the published `@matra/core@0.3.0` and `@matra/html@0.3.0`. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+
+`/examples/` and `/en/examples/` include an SVG demo with circle count/radius controls and a MathML `a × x²` demo with coefficient a/input x controls. Numeric inputs are checked for range and step before being passed into fixed Matra documents. The Core browser API and HTML renderer update both the preview and executed source. Arbitrary code is not accepted; execution runs on the main thread, not in a Worker. Initial results are generated at build time and remain visible without JavaScript (controls are disabled).
+
+These demonstrate Core/HTML v0.3.0 document structure and browser-native SVG/MathML, not dedicated `@matra/graphics`/`@matra/math` API support, symbolic computation, or mathematical equivalence. Numeric calculation uses Core's basic arithmetic. Demo definitions, validation, and rendering live in `src/demos/render.mjs`; bilingual copy lives in `src/content/pages.mjs`. `npm test` verifies input bounds, output, bilingual pages, and base paths.
 
 `/play/` and `/en/play/` provide an HTML-only browser Playground prototype. It bundles the Core browser API and HTML renderer into a Worker, with explicit Run, manual stop, a 10-second timeout, syntax/runtime error display, and a sandboxed iframe preview.
 

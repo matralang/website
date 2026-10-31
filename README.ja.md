@@ -23,7 +23,7 @@ npm run serve
 | --- | --- |
 | `/`、`/en/` | 日英の公式入口 |
 | `/about/`、`/en/about/` | Matraの説明 |
-| `/examples/`、`/en/examples/` | buildで実行する作例 |
+| `/examples/`、`/en/examples/` | buildで実行する作例とSVG・MathMLの操作デモ |
 | `/docs/`、`/en/docs/` | 導入・ドキュメント |
 | `/spec/`、`/en/spec/` | v0.3仕様とrelease範囲 |
 | `/play/`、`/en/play/` | HTML限定のbrowser Playground |
@@ -38,7 +38,11 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-websiteの依存は公開済みの`@matra/core@0.3.0`と`@matra/html@0.3.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground用の小さなclient/Worker assetです。
+websiteの依存は公開済みの`@matra/core@0.3.0`と`@matra/html@0.3.0`に固定しています。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+
+`/examples/`と`/en/examples/`には、円の個数・半径を変えるSVGデモと、係数a・入力xを変えるMathMLの`a × x²`デモがあります。固定のMatra文書に範囲・刻み幅を検証した数値を渡し、Core browser APIとHTML rendererで表示と実行ソースを更新します。任意コードは受け付けず、Workerではなくメインスレッドで実行します。初期結果はbuildで生成するため、JavaScript無効時も閲覧できます（操作は無効）。
+
+これらはCore/HTML v0.3.0による文書構造とブラウザ標準SVG・MathMLのデモです。専用の`@matra/graphics`・`@matra/math` APIの対応、記号計算、数学的同値性を示すものではありません。数値計算はCoreの基本算術を使います。デモの定義と検証・生成処理は`src/demos/render.mjs`、日英の案内は`src/content/pages.mjs`にあります。`npm test`で入力範囲、出力、日英ページ、base pathを検証します。
 
 `/play/`と`/en/play/`ではHTML mode限定のbrowser Playgroundを提供します。Core browser APIとHTML rendererをWorker内でbundleし、明示的なRun、手動停止、10秒timeout、構文・実行error表示、sandboxed iframe previewを実装しています。
 

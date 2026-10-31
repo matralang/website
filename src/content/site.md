@@ -8,7 +8,8 @@ matra:
 # Matra website
 
 The site is generated from named Matra and JavaScript fences. Build-time execution uses
-the experimental Node.js literate API; the published output is static HTML and CSS.
+the experimental Node.js literate API; the published output is static HTML and CSS
+with browser scripts for the Playground and focused demos.
 
 ```main.matra
 html(lang=content.lang) {
@@ -21,6 +22,9 @@ html(lang=content.lang) {
     link(rel="stylesheet" href="/app.css") {}
     if (content.playgroundEnabled) {
       script(src="/assets/playground.js" type="module") {}
+    }
+    if (content.demosEnabled) {
+      script(src="/assets/demos.js" type="module") {}
     }
   }
   body {
@@ -125,6 +129,48 @@ html(lang=content.lang) {
                 aria-live="polite"
                 aria-atomic="true"
               ) { content.playgroundInitialStatus }
+            }
+          }
+        }
+      }
+      if (content.demosEnabled) {
+        section(class="showcase demo-section" id="demos") {
+          div(class="shell") {
+            div(class="section-heading") {
+              p(class="eyebrow") { "INTERACTIVE DEMOS" }
+              h2 { content.demosTitle }
+              p { content.demosDescription }
+            }
+            p(class="playground-help") { content.demosScope }
+            div(class="showcase-grid") {
+              ...for (demo in content.demos) {
+                article(class="demo-card" data-demo=demo.id data-demo-label=demo.title) {
+                  h3 { demo.title }
+                  p(class="playground-help") { demo.description }
+                  div(class="demo-controls") {
+                    ...for (control in demo.controls) {
+                      div(class="demo-control") {
+                        label(for=control.inputId) { control.label }
+                        output(for=control.inputId) { control.value }
+                        input(
+                          id=control.inputId name=control.name type=control.type
+                          min=control.min max=control.max step=control.step value=control.value
+                          disabled=true required=true aria-describedby=("demo-status-" + demo.id)
+                        ) {}
+                      }
+                    }
+                  }
+                  div(class="demo-preview" data-demo-preview=true) { demo.preview }
+                  p(
+                    id=("demo-status-" + demo.id) class="playground-status"
+                    data-demo-status=true role="status" aria-live="polite" aria-atomic="true"
+                  ) { content.demosInitialStatus }
+                  details(class="demo-source") {
+                    summary { content.demosSourceLabel }
+                    pre { code(data-demo-source=true) { demo.source } }
+                  }
+                }
+              }
             }
           }
         }

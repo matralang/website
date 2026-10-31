@@ -4,6 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises"
 import { execFileSync } from "node:child_process"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import "./demos.js"
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const readPage = relativePath => readFile(path.join(root, "dist", relativePath), "utf8")
@@ -59,6 +60,7 @@ const legacyModelRoute = await readPage("spec/data-model/index.html")
 const css = await readPage("app.css")
 const playgroundClient = await readPage("assets/playground.js")
 const playgroundWorker = await readPage("assets/playground-worker.js")
+const demosClient = await readPage("assets/demos.js")
 
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
@@ -72,6 +74,26 @@ assert.match(about, /whitepaper-v0\.3\.ja\.md/)
 assert.match(englishAbout, /whitepaper-v0\.3\.md/)
 assert.match(examples, /実際のrenderer出力/)
 assert.match(englishExamples, /actual renderer output/)
+for (const page of [examples, englishExamples]) {
+  assert.match(page, /src="\/assets\/demos\.js" type="module"/)
+  assert.match(page, /id="demos"/)
+  assert.match(page, /data-demo="svg"/)
+  assert.match(page, /data-demo="math"/)
+  assert.match(page, /<svg viewBox="0 0 320 320"/)
+  assert.match(page, /<math display="block">/)
+  assert.match(page, /<mn>18<\/mn>/)
+  assert.match(page, /id="demo-svg-count"[^>]*min="3" max="24" step="1" value="8" disabled/)
+  assert.match(page, /id="demo-math-x"[^>]*min="-10" max="10" step="0.5" value="3" disabled/)
+  assert.match(page, /data-demo-source/)
+  assert.match(page, /@matra\/graphics/)
+  assert.match(page, /@matra\/math/)
+}
+assert.match(examples, /専用の@matra/)
+assert.match(englishExamples, /not the dedicated/)
+assert.doesNotMatch(index, /assets\/demos\.js/)
+assert.doesNotMatch(play, /assets\/demos\.js/)
+assert.doesNotMatch(demosClient, /node:(fs|path|url)/)
+assert.ok(Buffer.byteLength(demosClient) < 32_000, "Focused demos bundle should stay under 32 KB")
 assert.match(index, /&lt;article&gt;&lt;h2&gt;A page with Matra&lt;\/h2&gt;/)
 assert.match(index, /article \{\s+h2 \{ content\.title \}/)
 assert.match(play, /id="playground"/)
@@ -115,6 +137,7 @@ await verifyInternalLinks()
 const originalHash = createHash("sha256").update(index).digest("hex")
 const playgroundClientHash = createHash("sha256").update(playgroundClient).digest("hex")
 const playgroundWorkerHash = createHash("sha256").update(playgroundWorker).digest("hex")
+const demosClientHash = createHash("sha256").update(demosClient).digest("hex")
 build()
 assert.equal(
   createHash("sha256").update(await readPage("index.html")).digest("hex"),
@@ -131,6 +154,11 @@ assert.equal(
   playgroundWorkerHash,
   "repeated builds should produce byte-identical Playground Worker assets",
 )
+assert.equal(
+  createHash("sha256").update(await readPage("assets/demos.js")).digest("hex"),
+  demosClientHash,
+  "repeated builds should produce byte-identical demo assets",
+)
 
 build("/website")
 const basePathIndex = await readPage("index.html")
@@ -140,9 +168,13 @@ assert.match(basePathIndex, /href="\/website\/docs\/"/)
 assert.match(basePathIndex, /href="\/website\/en\/"/)
 assert.match(basePathPlay, /href="\/website\/examples\/"/)
 assert.match(basePathPlay, /src="\/website\/assets\/playground\.js"/)
+for (const locale of ["", "en/"]) {
+  assert.match(await readPage(`${locale}examples/index.html`), /src="\/website\/assets\/demos\.js"/)
+}
 assert.doesNotMatch(basePathIndex, /href="\/(?!website\/|https?:\/\/)/)
 await verifyInternalLinks("/website")
 await access(path.join(root, "dist", "assets", "playground.js"))
 await access(path.join(root, "dist", "assets", "playground-worker.js"))
+await access(path.join(root, "dist", "assets", "demos.js"))
 
 console.log("site build test passed")

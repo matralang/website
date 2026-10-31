@@ -5,6 +5,7 @@ import { extractMatraMarkdown, staticValueToAST } from "@matra/core"
 import { buildLiterate, runLiterate } from "@matra/core/experimental/literate"
 import { toHTML } from "@matra/html"
 import pages from "./content/pages.mjs"
+import { demoDefinitions, renderDemo } from "./demos/render.mjs"
 
 const root = process.cwd()
 const outputDir = path.join(root, "dist")
@@ -40,6 +41,21 @@ async function main() {
     const data = {
       ...page,
       playgroundEnabled: page.playgroundEnabled ?? false,
+      demosEnabled: page.demosEnabled ?? false,
+      demos: page.demosEnabled ? demoDefinitions.map(definition => {
+        const copy = page.demoCopy[definition.id]
+        const values = Object.fromEntries(definition.controls.map(control => [control.name, control.value]))
+        return {
+          ...definition,
+          ...copy,
+          controls: definition.controls.map(control => ({
+            ...control,
+            label: copy.labels[control.name],
+            inputId: `demo-${definition.id}-${control.name}`,
+          })),
+          ...renderDemo(definition.id, values, copy.title),
+        }
+      }) : [],
       sampleSource: exampleSource,
       sampleOutput: exampleOutput,
     }
@@ -59,6 +75,7 @@ async function main() {
     entryPoints: [
       path.join(root, "src", "playground", "playground.js"),
       path.join(root, "src", "playground", "playground-worker.js"),
+      path.join(root, "src", "demos", "demos.js"),
     ],
     outdir: path.join(outputDir, "assets"),
     bundle: true,
