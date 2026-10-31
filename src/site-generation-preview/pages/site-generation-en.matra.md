@@ -9,6 +9,7 @@ site:
     lang: en
     navigationLabel: Main navigation
     homeLabel: Matra home
+    homeUrl: /en/
     languageRoute: /site-generation-preview/
     otherLang: ja
     languageLabel: 日本語

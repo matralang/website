@@ -34,13 +34,19 @@ The existing `/spec/data-model/`, `/spec/ast/`, `/spec/grammar/`, and `/spec/par
 
 The site-generation pilot is available at `/site-generation-preview/` and `/en/site-generation-preview/`. It does not replace existing pages or their URL generation.
 
+Home links return to the matching language (`/` or `/en/`). `npm test` checks the full
+Core/HTML/site-generation dependency tree, both preview navigation paths with and without a base path,
+and byte-identical HTML for every route on repeated builds.
+These checks do not establish whole-site migration compatibility: compare the complete route set,
+metadata, navigation, content, and generated assets against the old build before replacing it.
+
 ## Deployment
 
 GitHub Pages deploys only from `production`. Push the verified commit to `production` to publish, or manually run the Pages workflow on that branch. The `github-pages` environment must allow only the `production` branch. Pushes to `develop` or `main` do not deploy.
 
 ## Scope
 
-The site-generation pilot uses the prerelease `@matra/core@0.3.1-site.0` and `@matra/site-generation@0.1.0-site.0`, alongside `@matra/html@0.3.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+The site-generation pilot uses the prereleases `@matra/core@0.3.1-site.0`, `@matra/site-generation@0.1.0-site.1`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
 
 `/examples/` and `/en/examples/` include an SVG demo with circle count/radius controls and a MathML `a × x²` demo with coefficient a/input x controls. Numeric inputs are checked for range and step before being passed into fixed Matra documents. The Core browser API and HTML renderer update both the preview and executed source. Arbitrary code is not accepted; execution runs on the main thread, not in a Worker. Initial results are generated at build time and remain visible without JavaScript (controls are disabled).
 

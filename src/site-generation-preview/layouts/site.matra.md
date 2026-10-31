@@ -15,12 +15,12 @@ html(lang=page.data.lang) {
   body {
     header.site-header {
       div.shell.nav-shell {
-        a.brand(href=site.data.homeUrl) {
+        a.brand(href=page.data.homeUrl) {
           span.brand-mark { "M" }
           span { "Matra" }
         }
         nav(aria-label=page.data.navigationLabel) {
-          a(href=site.data.homeUrl) { page.data.homeLabel }
+          a(href=page.data.homeUrl) { page.data.homeLabel }
           a(href=page.data.languageRoute lang=page.data.otherLang) {
             page.data.languageLabel
           }

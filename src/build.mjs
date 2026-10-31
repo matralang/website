@@ -50,7 +50,6 @@ async function buildSiteGenerationPreview() {
           format: "directory",
           basePath,
           data: {
-            homeUrl: "/",
             footerText: "Learn languages. Connect through structure.",
             githubUrl: "https://github.com/matralang/matra",
           },

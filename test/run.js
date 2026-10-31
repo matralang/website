@@ -45,7 +45,27 @@ const build = (basePath = "") => execFileSync("npm", ["run", "build"], {
   env: { ...process.env, SITE_BASE_PATH: basePath },
 })
 
+execFileSync("npm", ["ls", "@matra/core", "@matra/html", "@matra/site-generation"], {
+  cwd: root,
+  stdio: "inherit",
+})
+
+async function verifyPreviewNavigation(basePath = "") {
+  for (const [locale, home, label, languageRoute, languageLabel] of [
+    ["", "/", "Matra ホーム", "/en/site-generation-preview/", "English"],
+    ["en/", "/en/", "Matra home", "/site-generation-preview/", "日本語"],
+  ]) {
+    const html = await readPage(`${locale}site-generation-preview/index.html`)
+    assert.ok(html.includes(`<a href="${basePath}${home}" class="brand">`))
+    assert.ok(html.includes(`<a href="${basePath}${home}">${label}</a>`))
+    assert.ok(html.includes(`<a href="${basePath}${languageRoute}" lang=`))
+    assert.ok(html.includes(`>${languageLabel}</a>`))
+    assert.ok(!html.includes("/website/website/"))
+  }
+}
+
 build()
+await verifyPreviewNavigation()
 
 const index = await readPage("index.html")
 const englishIndex = await readPage("en/index.html")
@@ -199,7 +219,17 @@ const originalHash = createHash("sha256").update(index).digest("hex")
 const playgroundClientHash = createHash("sha256").update(playgroundClient).digest("hex")
 const playgroundWorkerHash = createHash("sha256").update(playgroundWorker).digest("hex")
 const demosClientHash = createHash("sha256").update(demosClient).digest("hex")
+const pageHashes = new Map(await Promise.all(
+  (await htmlFiles(path.join(root, "dist"))).map(async file => [
+    file,
+    createHash("sha256").update(await readFile(file)).digest("hex"),
+  ]),
+))
 build()
+assert.deepEqual((await htmlFiles(path.join(root, "dist"))).sort(), [...pageHashes.keys()].sort())
+for (const [file, hash] of pageHashes) {
+  assert.equal(createHash("sha256").update(await readFile(file)).digest("hex"), hash, file)
+}
 assert.equal(
   createHash("sha256").update(await readPage("index.html")).digest("hex"),
   originalHash,
@@ -222,6 +252,7 @@ assert.equal(
 )
 
 build("/website")
+await verifyPreviewNavigation("/website")
 const basePathIndex = await readPage("index.html")
 const basePathPlay = await readPage("play/index.html")
 assert.match(basePathIndex, /href="\/website\/app\.css"/)

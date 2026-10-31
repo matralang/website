@@ -34,13 +34,18 @@ npm run serve
 
 試験ページは`/site-generation-preview/`と`/en/site-generation-preview/`です。既存ページやURL生成を置き換えません。
 
+ホームリンクは同じ言語の入口（`/`または`/en/`）へ戻ります。`npm test`はCore・HTML・site-generationの
+依存ツリー全体、base pathあり・なしの日英導線、再build時の全routeのHTML byte一致を確認します。
+この検証だけでは全サイト移行の互換性は保証しません。置き換え前に旧buildと全route、
+metadata、navigation、本文、生成assetを比較する必要があります。
+
 ## デプロイ
 
 GitHub Pagesは`production`からのみデプロイします。検証済みcommitを`production`へpushするか、同branchでPages workflowを手動実行すると公開します。`github-pages` environmentの許可branchも`production`のみに設定します。`develop`や`main`へのpushではデプロイしません。
 
 ## 対応範囲
 
-サイト生成の試験経路は`@matra/core@0.3.1-site.0`と`@matra/site-generation@0.1.0-site.0`のprerelease、および`@matra/html@0.3.0`を使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+サイト生成の試験経路は`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.1`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
 `/examples/`と`/en/examples/`には、円の個数・半径を変えるSVGデモと、係数a・入力xを変えるMathMLの`a × x²`デモがあります。固定のMatra文書に範囲・刻み幅を検証した数値を渡し、Core browser APIとHTML rendererで表示と実行ソースを更新します。任意コードは受け付けず、Workerではなくメインスレッドで実行します。初期結果はbuildで生成するため、JavaScript無効時も閲覧できます（操作は無効）。
 
