@@ -3,6 +3,7 @@ matra:
   entry: page.matra
 site:
   route: /site-generation-preview/
+  layout: preview
   data:
     title: サイト生成エンジンの試験ページ — Matra
     description: Matraの宣言的サイト生成エンジンを使った試験ページです。
@@ -14,7 +15,7 @@ site:
     otherLang: en
     languageLabel: English
     heading: サイト生成エンジンの試験ページ
-    bodyText: このページは、試験中のMatraサイト生成エンジンでMarkdownページ、共通レイアウト、ルート出力を生成しています。既存のWebsiteビルドと他のページはそのままです。
+    bodyText: このサイトは、試験中のMatraサイト生成エンジンで全ページとアセットを生成しています。このページは、共通レイアウト、ルート出力、ページデータを確認するデモです。
     detailsLabel: 試験範囲
     detailsText: ページデータの分離、共通レイアウト、directory形式のURL、GitHub Pages base pathを確認します。外部データ拡張やwatch機能は含みません。
 ---
@@ -36,7 +37,7 @@ div.site-generation-preview {
     div.shell {
       div.section-heading {
         p.eyebrow { page.data.detailsLabel }
-        h2 { "既存サイトを保ちながら、小さく検証" }
+        h2 { "全ページを共通の生成経路へ" }
       }
       div.feature-grid {
         article.feature-card {

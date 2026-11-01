@@ -15,7 +15,11 @@ npm run build
 npm run serve
 ```
 
-Most pages are generated from named Matra/JavaScript fences in `src/content/site.md` and content in `src/content/pages.mjs`. The `/site-generation-preview/` routes are a separate trial using `@matra/site-generation` with Markdown front matter, Matra pages, a shared layout, and page data. The existing build remains in place for all other routes. Both build paths execute trusted Matra source; the literate API is experimental and Node.js-only.
+All pages and assets are published through `@matra/site-generation`. `src/content/pages.mjs` provides bilingual page data, `src/content/page.matra` renders page bodies, and `src/content/site.md` is the shared document layout. `src/build.mjs` executes the runnable example, prepares demo data, and bundles browser scripts with esbuild before calling the site generator once.
+
+The build recreates `.matra-site/` as intermediate input and writes `matra.site.json` with the selected `SITE_BASE_PATH`. Both are generated, ignored files: edit the sources instead. Page data is passed as Markdown front matter, not injected JavaScript. Only build trusted Matra source; the literate API is experimental and Node.js-only.
+
+To add, update, or remove a page, edit its Japanese and English definitions in `src/content/pages.mjs`, including navigation and sitemap links. Update the expected route list in `test/run.js` when changing public routes. The preview routes retain their own page/layout sources in `src/site-generation-preview/`, but now use the same build and output manifest as the rest of the site.
 
 ## URLs
 
@@ -32,13 +36,20 @@ Most pages are generated from named Matra/JavaScript fences in `src/content/site
 
 The existing `/spec/data-model/`, `/spec/ast/`, `/spec/grammar/`, and `/spec/parser/` URLs remain available as overview pages. Set `SITE_BASE_PATH` for GitHub Pages project paths; CI obtains it from the Pages configuration.
 
-The site-generation pilot is available at `/site-generation-preview/` and `/en/site-generation-preview/`. It does not replace existing pages or their URL generation.
+The site-generation demonstration pages remain available at `/site-generation-preview/` and `/en/site-generation-preview/`.
 
 Home links return to the matching language (`/` or `/en/`). `npm test` checks the full
-Core/HTML/site-generation dependency tree, both preview navigation paths with and without a base path,
-and byte-identical HTML for every route on repeated builds.
-These checks do not establish whole-site migration compatibility: compare the complete route set,
-metadata, navigation, content, and generated assets against the old build before replacing it.
+Core/HTML/site-generation dependency tree, the complete expected route set, page metadata and headings,
+internal links and script/stylesheet references with and without a base path, and byte-identical HTML
+for every route on repeated builds. Isolated migration tests cover page addition, updates, deletion,
+route changes, asset updates/deletion, unmanaged-file preservation, and output/manifest preservation
+after page-rendering or asset-build failures.
+
+The migration retains all 26 public routes. The stylesheet intentionally moves from `/app.css` to
+`/assets/app.css`; browser bundle names are unchanged. During migration, all 24 pre-existing non-preview
+pages matched the old HTML after this stylesheet URL substitution, and CSS/JavaScript contents matched.
+The preview copy now describes the unified build. Browser checks of navigation, responsive layouts,
+Playground execution, and demos remain necessary before publishing a release.
 
 ## Deployment
 
@@ -46,9 +57,11 @@ GitHub Pages deploys only from `production`. Push the verified commit to `produc
 
 ## Scope
 
-The site-generation pilot uses the prereleases `@matra/core@0.3.1-site.0`, `@matra/site-generation@0.1.0-site.2`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+The website build uses the prereleases `@matra/core@0.3.1-site.0`, `@matra/site-generation@0.1.0-site.2`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
 
-Site-generation now tracks generated files in a manifest to remove obsolete outputs on subsequent builds. Older outputs without a manifest require manual review and cleanup when migrating. The current website build still recreates `dist/` and builds the pilot in a temporary project; it does not retain the pilot's manifest between builds.
+`dist/.matra-site-manifest.json` tracks generated pages and assets between builds. The build does not delete `dist/`: the generator removes only obsolete managed files and preserves files outside the manifest. Failed builds preserve the previous published output and manifest. When migrating an existing `dist/` without a manifest, review and remove obsolete old outputs such as `app.css` manually; a fresh checkout generates only the new output paths.
+
+Dependency audit warnings remain unresolved and are not cleared by this migration. Review `npm audit` and assess their impact before publishing.
 
 `/examples/` and `/en/examples/` include an SVG demo with circle count/radius controls and a MathML `a × x²` demo with coefficient a/input x controls. Numeric inputs are checked for range and step before being passed into fixed Matra documents. The Core browser API and HTML renderer update both the preview and executed source. Arbitrary code is not accepted; execution runs on the main thread, not in a Worker. Initial results are generated at build time and remain visible without JavaScript (controls are disabled).
 

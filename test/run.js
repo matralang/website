@@ -4,6 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises"
 import { execFileSync } from "node:child_process"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import pages from "../src/content/pages.mjs"
 import "./demos.js"
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
@@ -21,7 +22,7 @@ async function verifyInternalLinks(basePath = "") {
   const files = await htmlFiles(path.join(root, "dist"))
   for (const file of files) {
     const html = await readFile(file, "utf8")
-    for (const [, href] of html.matchAll(/\bhref="([^"]+)"/g)) {
+    for (const [, href] of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
       const url = new URL(href, "https://matralang.test")
       if (url.origin !== "https://matralang.test") continue
 
@@ -67,6 +68,33 @@ async function verifyPreviewNavigation(basePath = "") {
 build()
 await verifyPreviewNavigation()
 
+const routes = [
+  "", "about/", "blog/", "docs/", "examples/", "packages/", "play/",
+  "site-generation-preview/", "spec/", "spec/ast/", "spec/data-model/",
+  "spec/grammar/", "spec/parser/",
+]
+const expectedPages = routes.flatMap(route => [`${route}index.html`, `en/${route}index.html`]).sort()
+assert.deepEqual(
+  (await htmlFiles(path.join(root, "dist"))).map(file => path.relative(path.join(root, "dist"), file).split(path.sep).join("/")).sort(),
+  expectedPages,
+)
+const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
+for (const page of pages) {
+  const html = await readPage(`${page.route.slice(1)}index.html`)
+  assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
+  assert.ok(html.includes(`<title>${escapeHTML(page.title)}</title>`), page.route)
+  assert.ok(html.includes(`<meta name="description" content="${escapeHTML(page.description)}">`), page.route)
+  assert.ok(html.includes(`<h1>${escapeHTML(page.heading)}</h1>`), page.route)
+  assert.ok(html.includes(`href="${page.homeUrl}" aria-label=`), page.route)
+  assert.ok(html.includes(`href="${page.languageUrl}" lang="${page.otherLang}"`), page.route)
+}
+const manifest = JSON.parse(await readPage(".matra-site-manifest.json"))
+assert.deepEqual(manifest, {
+  version: 1,
+  files: [...expectedPages, "assets/app.css", "assets/demos.js", "assets/playground.js", "assets/playground-worker.js"].sort(),
+})
+
 const index = await readPage("index.html")
 const englishIndex = await readPage("en/index.html")
 const about = await readPage("about/index.html")
@@ -84,7 +112,7 @@ const grammarSpec = await readPage("spec/grammar/index.html")
 const englishGrammarSpec = await readPage("en/spec/grammar/index.html")
 const parserSpec = await readPage("spec/parser/index.html")
 const englishParserSpec = await readPage("en/spec/parser/index.html")
-const css = await readPage("app.css")
+const css = await readPage("assets/app.css")
 const playgroundClient = await readPage("assets/playground.js")
 const playgroundWorker = await readPage("assets/playground-worker.js")
 const demosClient = await readPage("assets/demos.js")
@@ -102,7 +130,7 @@ assert.match(siteGenerationJa, /<title>サイト生成エンジンの試験ペ�
 assert.match(siteGenerationJa, /共通レイアウト、ルート出力/)
 assert.match(siteGenerationEn, /<html lang="en">/)
 assert.match(siteGenerationEn, /<title>Site generation engine preview — Matra<\/title>/)
-assert.match(siteGenerationEn, /shared layout, and route output/)
+assert.match(siteGenerationEn, /shared layout, route output/)
 for (const [page, label, hrefs] of [
   [index, "サイトマップ", ["/about/", "/examples/", "/docs/", "/play/", "/packages/", "/blog/", "/spec/", "/spec/data-model/", "/spec/ast/", "/spec/grammar/", "/spec/parser/"]],
   [englishIndex, "Site map", ["/en/about/", "/en/examples/", "/en/docs/", "/en/play/", "/en/packages/", "/en/blog/", "/en/spec/", "/en/spec/data-model/", "/en/spec/ast/", "/en/spec/grammar/", "/en/spec/parser/"]],
@@ -255,7 +283,7 @@ build("/website")
 await verifyPreviewNavigation("/website")
 const basePathIndex = await readPage("index.html")
 const basePathPlay = await readPage("play/index.html")
-assert.match(basePathIndex, /href="\/website\/app\.css"/)
+assert.match(basePathIndex, /href="\/website\/assets\/app\.css"/)
 assert.match(basePathIndex, /href="\/website\/docs\/"/)
 assert.match(basePathIndex, /href="\/website\/en\/"/)
 assert.match(basePathIndex, /href="\/website\/spec\/grammar\/"/)
@@ -269,5 +297,7 @@ await verifyInternalLinks("/website")
 await access(path.join(root, "dist", "assets", "playground.js"))
 await access(path.join(root, "dist", "assets", "playground-worker.js"))
 await access(path.join(root, "dist", "assets", "demos.js"))
+
+await import("./site-generation.js")
 
 console.log("site build test passed")

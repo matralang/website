@@ -15,7 +15,11 @@ npm run build
 npm run serve
 ```
 
-既存ページの多くは`src/content/site.md`の名前付きMatra/JavaScript fenceと`src/content/pages.mjs`の内容から生成します。`/site-generation-preview/`のページは別経路で、`@matra/site-generation`を使い、Markdown front matter、Matra page、共通layout、page dataを試します。他のrouteの既存buildは維持します。どちらのbuildも信頼できるMatra sourceだけを対象にしてください。literate APIは実験的なNode.js APIです。
+全ページとアセットを`@matra/site-generation`から出力します。`src/content/pages.mjs`が日英のページデータ、`src/content/page.matra`が本文、`src/content/site.md`が共通の文書layoutです。`src/build.mjs`は作例の実行、デモデータの準備、esbuildによるブラウザー用scriptのbundleを行い、サイト生成を1回呼び出します。
+
+buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
+
+ページの追加・更新・削除は`src/content/pages.mjs`の日英定義と、関連するnavigation・サイトマップを編集します。公開routeを変更するときは`test/run.js`の期待route一覧も更新してください。試験ページのpage/layout sourceは`src/site-generation-preview/`に残しますが、他のページと同じbuild・生成一覧で管理します。
 
 ## URL
 
@@ -32,12 +36,19 @@ npm run serve
 
 既存の`/spec/data-model/`、`/spec/ast/`、`/spec/grammar/`、`/spec/parser/` URLも概要ページへ接続しています。GitHub Pagesのproject pathは`SITE_BASE_PATH`で指定し、CIではPagesの設定から自動取得します。
 
-試験ページは`/site-generation-preview/`と`/en/site-generation-preview/`です。既存ページやURL生成を置き換えません。
+サイト生成のデモページは引き続き`/site-generation-preview/`と`/en/site-generation-preview/`です。
 
 ホームリンクは同じ言語の入口（`/`または`/en/`）へ戻ります。`npm test`はCore・HTML・site-generationの
-依存ツリー全体、base pathあり・なしの日英導線、再build時の全routeのHTML byte一致を確認します。
-この検証だけでは全サイト移行の互換性は保証しません。置き換え前に旧buildと全route、
-metadata、navigation、本文、生成assetを比較する必要があります。
+依存ツリー全体、期待する全route、ページのmetadata・見出し、base pathあり・なしの内部リンクと
+script・stylesheet参照、再build時の全routeのHTML byte一致を確認します。独立した移行テストでは、
+ページ追加・更新・削除、route変更、アセット更新・削除、一覧外ファイルの保持、
+ページ生成・アセットbuild失敗時の旧出力と生成一覧の保持を確認します。
+
+移行では全26公開routeを維持します。stylesheetは意図的に`/app.css`から`/assets/app.css`へ変更し、
+ブラウザー用bundle名は維持します。移行時の比較では、既存の試験ページ以外の24ページは
+stylesheet URLの置換後に旧HTMLと一致し、CSS・JavaScriptの内容も一致しました。
+試験ページの説明は統合後のbuildに合わせて更新しています。
+release公開前には、navigation、responsive表示、Playground実行、デモをブラウザーで確認してください。
 
 ## デプロイ
 
@@ -45,9 +56,11 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-サイト生成の試験経路は`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.2`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+website buildは`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.2`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
-site-generationは生成一覧を記録し、次回buildで不要になった生成物を削除します。一覧のない旧版出力は、移行時に手動で確認・整理する必要があります。現在のwebsite buildは引き続き`dist/`を作り直し、一時projectで試験ページを生成するため、試験ページの生成一覧をbuild間で保持しません。
+`dist/.matra-site-manifest.json`に生成したページとアセットを記録し、build間で保持します。buildは`dist/`全体を削除せず、不要になった一覧内のファイルだけを削除し、一覧外のファイルは保持します。build失敗時は旧出力と生成一覧を維持します。一覧のない既存`dist/`から移行するときは、古い`app.css`など不要な旧出力を手動で確認・整理してください。新しいcheckoutからのbuildでは新しい出力先だけを生成します。
+
+依存関係のaudit警告は未対応で、この移行では解消しません。公開前に`npm audit`で内容と影響を確認してください。
 
 `/examples/`と`/en/examples/`には、円の個数・半径を変えるSVGデモと、係数a・入力xを変えるMathMLの`a × x²`デモがあります。固定のMatra文書に範囲・刻み幅を検証した数値を渡し、Core browser APIとHTML rendererで表示と実行ソースを更新します。任意コードは受け付けず、Workerではなくメインスレッドで実行します。初期結果はbuildで生成するため、JavaScript無効時も閲覧できます（操作は無効）。
 

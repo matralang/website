@@ -10,7 +10,7 @@ html(lang=page.data.lang) {
     meta(name="description" content=page.data.description) {}
     meta(name="theme-color" content="#f5f4ed") {}
     title { page.data.title }
-    link(rel="stylesheet" href="/app.css") {}
+    link(rel="stylesheet" href="/assets/app.css") {}
   }
   body {
     header.site-header {
