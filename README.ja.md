@@ -45,7 +45,9 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-サイト生成の試験経路は`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.1`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+サイト生成の試験経路は`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.2`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+
+site-generationは生成一覧を記録し、次回buildで不要になった生成物を削除します。一覧のない旧版出力は、移行時に手動で確認・整理する必要があります。現在のwebsite buildは引き続き`dist/`を作り直し、一時projectで試験ページを生成するため、試験ページの生成一覧をbuild間で保持しません。
 
 `/examples/`と`/en/examples/`には、円の個数・半径を変えるSVGデモと、係数a・入力xを変えるMathMLの`a × x²`デモがあります。固定のMatra文書に範囲・刻み幅を検証した数値を渡し、Core browser APIとHTML rendererで表示と実行ソースを更新します。任意コードは受け付けず、Workerではなくメインスレッドで実行します。初期結果はbuildで生成するため、JavaScript無効時も閲覧できます（操作は無効）。
 

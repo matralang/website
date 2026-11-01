@@ -46,7 +46,9 @@ GitHub Pages deploys only from `production`. Push the verified commit to `produc
 
 ## Scope
 
-The site-generation pilot uses the prereleases `@matra/core@0.3.1-site.0`, `@matra/site-generation@0.1.0-site.1`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+The site-generation pilot uses the prereleases `@matra/core@0.3.1-site.0`, `@matra/site-generation@0.1.0-site.2`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+
+Site-generation now tracks generated files in a manifest to remove obsolete outputs on subsequent builds. Older outputs without a manifest require manual review and cleanup when migrating. The current website build still recreates `dist/` and builds the pilot in a temporary project; it does not retain the pilot's manifest between builds.
 
 `/examples/` and `/en/examples/` include an SVG demo with circle count/radius controls and a MathML `a × x²` demo with coefficient a/input x controls. Numeric inputs are checked for range and step before being passed into fixed Matra documents. The Core browser API and HTML renderer update both the preview and executed source. Arbitrary code is not accepted; execution runs on the main thread, not in a Worker. Initial results are generated at build time and remain visible without JavaScript (controls are disabled).
 
