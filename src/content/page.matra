@@ -44,19 +44,44 @@ main {
   }
   section.showcase {
     div.shell {
-      div.section-heading {
-        p.eyebrow { content.sampleEyebrow }
-        h2 { content.sampleTitle }
-        p { content.sampleDescription }
+      if (!content.specSections) {
+        div.section-heading {
+          p.eyebrow { content.sampleEyebrow }
+          h2 { content.sampleTitle }
+          p { content.sampleDescription }
+        }
       }
       if (content.specSections) {
         div.spec-document {
+          if (content.specLegendEnabled) {
+            ul.spec-legend(aria-label=content.specLegendLabel) {
+              ...for (item in content.specLegend) {
+                li {
+                  span(class=("syntax-swatch syntax-" + item.type)) {}
+                  span { item.label }
+                }
+              }
+            }
+          }
           ...for (section in content.specSections) {
             article.spec-section {
               p.card-index { section.index }
               h3 { section.title }
               p { section.text }
-              if (section.code) {
+              if (section.codeParts) {
+                pre {
+                  code {
+                    ...for (part in section.codeParts) {
+                      if (part.type == "plain") {
+                        part.text
+                      } else {
+                        span(class=("syntax-" + part.type)) { part.text }
+                      }
+                    }
+                  }
+                }
+              }
+              if (!section.codeParts && section.code) {
                 pre { code { section.code } }
               }
             }
@@ -172,20 +197,22 @@ main {
       }
     }
   }
-  section.features {
-    div.shell {
-      div.section-heading {
-        p.eyebrow { content.featuresEyebrow }
-        h2 { content.featuresTitle }
-      }
-      div.feature-grid {
-        ...for (card in content.cards) {
-          article.feature-card {
-            p.card-index { card.index }
-            h3 { card.title }
-            p { card.text }
-            ...for (link in card.links) {
-              a.text-link(href=link.href) { link.label }
+  if (!content.specSections) {
+    section.features {
+      div.shell {
+        div.section-heading {
+          p.eyebrow { content.featuresEyebrow }
+          h2 { content.featuresTitle }
+        }
+        div.feature-grid {
+          ...for (card in content.cards) {
+            article.feature-card {
+              p.card-index { card.index }
+              h3 { card.title }
+              p { card.text }
+              ...for (link in card.links) {
+                a.text-link(href=link.href) { link.label }
+              }
             }
           }
         }
