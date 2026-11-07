@@ -89,20 +89,23 @@ main {
         }
       }
       if (content.sampleEnabled && !content.playgroundEnabled && !content.specSections) {
-        div.showcase-grid {
-          article.code-card {
-            header.code-header {
-              span { "MATRA" }
-              small { "main.matra" }
+        div.sample-comparison {
+          p.playground-help { content.sampleExplanation }
+          div.showcase-grid {
+            article.code-card {
+              header.code-header {
+                span { "MARKDOWN" }
+                small { "example.md" }
+              }
+              pre { code { content.sampleSource } }
             }
-            pre { code { content.sampleSource } }
-          }
-          article.code-card {
-            header.code-header {
-              span { "HTML" }
-              small { "generated output" }
+            article.code-card {
+              header.code-header {
+                span { "HTML" }
+                small { "generated output" }
+              }
+              pre { code { content.sampleOutput } }
             }
-            pre { code { content.sampleOutput } }
           }
         }
       }

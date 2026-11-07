@@ -17,6 +17,8 @@ npm run serve
 
 全ページとアセットを`@matra/site-generation`から出力します。`src/content/pages.mjs`が日英のページデータ、`src/content/page.matra`が本文、`src/content/site.md`が共通の文書layoutです。`src/build.mjs`は作例の実行、デモデータの準備、esbuildによるブラウザー用scriptのbundleを行い、サイト生成を1回呼び出します。
 
+ソースと出力の比較には、`src/content/example.md`全体と実際のrenderer出力を表示します。`content`の出どころが分かるように、Matraの入口だけでなくfront matterとJavaScriptの値fenceも含めます。値の接続は共通の日英説明で案内します。
+
 buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
 
 ページの追加・更新・削除は`src/content/pages.mjs`の日英定義と、関連するnavigation・サイトマップを編集します。公開routeを変更するときは`test/run.js`の期待route一覧も更新してください。試験ページのpage/layout sourceは`src/site-generation-preview/`に残しますが、他のページと同じbuild・生成一覧で管理します。

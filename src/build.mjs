@@ -1,6 +1,6 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
-import { extractMatraMarkdown, staticValueToAST } from "@matra/core"
+import { staticValueToAST } from "@matra/core"
 import { buildLiterate, runLiterate } from "@matra/core/experimental/literate"
 import { toHTML } from "@matra/html"
 import { buildSite } from "@matra/site-generation"
@@ -30,7 +30,7 @@ async function renderLiterate(markdown, document) {
 async function main() {
   const template = await readFile(path.join(contentDir, "page.matra"), "utf8")
   const example = await readFile(path.join(contentDir, "example.md"), "utf8")
-  const exampleSource = extractMatraMarkdown(example, { entry: "main.matra" }).source
+  const exampleSource = example.trim()
   const exampleOutput = await renderLiterate(example, "example.md")
   await rm(projectDir, { recursive: true, force: true })
   await Promise.all([

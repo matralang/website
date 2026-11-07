@@ -80,6 +80,7 @@ assert.deepEqual(
 )
 const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
+const exampleSource = (await readFile(path.join(root, "src/content/example.md"), "utf8")).trim()
 for (const page of pages) {
   const html = await readPage(`${page.route.slice(1)}index.html`)
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
@@ -95,6 +96,11 @@ for (const page of pages) {
   }
   assert.equal(page.navigation[0].href, `${page.lang === "ja" ? "" : "/en"}/docs/#get-started`)
   assert.equal(page.navigation[1].href, `${page.lang === "ja" ? "" : "/en"}/spec/`)
+  if (page.sampleEnabled && !page.playgroundEnabled && !page.specSections) {
+    assert.ok(html.includes(`<code>${escapeHTML(exampleSource)}</code>`), page.route)
+    assert.ok(html.includes(escapeHTML(page.sampleExplanation)), page.route)
+    assert.ok(html.includes("<small>example.md</small>"), page.route)
+  }
 }
 const manifest = JSON.parse(await readPage(".matra-site-manifest.json"))
 assert.deepEqual(manifest, {

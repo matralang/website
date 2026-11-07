@@ -17,6 +17,8 @@ npm run serve
 
 All pages and assets are published through `@matra/site-generation`. `src/content/pages.mjs` provides bilingual page data, `src/content/page.matra` renders page bodies, and `src/content/site.md` is the shared document layout. `src/build.mjs` executes the runnable example, prepares demo data, and bundles browser scripts with esbuild before calling the site generator once.
 
+Source/output panels display the complete `src/content/example.md` beside its actual renderer output. Include the front matter and JavaScript value fence, not just the Matra entry: readers need to see where `content` comes from. The shared bilingual explanation describes the value binding.
+
 The build recreates `.matra-site/` as intermediate input and writes `matra.site.json` with the selected `SITE_BASE_PATH`. Both are generated, ignored files: edit the sources instead. Page data is passed as Markdown front matter, not injected JavaScript. Only build trusted Matra source; the literate API is experimental and Node.js-only.
 
 To add, update, or remove a page, edit its Japanese and English definitions in `src/content/pages.mjs`, including navigation and sitemap links. Update the expected route list in `test/run.js` when changing public routes. The preview routes retain their own page/layout sources in `src/site-generation-preview/`, but now use the same build and output manifest as the rest of the site.

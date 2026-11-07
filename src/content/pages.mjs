@@ -43,6 +43,7 @@ const locales = {
     ],
     footerText: "文書構造を記述し、評価し、変換する。",
     brandLabel: "Matra ホーム",
+    sampleExplanation: "左は入力Markdown文書の全体です。先頭のmatra.entryが実行するmain.matra fenceを選び、matra.valuesがcontent.js.part fenceを値の入力として指定します。そのJavaScript式の結果が、fence名に対応するcontentとしてMatraから参照できます。contentは組み込み変数でも、暗黙のグローバル変数でもありません。",
   },
   en: {
     lang: "en",
@@ -82,6 +83,7 @@ const locales = {
     ],
     footerText: "Describe, evaluate, and transform document structure.",
     brandLabel: "Matra home",
+    sampleExplanation: "The left panel shows the complete input Markdown document. matra.entry selects the main.matra fence to execute; matra.values selects the content.js.part fence as a value input. The result of that JavaScript expression is available to Matra as content, matching the fence name. content is not a built-in or an implicit global variable.",
   },
 }
 
