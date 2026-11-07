@@ -43,6 +43,8 @@ h1, h2, h3, p { margin-top: 0; }
 .button.secondary { background: transparent; }
 .button.secondary:hover { background: var(--surface); }
 .release-note { margin: 25px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.quick-install { max-width: 580px; margin-top: 24px; }
+.quick-install p { color: var(--muted); font-size: 13px; line-height: 1.7; }
 
 .showcase { padding: 84px 0 96px; background: var(--surface); }
 .section-heading { max-width: 700px; margin-bottom: 30px; }

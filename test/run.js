@@ -97,6 +97,25 @@ assert.deepEqual(manifest, {
 
 const index = await readPage("index.html")
 const englishIndex = await readPage("en/index.html")
+for (const [home, status, link] of [
+  [index, "実験版CLI", "/docs/#get-started"],
+  [englishIndex, "Experimental CLI", "/en/docs/#get-started"],
+]) {
+  assert.ok(home.includes(status))
+  assert.ok(home.includes("<code>npm install --global @matra/cli@0.3.2-alpha.0</code>"))
+  assert.ok(home.includes(`href="${link}"`))
+}
+for (const [file, status] of [
+  ["docs/index.html", "Windows・macOS向けの実験版"],
+  ["en/docs/index.html", "An experimental release for Windows and macOS"],
+]) {
+  const docs = await readPage(file)
+  assert.ok(docs.includes('id="get-started"'))
+  assert.ok(docs.includes(status))
+  assert.ok(docs.includes("npm install --global @matra/cli@0.3.2-alpha.0"))
+  assert.ok(docs.includes("matra init hello"))
+  assert.ok(docs.includes("matra dev"))
+}
 const about = await readPage("about/index.html")
 const englishAbout = await readPage("en/about/index.html")
 const examples = await readPage("examples/index.html")

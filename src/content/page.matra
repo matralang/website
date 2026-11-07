@@ -11,6 +11,35 @@ main {
         }
       }
       p.release-note { content.releaseNote }
+      if (content.quickInstall) {
+        div.quick-install {
+          p { content.quickInstall.status }
+          div.code-card {
+            pre { code { content.quickInstall.command } }
+          }
+        }
+      }
+    }
+  }
+  if (content.getStarted) {
+    section.showcase(id="get-started") {
+      div.shell {
+        div.section-heading {
+          h2 { content.getStarted.title }
+          p { content.getStarted.status }
+        }
+        div.spec-document {
+          ...for (step in content.getStarted.sections) {
+            article.spec-section {
+              h3 { step.title }
+              p { step.text }
+              pre { code { step.code } }
+              a.text-link(href=step.link) { step.linkLabel }
+            }
+          }
+        }
+        p.playground-help { content.getStarted.notice }
+      }
     }
   }
   section.showcase {
