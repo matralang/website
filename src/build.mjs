@@ -24,7 +24,7 @@ function normalizeBasePath(value) {
 async function renderLiterate(markdown, document) {
   const bundle = await buildLiterate(markdown, { document })
   const value = await runLiterate(bundle)
-  return toHTML(staticValueToAST(value), { basePath })
+  return toHTML(staticValueToAST(value), { basePath, pretty: true })
 }
 
 async function main() {

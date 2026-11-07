@@ -21,6 +21,8 @@ npm run serve
 
 作例は`content.title`を`h1`で使い、JavaScript関数`content.pageTitle`でサイト名を付けて`title`に使います。静的データの共有ではなく関数を渡すことで、`.js.part`を使う理由を示します。関数はbuild時に実行し、生成ページには含めません。
 
+内容と表示を保てる範囲ではpretty HTMLを優先します。比較用作例はrendererの`pretty: true`を使います。現行rendererはインライン要素間や入れ子の整形済み領域に意味を持つ空白を挿入する場合があるため、任意文書を扱うPlaygroundとデモは通常出力を維持します。サイト本体も現行site-generation packageがpretty設定を公開していないため通常出力です。生成HTMLの後処理でこれらの制約を回避しないでください。
+
 buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
 
 ページの追加・更新・削除は`src/content/pages.mjs`の日英定義と、関連するnavigation・サイトマップを編集します。公開routeを変更するときは`test/run.js`の期待route一覧も更新してください。試験ページのpage/layout sourceは`src/site-generation-preview/`に残しますが、他のページと同じbuild・生成一覧で管理します。

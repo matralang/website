@@ -21,6 +21,8 @@ Source/output panels display the complete `src/content/example.md` beside its ac
 
 The example shares `content.title` with `h1` and calls the JavaScript `content.pageTitle` function to append the site name for `title`. Passing a function, rather than merely sharing static data, demonstrates why `.js.part` is used. The function runs during the build, not in the generated page.
 
+Prefer pretty HTML where formatting preserves content and display. The comparison example uses the renderer's `pretty: true` option. The current renderer can insert significant whitespace between inline elements or inside nested preformatted content, so arbitrary Playground documents and demos retain compact output. Site pages also retain compact output because the current site-generation package does not expose a pretty setting. Do not post-process generated HTML to work around these limitations.
+
 The build recreates `.matra-site/` as intermediate input and writes `matra.site.json` with the selected `SITE_BASE_PATH`. Both are generated, ignored files: edit the sources instead. Page data is passed as Markdown front matter, not injected JavaScript. Only build trusted Matra source; the literate API is experimental and Node.js-only.
 
 To add, update, or remove a page, edit its Japanese and English definitions in `src/content/pages.mjs`, including navigation and sitemap links. Update the expected route list in `test/run.js` when changing public routes. The preview routes retain their own page/layout sources in `src/site-generation-preview/`, but now use the same build and output manifest as the rest of the site.

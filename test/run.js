@@ -81,7 +81,15 @@ assert.deepEqual(
 const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
 const exampleSource = (await readFile(path.join(root, "src/content/example.md"), "utf8")).trim()
-const exampleOutput = '<html lang="en"><head><title>A page with Matra | Matra</title></head><body><h1>A page with Matra</h1><p>Describe the document, then generate semantic HTML.</p></body></html>'
+const exampleOutput = `<html lang="en">
+  <head>
+    <title>A page with Matra | Matra</title>
+  </head>
+  <body>
+    <h1>A page with Matra</h1>
+    <p>Describe the document, then generate semantic HTML.</p>
+  </body>
+</html>`
 for (const page of pages) {
   const html = await readPage(`${page.route.slice(1)}index.html`)
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
