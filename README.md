@@ -2,7 +2,7 @@
 
 [English](./README.md) | [日本語](./README.ja.md)
 
-The official Matra website. Following the v0.3 plan, it provides bilingual entry points, runnable examples, setup instructions, and links to the specifications as static HTML and CSS.
+The official Matra website for developers arriving from the technical book distributed at TechBookFest. It prioritizes CLI setup, runnable examples, data model/AST/grammar specifications, and public APIs and source, with matching Japanese and English pages. Broader introductory content is planned alongside GUI builder development; the builder is not presented as available.
 
 ## Development
 

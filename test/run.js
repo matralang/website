@@ -88,6 +88,13 @@ for (const page of pages) {
   assert.ok(html.includes(`<h1>${escapeHTML(page.heading)}</h1>`), page.route)
   assert.ok(html.includes(`href="${page.homeUrl}" aria-label=`), page.route)
   assert.ok(html.includes(`href="${page.languageUrl}" lang="${page.otherLang}"`), page.route)
+  const navigation = html.match(/<nav aria-label="(?:メインナビゲーション|Main navigation)">([\s\S]*?)<\/nav>/)?.[1]
+  assert.ok(navigation, page.route)
+  for (const item of page.navigation) {
+    assert.ok(navigation.includes(`<a href="${item.href}">${escapeHTML(item.label)}</a>`), page.route)
+  }
+  assert.equal(page.navigation[0].href, `${page.lang === "ja" ? "" : "/en"}/docs/#get-started`)
+  assert.equal(page.navigation[1].href, `${page.lang === "ja" ? "" : "/en"}/spec/`)
 }
 const manifest = JSON.parse(await readPage(".matra-site-manifest.json"))
 assert.deepEqual(manifest, {
@@ -140,7 +147,7 @@ const siteGenerationEn = await readPage("en/site-generation-preview/index.html")
 
 assert.match(index, /^<!doctype html>/)
 assert.match(index, /<html lang="ja">/)
-assert.match(index, /<title>Matra — 言語を学び、構造でつなぐ<\/title>/)
+assert.match(index, /<title>Matra — 文書をコードで組み立てる構造言語<\/title>/)
 assert.match(index, /href="\/en\/" lang="en" class="language-link">English/)
 assert.match(englishIndex, /<html lang="en">/)
 assert.match(englishIndex, /href="\/" lang="ja" class="language-link">日本語/)
@@ -157,18 +164,33 @@ for (const [page, label, hrefs] of [
   assert.match(page, new RegExp(`aria-label="${label}"`))
   for (const href of hrefs) assert.ok(page.includes(`href="${href}"`), `Missing sitemap link: ${href}`)
 }
-for (const page of [index, about]) {
-  assert.match(page, /文書・データ・プログラム/)
-  assert.match(page, /ラーニング/)
-  assert.match(page, /英語や日本語/)
-  assert.match(page, /現在のv0\.3/)
+for (const [html, prefix, book] of [
+  [index, "", "技術書典"],
+  [englishIndex, "/en", "TechBookFest"],
+]) {
+  assert.ok(html.includes(book))
+  const actions = html.match(/<div class="actions">([\s\S]*?)<\/div>/)?.[1]
+  assert.ok(actions)
+  assert.ok(actions.startsWith(`<a class="button primary" href="${prefix}/docs/#get-started">Get Started</a>`))
+  for (const route of ["/spec/", "/play/"]) {
+    assert.ok(actions.includes(`href="${prefix}${route}"`))
+  }
+  for (const route of ["/examples/", "/spec/data-model/", "/spec/parser/", "/packages/", "/about/"]) {
+    assert.ok(html.includes(`<a href="${prefix}${route}" class="text-link">`))
+  }
+  assert.ok(html.includes("SOURCE → DOCUMENT AST → HTML"))
+  for (const stage of ["01 / RUN", "02 / MODEL", "03 / IMPLEMENTATION"]) {
+    assert.ok(html.includes(`<p class="card-index">${stage}</p>`))
+  }
 }
-for (const page of [englishIndex, englishAbout]) {
-  assert.match(page, /documents, data, and programs/)
-  assert.match(page, /learning/)
-  assert.match(page, /English and Japanese/)
-  assert.match(page, /v0\.3/)
-}
+assert.match(index, /文書・データ・プログラム/)
+assert.match(englishIndex, /documents, data, and programs/)
+assert.match(about, /構造的ラーニング/)
+assert.match(englishAbout, /structural learning/)
+assert.match(about, /長期構想/)
+assert.match(englishAbout, /long-term vision/)
+assert.match(about, /GUIビルダーを提供済みとする案内ではありません/)
+assert.match(englishAbout, /does not announce an available GUI builder/)
 assert.doesNotMatch(about, /初版白書/)
 assert.doesNotMatch(englishAbout, /first whitepaper/i)
 assert.match(about, /whitepaper-v0\.3\.ja\.md/)
