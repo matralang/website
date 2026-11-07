@@ -81,6 +81,7 @@ assert.deepEqual(
 const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
 const exampleSource = (await readFile(path.join(root, "src/content/example.md"), "utf8")).trim()
+const exampleOutput = '<html lang="en"><head><title>A page with Matra | Matra</title></head><body><h1>A page with Matra</h1><p>Describe the document, then generate semantic HTML.</p></body></html>'
 for (const page of pages) {
   const html = await readPage(`${page.route.slice(1)}index.html`)
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
@@ -98,6 +99,7 @@ for (const page of pages) {
   assert.equal(page.navigation[1].href, `${page.lang === "ja" ? "" : "/en"}/spec/`)
   if (page.sampleEnabled && !page.playgroundEnabled && !page.specSections) {
     assert.ok(html.includes(`<code>${escapeHTML(exampleSource)}</code>`), page.route)
+    assert.ok(html.includes(`<code>${escapeHTML(exampleOutput)}</code>`), page.route)
     assert.ok(html.includes(escapeHTML(page.sampleExplanation)), page.route)
     assert.ok(html.includes("<small>example.md</small>"), page.route)
   }
@@ -223,8 +225,8 @@ assert.doesNotMatch(index, /assets\/demos\.js/)
 assert.doesNotMatch(play, /assets\/demos\.js/)
 assert.doesNotMatch(demosClient, /node:(fs|path|url)/)
 assert.ok(Buffer.byteLength(demosClient) < 32_000, "Focused demos bundle should stay under 32 KB")
-assert.match(index, /&lt;article&gt;&lt;h2&gt;A page with Matra&lt;\/h2&gt;/)
-assert.match(index, /article \{\s+h2 \{ content\.title \}/)
+assert.match(index, /title \{ content\.pageTitle\(content\.title\) \}/)
+assert.match(index, /h1 \{ content\.title \}/)
 assert.match(play, /id="playground"/)
 assert.match(englishPlay, /id="playground"/)
 assert.match(play, /src="\/assets\/playground\.js" type="module"/)

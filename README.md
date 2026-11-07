@@ -19,6 +19,8 @@ All pages and assets are published through `@matra/site-generation`. `src/conten
 
 Source/output panels display the complete `src/content/example.md` beside its actual renderer output. Include the front matter and JavaScript value fence, not just the Matra entry: readers need to see where `content` comes from. The shared bilingual explanation describes the value binding.
 
+The example shares `content.title` with `h1` and calls the JavaScript `content.pageTitle` function to append the site name for `title`. Passing a function, rather than merely sharing static data, demonstrates why `.js.part` is used. The function runs during the build, not in the generated page.
+
 The build recreates `.matra-site/` as intermediate input and writes `matra.site.json` with the selected `SITE_BASE_PATH`. Both are generated, ignored files: edit the sources instead. Page data is passed as Markdown front matter, not injected JavaScript. Only build trusted Matra source; the literate API is experimental and Node.js-only.
 
 To add, update, or remove a page, edit its Japanese and English definitions in `src/content/pages.mjs`, including navigation and sitemap links. Update the expected route list in `test/run.js` when changing public routes. The preview routes retain their own page/layout sources in `src/site-generation-preview/`, but now use the same build and output manifest as the rest of the site.

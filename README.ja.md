@@ -19,6 +19,8 @@ npm run serve
 
 ソースと出力の比較には、`src/content/example.md`全体と実際のrenderer出力を表示します。`content`の出どころが分かるように、Matraの入口だけでなくfront matterとJavaScriptの値fenceも含めます。値の接続は共通の日英説明で案内します。
 
+作例は`content.title`を`h1`で使い、JavaScript関数`content.pageTitle`でサイト名を付けて`title`に使います。静的データの共有ではなく関数を渡すことで、`.js.part`を使う理由を示します。関数はbuild時に実行し、生成ページには含めません。
+
 buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
 
 ページの追加・更新・削除は`src/content/pages.mjs`の日英定義と、関連するnavigation・サイトマップを編集します。公開routeを変更するときは`test/run.js`の期待route一覧も更新してください。試験ページのpage/layout sourceは`src/site-generation-preview/`に残しますが、他のページと同じbuild・生成一覧で管理します。

@@ -43,7 +43,7 @@ const locales = {
     ],
     footerText: "文書構造を記述し、評価し、変換する。",
     brandLabel: "Matra ホーム",
-    sampleExplanation: "左は入力Markdown文書の全体です。先頭のmatra.entryが実行するmain.matra fenceを選び、matra.valuesがcontent.js.part fenceを値の入力として指定します。そのJavaScript式の結果が、fence名に対応するcontentとしてMatraから参照できます。contentは組み込み変数でも、暗黙のグローバル変数でもありません。",
+    sampleExplanation: "左は入力Markdown文書の全体です。matra.entryがmain.matraを入口に選び、matra.valuesがcontent.js.partのJavaScript式の結果をcontentとして渡します。contentは組み込み変数ではありません。h1はcontent.titleをそのまま使い、titleはJavaScript関数content.pageTitleを呼び出してサイト名を付けます。値の共有だけならJSONで足りますが、この例では関数を渡すために.js.partを使っています。関数はbuild時に実行され、生成HTMLには含まれません。",
   },
   en: {
     lang: "en",
@@ -83,7 +83,7 @@ const locales = {
     ],
     footerText: "Describe, evaluate, and transform document structure.",
     brandLabel: "Matra home",
-    sampleExplanation: "The left panel shows the complete input Markdown document. matra.entry selects the main.matra fence to execute; matra.values selects the content.js.part fence as a value input. The result of that JavaScript expression is available to Matra as content, matching the fence name. content is not a built-in or an implicit global variable.",
+    sampleExplanation: "The left panel shows the complete input Markdown document. matra.entry selects main.matra; matra.values makes the result of the content.js.part JavaScript expression available as content, not a built-in variable. h1 uses content.title directly; title calls the JavaScript function content.pageTitle to append the site name. Sharing a value alone would only need JSON, but this example uses .js.part to pass a function. The function runs at build time and is not included in the generated HTML.",
   },
 }
 
@@ -244,7 +244,7 @@ const examplesJa = {
   ],
   releaseNote: "サンプルはwebsite buildで実行されます。コードのJavaScript値を信頼できる環境でのみ実行してください。",
   sampleEyebrow: "実行されるサンプル",
-  sampleTitle: "MatraからHTML fragmentを生成",
+  sampleTitle: "JavaScript関数と値からHTML文書を生成",
   sampleDescription: "この例をNode.jsで再現する手順は、導入ページにあります。",
   demosEnabled: true,
   demosTitle: "値を変えて、図と数式を見る。",
@@ -291,7 +291,7 @@ const examplesEn = {
   ],
   releaseNote: "The sample runs during the site build. Execute JavaScript values only in an environment you trust.",
   sampleEyebrow: "Runnable example",
-  sampleTitle: "Generate an HTML fragment from Matra",
+  sampleTitle: "Generate an HTML document from JavaScript values and a function",
   sampleDescription: "The setup page explains how to reproduce this example with Node.js.",
   demosEnabled: true,
   demosTitle: "Change a value. See the picture and equation.",
