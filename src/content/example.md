@@ -5,6 +5,8 @@ matra:
     - content.js.part
 ---
 
+# A page with Matra
+
 ```main.matra
 html(lang="en") {
   head {

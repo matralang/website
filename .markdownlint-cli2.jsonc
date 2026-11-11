@@ -1,0 +1,7 @@
+{
+  "config": {
+    // 日英の散文は長い行で書くためMD013は無効化する。
+    "MD013": false
+  },
+  "ignores": ["node_modules", "dist", ".matra-site"]
+}

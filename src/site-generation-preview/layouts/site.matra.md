@@ -2,6 +2,11 @@
 matra:
   entry: layout.matra
 ---
+
+# Site-generation preview layout
+
+Document layout for the site-generation preview pages. Page data is supplied by the build.
+
 ```layout.matra
 html(lang=page.data.lang) {
   head {
