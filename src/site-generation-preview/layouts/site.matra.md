@@ -16,6 +16,8 @@ html(lang=page.data.lang) {
     meta(property="og:url" content=site.data.canonicalBaseUrl + page.route) {}
     title { page.data.title }
     link(rel="canonical" href=site.data.canonicalBaseUrl + page.route) {}
+    script(src="https://www.googletagmanager.com/gtag/js?id=G-V6HKP5JTEV" async=true) {}
+    script { "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-V6HKP5JTEV');" }
     link(rel="icon" type="image/svg+xml" href="/assets/brand/logo-mark.svg") {}
     link(rel="stylesheet" href="/assets/app.css") {}
   }
