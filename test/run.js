@@ -52,17 +52,20 @@ execFileSync("npm", ["ls", "@matra/core", "@matra/html", "@matra/site-generation
 })
 
 async function verifyPreviewNavigation(basePath = "") {
-  for (const [locale, home, label, languageRoute, languageLabel] of [
-    ["", "/", "Matra ホーム", "/en/site-generation-preview/", "English"],
-    ["en/", "/en/", "Matra home", "/site-generation-preview/", "日本語"],
+  for (const [locale, home, label, languageRoute, languageLabel, route] of [
+    ["", "/", "Matra ホーム", "/en/site-generation-preview/", "English", "/site-generation-preview/"],
+    ["en/", "/en/", "Matra home", "/site-generation-preview/", "日本語", "/en/site-generation-preview/"],
   ]) {
     const html = await readPage(`${locale}site-generation-preview/index.html`)
+    const canonicalUrl = `https://www.matralang.org${basePath}${route}`
     assert.ok(html.includes(`<a href="${basePath}${home}" aria-label="${label}" class="brand">`))
     assert.ok(html.includes(`<a href="${basePath}${home}">${label}</a>`))
     assert.ok(html.includes(`src="${basePath}/assets/brand/logo-horizontal.svg"`))
     assert.ok(html.includes(`href="${basePath}/assets/brand/logo-mark.svg"`))
     assert.ok(html.includes('content="#f3f7fd"'))
     assert.ok(html.includes(`content="https://www.matralang.org${basePath}/assets/brand/og-image.png"`))
+    assert.ok(html.includes(`<meta property="og:url" content="${canonicalUrl}">`))
+    assert.ok(html.includes(`<link rel="canonical" href="${canonicalUrl}">`))
     assert.ok(html.includes(`<a href="${basePath}${languageRoute}" lang=`))
     assert.ok(html.includes(`>${languageLabel}</a>`))
     assert.ok(!html.includes("/website/website/"))
@@ -96,6 +99,7 @@ const exampleOutput = `<html lang="en">
 </html>`
 for (const page of pages) {
   const html = await readPage(`${page.route.slice(1)}index.html`)
+  const canonicalUrl = `https://www.matralang.org${page.route}`
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
   assert.ok(html.includes(`<title>${escapeHTML(page.title)}</title>`), page.route)
   assert.ok(html.includes(`<meta name="description" content="${escapeHTML(page.description)}">`), page.route)
@@ -103,6 +107,8 @@ for (const page of pages) {
   assert.ok(html.includes(`<meta property="og:title" content="${escapeHTML(page.title)}">`), page.route)
   assert.ok(html.includes(`<meta property="og:description" content="${escapeHTML(page.description)}">`), page.route)
   assert.ok(html.includes('<meta property="og:image" content="https://www.matralang.org/assets/brand/og-image.png">'), page.route)
+  assert.ok(html.includes(`<meta property="og:url" content="${canonicalUrl}">`), page.route)
+  assert.ok(html.includes(`<link rel="canonical" href="${canonicalUrl}">`), page.route)
   assert.ok(html.includes('href="/assets/brand/logo-mark.svg"'), page.route)
   assert.equal((html.match(/src="\/assets\/brand\/logo-horizontal\.svg"/g) ?? []).length, 2, page.route)
   assert.ok(html.includes(`<h1>${escapeHTML(page.heading)}</h1>`), page.route)

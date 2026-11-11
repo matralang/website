@@ -16,6 +16,7 @@ const assetsDir = path.join(projectDir, "assets")
 const contentDir = path.join(root, "src", "content")
 const basePath = normalizeBasePath(process.env.SITE_BASE_PATH ?? "")
 const siteOrigin = process.env.SITE_ORIGIN ?? "https://www.matralang.org"
+const canonicalBaseUrl = `${siteOrigin}${basePath}`
 
 const originUrl = new URL(siteOrigin)
 if (!["http:", "https:"].includes(originUrl.protocol) || originUrl.origin !== siteOrigin) {
@@ -58,6 +59,7 @@ async function main() {
   for (const [index, page] of pages.entries()) {
     const data = {
       ...page,
+      canonicalUrl: `${canonicalBaseUrl}${page.route}`,
       playgroundEnabled: page.playgroundEnabled ?? false,
       demosEnabled: page.demosEnabled ?? false,
       demos: page.demosEnabled ? demoDefinitions.map(definition => {
@@ -118,6 +120,7 @@ async function main() {
         data: {
           footerText: "Learn languages. Connect through structure.",
           githubUrl: "https://github.com/matralang/matra",
+          canonicalBaseUrl,
           ogImage: `${siteOrigin}${basePath}/assets/brand/og-image.png`,
         },
       },

@@ -13,7 +13,9 @@ html(lang=page.data.lang) {
     meta(property="og:title" content=page.data.title) {}
     meta(property="og:description" content=page.data.description) {}
     meta(property="og:image" content=site.data.ogImage) {}
+    meta(property="og:url" content=site.data.canonicalBaseUrl + page.route) {}
     title { page.data.title }
+    link(rel="canonical" href=site.data.canonicalBaseUrl + page.route) {}
     link(rel="icon" type="image/svg+xml" href="/assets/brand/logo-mark.svg") {}
     link(rel="stylesheet" href="/assets/app.css") {}
   }

@@ -19,7 +19,9 @@ html(lang=content.lang) {
     meta(property="og:title" content=content.title) {}
     meta(property="og:description" content=content.description) {}
     meta(property="og:image" content=site.data.ogImage) {}
+    meta(property="og:url" content=content.canonicalUrl) {}
     title { content.title }
+    link(rel="canonical" href=content.canonicalUrl) {}
     link(rel="icon" type="image/svg+xml" href="/assets/brand/logo-mark.svg") {}
     link(rel="stylesheet" href="/assets/app.css") {}
     if (content.playgroundEnabled) {
