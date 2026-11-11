@@ -43,7 +43,7 @@ async function verifyInternalLinks(basePath = "") {
 const build = (basePath = "") => execFileSync("npm", ["run", "build"], {
   cwd: root,
   stdio: "inherit",
-  env: { ...process.env, SITE_BASE_PATH: basePath },
+  env: { ...process.env, SITE_BASE_PATH: basePath, SITE_ORIGIN: "https://www.matralang.org" },
 })
 
 execFileSync("npm", ["ls", "@matra/core", "@matra/html", "@matra/site-generation"], {
@@ -57,8 +57,11 @@ async function verifyPreviewNavigation(basePath = "") {
     ["en/", "/en/", "Matra home", "/site-generation-preview/", "日本語"],
   ]) {
     const html = await readPage(`${locale}site-generation-preview/index.html`)
-    assert.ok(html.includes(`<a href="${basePath}${home}" class="brand">`))
+    assert.ok(html.includes(`<a href="${basePath}${home}" aria-label="${label}" class="brand">`))
     assert.ok(html.includes(`<a href="${basePath}${home}">${label}</a>`))
+    assert.ok(html.includes(`src="${basePath}/assets/brand/logo-horizontal.svg"`))
+    assert.ok(html.includes(`href="${basePath}/assets/brand/logo-mark.svg"`))
+    assert.ok(html.includes(`content="https://www.matralang.org${basePath}/assets/brand/og-image.png"`))
     assert.ok(html.includes(`<a href="${basePath}${languageRoute}" lang=`))
     assert.ok(html.includes(`>${languageLabel}</a>`))
     assert.ok(!html.includes("/website/website/"))
@@ -95,6 +98,11 @@ for (const page of pages) {
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
   assert.ok(html.includes(`<title>${escapeHTML(page.title)}</title>`), page.route)
   assert.ok(html.includes(`<meta name="description" content="${escapeHTML(page.description)}">`), page.route)
+  assert.ok(html.includes(`<meta property="og:title" content="${escapeHTML(page.title)}">`), page.route)
+  assert.ok(html.includes(`<meta property="og:description" content="${escapeHTML(page.description)}">`), page.route)
+  assert.ok(html.includes('<meta property="og:image" content="https://www.matralang.org/assets/brand/og-image.png">'), page.route)
+  assert.ok(html.includes('href="/assets/brand/logo-mark.svg"'), page.route)
+  assert.equal((html.match(/src="\/assets\/brand\/logo-horizontal\.svg"/g) ?? []).length, 2, page.route)
   assert.ok(html.includes(`<h1>${escapeHTML(page.heading)}</h1>`), page.route)
   assert.ok(html.includes(`href="${page.homeUrl}" aria-label=`), page.route)
   assert.ok(html.includes(`href="${page.languageUrl}" lang="${page.otherLang}"`), page.route)
@@ -115,8 +123,20 @@ for (const page of pages) {
 const manifest = JSON.parse(await readPage(".matra-site-manifest.json"))
 assert.deepEqual(manifest, {
   version: 1,
-  files: [...expectedPages, "assets/app.css", "assets/demos.js", "assets/playground.js", "assets/playground-worker.js"].sort(),
+  files: [...expectedPages, "assets/app.css", "assets/demos.js", "assets/playground.js", "assets/playground-worker.js",
+    "assets/brand/logo-horizontal.svg", "assets/brand/logo-mark.svg", "assets/brand/logo-stacked.svg",
+    "assets/brand/og-image.png"].sort(),
 })
+for (const name of ["logo-horizontal.svg", "logo-mark.svg", "logo-stacked.svg", "og-image.png"]) {
+  assert.deepEqual(
+    await readFile(path.join(root, "dist/assets/brand", name)),
+    await readFile(path.join(root, "src/assets/brand", name)),
+  )
+}
+const ogImage = await readFile(path.join(root, "dist/assets/brand/og-image.png"))
+assert.deepEqual(ogImage.subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+assert.equal(ogImage.readUInt32BE(16), 1280)
+assert.equal(ogImage.readUInt32BE(20), 800)
 
 const index = await readPage("index.html")
 const englishIndex = await readPage("en/index.html")
@@ -357,6 +377,9 @@ await verifyPreviewNavigation("/website")
 const basePathIndex = await readPage("index.html")
 const basePathPlay = await readPage("play/index.html")
 assert.match(basePathIndex, /href="\/website\/assets\/app\.css"/)
+assert.match(basePathIndex, /href="\/website\/assets\/brand\/logo-mark\.svg"/)
+assert.match(basePathIndex, /src="\/website\/assets\/brand\/logo-horizontal\.svg"/)
+assert.match(basePathIndex, /content="https:\/\/www\.matralang\.org\/website\/assets\/brand\/og-image\.png"/)
 assert.match(basePathIndex, /href="\/website\/docs\/"/)
 assert.match(basePathIndex, /href="\/website\/en\/"/)
 assert.match(basePathIndex, /href="\/website\/spec\/grammar\/"/)

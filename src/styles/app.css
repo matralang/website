@@ -24,8 +24,8 @@ a:focus-visible { outline: 3px solid #6f9c2a; outline-offset: 4px; }
 
 .site-header { border-bottom: 1px solid var(--line); background: var(--paper); }
 .nav-shell { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.brand { display: inline-flex; align-items: center; gap: 11px; font-size: 19px; font-weight: 750; letter-spacing: -.04em; }
-.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: var(--lime); background: var(--ink); font: 700 15px var(--mono); }
+.brand { display: inline-flex; align-items: center; }
+.brand-logo { display: block; width: 160px; height: auto; }
 .site-header nav { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(14px, 3vw, 32px); color: var(--muted); font-size: 14px; font-weight: 620; }
 .language-link { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
 
@@ -136,6 +136,7 @@ code { font-family: var(--mono); }
 .footer-group a:hover { color: var(--lime); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 22px; }
 .footer-brand { color: white; }
+.footer-brand .brand-logo { filter: brightness(0) invert(1); }
 .footer-brand:hover { color: var(--lime); }
 .footer-inner p { margin: 0; color: #aeb8b1; font-size: 12px; }
 .footer-inner > a:last-child { font-size: 13px; font-weight: 650; }

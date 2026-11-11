@@ -9,15 +9,19 @@ html(lang=page.data.lang) {
     meta(name="viewport" content="width=device-width, initial-scale=1") {}
     meta(name="description" content=page.data.description) {}
     meta(name="theme-color" content="#f5f4ed") {}
+    meta(property="og:type" content="website") {}
+    meta(property="og:title" content=page.data.title) {}
+    meta(property="og:description" content=page.data.description) {}
+    meta(property="og:image" content=site.data.ogImage) {}
     title { page.data.title }
+    link(rel="icon" type="image/svg+xml" href="/assets/brand/logo-mark.svg") {}
     link(rel="stylesheet" href="/assets/app.css") {}
   }
   body {
     header.site-header {
       div.shell.nav-shell {
-        a.brand(href=page.data.homeUrl) {
-          span.brand-mark { "M" }
-          span { "Matra" }
+        a.brand(href=page.data.homeUrl aria-label=page.data.homeLabel) {
+          img.brand-logo(src="/assets/brand/logo-horizontal.svg" alt="" width="360" height="100") {}
         }
         nav(aria-label=page.data.navigationLabel) {
           a(href=page.data.homeUrl) { page.data.homeLabel }

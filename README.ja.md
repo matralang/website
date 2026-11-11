@@ -25,6 +25,8 @@ npm run serve
 
 buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
 
+ロゴ素材は`src/assets/brand/`にまとめています。`logo-horizontal.svg`（マークの右にパス化したMatraLangの文字）はヘッダー・フッター用、`logo-stacked.svg`（マークの下に文字）は縦組み用、`logo-mark.svg`（マークのみ）はfavicon用、`og-image.png`はSNS用の1280×800画像です。ロゴを差し替える際は各SVGを更新し、PNGを再生成してください。例えばlibrsvgとImageMagickを使う場合は`rsvg-convert -w 1120 -h 560 src/assets/brand/logo-stacked.svg | magick png:- -background '#f5f4ed' -gravity center -extent 1280x800 -alpha remove -alpha off PNG24:src/assets/brand/og-image.png`を実行します。ロゴの縦横比は保ったまま1280×800のキャンバス中央に配置します。これらの素材はbuild時に`assets/brand/`へコピーされます。OGP画像の絶対URLには`SITE_ORIGIN`（既定値は`https://www.matralang.org`、末尾のスラッシュなし）と`SITE_BASE_PATH`を使用します。
+
 ページの追加・更新・削除は`src/content/pages.mjs`の日英定義と、関連するnavigation・サイトマップを編集します。公開routeを変更するときは`test/run.js`の期待route一覧も更新してください。試験ページのpage/layout sourceは`src/site-generation-preview/`に残しますが、他のページと同じbuild・生成一覧で管理します。
 
 ## URL

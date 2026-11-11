@@ -15,6 +15,12 @@ const layoutsDir = path.join(projectDir, "layouts")
 const assetsDir = path.join(projectDir, "assets")
 const contentDir = path.join(root, "src", "content")
 const basePath = normalizeBasePath(process.env.SITE_BASE_PATH ?? "")
+const siteOrigin = process.env.SITE_ORIGIN ?? "https://www.matralang.org"
+
+const originUrl = new URL(siteOrigin)
+if (!["http:", "https:"].includes(originUrl.protocol) || originUrl.origin !== siteOrigin) {
+  throw new Error("SITE_ORIGIN must be an HTTP(S) origin without a path or trailing slash")
+}
 
 function normalizeBasePath(value) {
   const trimmed = value.trim().replace(/^\/+|\/+$/g, "")
@@ -82,6 +88,7 @@ async function main() {
   }
 
   await cp(path.join(root, "src", "styles", "app.css"), path.join(assetsDir, "app.css"))
+  await cp(path.join(root, "src", "assets"), assetsDir, { recursive: true })
   await buildBrowserAssets({
     entryPoints: [
       path.join(root, "src", "playground", "playground.js"),
@@ -111,6 +118,7 @@ async function main() {
         data: {
           footerText: "Learn languages. Connect through structure.",
           githubUrl: "https://github.com/matralang/matra",
+          ogImage: `${siteOrigin}${basePath}/assets/brand/og-image.png`,
         },
       },
     }, null, 2)}\n`,

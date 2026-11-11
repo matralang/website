@@ -15,7 +15,12 @@ html(lang=content.lang) {
     meta(name="viewport" content="width=device-width, initial-scale=1") {}
     meta(name="description" content=content.description) {}
     meta(name="theme-color" content="#f5f4ed") {}
+    meta(property="og:type" content="website") {}
+    meta(property="og:title" content=content.title) {}
+    meta(property="og:description" content=content.description) {}
+    meta(property="og:image" content=site.data.ogImage) {}
     title { content.title }
+    link(rel="icon" type="image/svg+xml" href="/assets/brand/logo-mark.svg") {}
     link(rel="stylesheet" href="/assets/app.css") {}
     if (content.playgroundEnabled) {
       script(src="/assets/playground.js" type="module") {}
@@ -28,8 +33,7 @@ html(lang=content.lang) {
     header.site-header {
       div.shell.nav-shell {
         a.brand(href=content.homeUrl aria-label=content.brandLabel) {
-          span.brand-mark { "M" }
-          span { "Matra" }
+          img.brand-logo(src="/assets/brand/logo-horizontal.svg" alt="" width="360" height="100") {}
         }
         nav(aria-label=content.navigationLabel) {
           ...for (item in content.navigation) {
@@ -55,9 +59,8 @@ html(lang=content.lang) {
           }
         }
         div.footer-inner {
-          a.brand.footer-brand(href=content.homeUrl) {
-            span.brand-mark { "M" }
-            span { "Matra" }
+          a.brand.footer-brand(href=content.homeUrl aria-label=content.brandLabel) {
+            img.brand-logo(src="/assets/brand/logo-horizontal.svg" alt="" width="360" height="100") {}
           }
           p { content.footerText }
           a(href=content.githubUrl) { "GitHub" }

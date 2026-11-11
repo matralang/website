@@ -24,7 +24,7 @@ async function snapshot(directory) {
         files[`${entry.name}/${name}`] = content
       }
     } else {
-      files[entry.name] = await readFile(file, "utf8")
+      files[entry.name] = await readFile(file)
     }
   }
   return files
@@ -38,7 +38,7 @@ try {
 
   const manifestPath = path.join(output, ".matra-site-manifest.json")
   const initialManifest = JSON.parse(await readFile(manifestPath, "utf8"))
-  assert.equal(initialManifest.files.length, 30)
+  assert.equal(initialManifest.files.length, 34)
   await writeFile(path.join(output, "unmanaged.txt"), "preserve")
 
   const extraAsset = path.join(project, ".matra-site", "assets", "obsolete.css")
