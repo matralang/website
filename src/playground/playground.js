@@ -56,7 +56,7 @@ function releaseWorker(worker) {
 
 function makePreviewDocument(html) {
   const language = isJapanese ? "ja" : "en"
-  return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'"><style>body{margin:0;padding:24px;color:#19201d;background:#fffefa;font:16px/1.65 system-ui,sans-serif}*{box-sizing:border-box}img{max-width:100%}</style></head><body>${html}</body></html>`
+  return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'"><style>body{margin:0;padding:24px;color:#17243a;background:#ffffff;font:16px/1.65 system-ui,sans-serif}*{box-sizing:border-box}img{max-width:100%}</style></head><body>${html}</body></html>`
 }
 
 function stopExecution(message) {

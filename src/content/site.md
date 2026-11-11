@@ -14,7 +14,7 @@ html(lang=content.lang) {
     meta(charset="utf-8") {}
     meta(name="viewport" content="width=device-width, initial-scale=1") {}
     meta(name="description" content=content.description) {}
-    meta(name="theme-color" content="#f5f4ed") {}
+    meta(name="theme-color" content="#f3f7fd") {}
     meta(property="og:type" content="website") {}
     meta(property="og:title" content=content.title) {}
     meta(property="og:description" content=content.description) {}

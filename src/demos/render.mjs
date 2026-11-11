@@ -40,10 +40,10 @@ let size = ${values.size};
 let indices = ${JSON.stringify(Array.from({ length: values.count }, (_, index) => index))};
 svg(viewBox="0 0 320 320" role="img" aria-label=${JSON.stringify(label)}) {
   title { ${JSON.stringify(label)} }
-  circle(cx=160 cy=160 r=80 fill="none" stroke="#d9ddd5") {}
+  circle(cx=160 cy=160 r=80 fill="none" stroke="#d8e2ef") {}
   ...for (i in indices) {
     g(transform="rotate(" + (i * 360 / count) + " 160 160)") {
-      circle(cx=160 cy=80 r=size fill="#245a43" fill-opacity=0.65) {}
+      circle(cx=160 cy=80 r=size fill="#006fe5" fill-opacity=0.65) {}
     }
   }
 }`

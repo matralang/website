@@ -61,6 +61,7 @@ async function verifyPreviewNavigation(basePath = "") {
     assert.ok(html.includes(`<a href="${basePath}${home}">${label}</a>`))
     assert.ok(html.includes(`src="${basePath}/assets/brand/logo-horizontal.svg"`))
     assert.ok(html.includes(`href="${basePath}/assets/brand/logo-mark.svg"`))
+    assert.ok(html.includes('content="#f3f7fd"'))
     assert.ok(html.includes(`content="https://www.matralang.org${basePath}/assets/brand/og-image.png"`))
     assert.ok(html.includes(`<a href="${basePath}${languageRoute}" lang=`))
     assert.ok(html.includes(`>${languageLabel}</a>`))
@@ -98,6 +99,7 @@ for (const page of pages) {
   assert.ok(html.includes(`<html lang="${page.lang}">`), page.route)
   assert.ok(html.includes(`<title>${escapeHTML(page.title)}</title>`), page.route)
   assert.ok(html.includes(`<meta name="description" content="${escapeHTML(page.description)}">`), page.route)
+  assert.ok(html.includes('<meta name="theme-color" content="#f3f7fd">'), page.route)
   assert.ok(html.includes(`<meta property="og:title" content="${escapeHTML(page.title)}">`), page.route)
   assert.ok(html.includes(`<meta property="og:description" content="${escapeHTML(page.description)}">`), page.route)
   assert.ok(html.includes('<meta property="og:image" content="https://www.matralang.org/assets/brand/og-image.png">'), page.route)
@@ -334,6 +336,9 @@ assert.ok(
   `Playground Worker bundle should stay under 128 KB (was ${Buffer.byteLength(playgroundWorker)} bytes)`,
 )
 assert.match(css, /prefers-reduced-motion/)
+assert.match(css, /--brand: #006fe5/)
+assert.match(css, /--paper: #f3f7fd/)
+assert.doesNotMatch(css, /#245a43|#d8f278|#6f9c2a/)
 await verifyInternalLinks()
 
 const originalHash = createHash("sha256").update(index).digest("hex")

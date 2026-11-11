@@ -6,6 +6,7 @@ for (const definition of demoDefinitions) {
   const result = renderDemo(definition.id, defaults, "Demo")
   assert.equal(result.preview.tag, definition.id === "svg" ? "svg" : "math")
   assert.match(result.source, /let /)
+  if (definition.id === "svg") assert.match(result.source, /fill="#006fe5"/)
 
   for (const control of definition.controls) {
     for (const invalid of [NaN, Infinity, -Infinity, undefined, null, "3", control.min - control.step, control.max + control.step, control.min + control.step / 2]) {
