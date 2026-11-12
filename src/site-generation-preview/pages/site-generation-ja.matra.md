@@ -17,7 +17,7 @@ site:
     heading: サイト生成エンジンの試験ページ
     bodyText: このサイトは、試験中のMatraサイト生成エンジンで全ページとアセットを生成しています。このページは、共通レイアウト、ルート出力、ページデータを確認するデモです。
     detailsLabel: 試験範囲
-    detailsText: ページデータの分離、共通レイアウト、directory形式のURL、GitHub Pages base pathを確認します。外部データ拡張やwatch機能は含みません。
+    detailsText: site.componentsで読み込むCard部品をpageとlayoutから再利用し、通常のHTMLへ展開します。ページデータ、共通layout、directory形式URL、GitHub Pages base pathも確認できます。
 ---
 ```page.matra
 div.site-generation-preview {
@@ -40,9 +40,9 @@ div.site-generation-preview {
         h2 { "全ページを共通の生成経路へ" }
       }
       div.feature-grid {
-        article.feature-card {
+        Card({ className: "feature-card", title: "共通部品" }, [
           p { page.data.detailsText }
-        }
+        ])
       }
     }
   }

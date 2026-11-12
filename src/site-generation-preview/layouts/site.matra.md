@@ -43,8 +43,10 @@ html(lang=page.data.lang) {
     main { ...page.content }
     footer.site-footer {
       div.shell.footer-inner {
-        p { site.data.footerText }
-        a(href=site.data.githubUrl) { "GitHub" }
+        Card({ className: "footer-card", title: "Matra" }, [
+          p { site.data.footerText },
+          a(href=site.data.githubUrl) { "GitHub" }
+        ])
       }
     }
   }

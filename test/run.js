@@ -206,7 +206,11 @@ assert.match(englishIndex, /href="\/" lang="ja" class="language-link">日本語/
 assert.match(siteGenerationJa, /<html lang="ja">/)
 assert.match(siteGenerationJa, /<title>サイト生成エンジンの試験ページ — Matra<\/title>/)
 assert.match(siteGenerationJa, /共通レイアウト、ルート出力/)
+assert.match(siteGenerationJa, /<article class="feature-card"><h3>共通部品<\/h3>/)
 assert.match(siteGenerationEn, /<html lang="en">/)
+assert.match(siteGenerationEn, /<article class="feature-card"><h3>Shared component<\/h3>/)
+assert.match(siteGenerationJa, /<article class="footer-card"><h3>Matra<\/h3>/)
+assert.match(siteGenerationEn, /<article class="footer-card"><h3>Matra<\/h3>/)
 assert.match(siteGenerationEn, /<title>Site generation engine preview — Matra<\/title>/)
 assert.match(siteGenerationEn, /shared layout, route output/)
 for (const [page, label, hrefs] of [

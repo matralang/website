@@ -15,13 +15,15 @@ npm run build
 npm run serve
 ```
 
-全ページとアセットを`@matra/site-generation`から出力します。`src/content/pages.mjs`が日英のページデータ、`src/content/page.matra`が本文、`src/content/site.md`が共通の文書layoutです。`src/build.mjs`は作例の実行、デモデータの準備、esbuildによるブラウザー用scriptのbundleを行い、サイト生成を1回呼び出します。
+全ページとアセットを`@matra/site-generation`から出力します。`src/content/pages.mjs`が日英のページデータ、`src/content/page.matra`が本文、`src/content/site.md`が共通の文書layoutです。`src/build.mjs`は作例の実行、デモデータの準備、esbuildによるブラウザー用scriptのbundleを行い、サイト生成を1回呼び出します。site-generation previewは`src/site-generation-preview/components/`の`Card(props, children)`部品をpageとlayoutの両方から再利用します。
 
 ソースと出力の比較には、`src/content/example.md`全体と実際のrenderer出力を表示します。`content`の出どころが分かるように、Matraの入口だけでなくfront matterとJavaScriptの値fenceも含めます。値の接続は共通の日英説明で案内します。
 
 作例は`content.title`を`h1`で使い、JavaScript関数`content.pageTitle`でサイト名を付けて`title`に使います。静的データの共有ではなく関数を渡すことで、`.js.part`を使う理由を示します。関数はbuild時に実行し、生成ページには含めません。
 
 最新のCore・site-generation prereleaseは、literate文書内のnamed ESM module fence、fence間import、Python fenceに対応します。サイトのpage/layoutはsite rootから準備済み依存を解決し、build時の作例はrepository rootを指定します。共通helperやbuild時データ処理を分割・再利用できますが、現状のサイトのpage data記述がそれだけで短くなるわけではありません。Python実行は同梱Pyodideを使い、security sandboxではありません。
+
+site-generation componentは`site.components`で指定した`.matra` directoryからcompileし、pageとlayoutに渡します。`fn Card(props, children) { ... }`を`Card({ title: "見出し" }, [p { "本文" }])`として呼び出せます。通常のHTMLへ展開され、FrontMatterやShadow DOMは不要です。previewではpageとlayoutの両方で利用例を確認できます。
 
 対話デモとPlayground WorkerはCoreの非同期browser parserとESM code splittingを利用します。初期のstatic import graph全体を32 KB・128 KB以内に保ち、Acornは別chunkに出力して文書にJavaScript構文がある場合だけ読み込みます。必要時にはtokenizer chunkもdownloadするため、初期転送量を抑えるもので総bytesは減りません。browser buildではESM splittingを有効にし、すべてのchunkを公開する必要があります。
 
@@ -68,7 +70,7 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-website buildは`@matra/core@0.3.1-site.2`、`@matra/site-generation@0.1.0-site.3`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+website buildは`@matra/core@0.3.1-site.3`、`@matra/site-generation@0.1.0-site.4`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
 `dist/.matra-site-manifest.json`に生成したページとアセットを記録し、build間で保持します。buildは`dist/`全体を削除せず、不要になった一覧内のファイルだけを削除し、一覧外のファイルは保持します。build失敗時は旧出力と生成一覧を維持します。一覧のない既存`dist/`から移行するときは、古い`app.css`など不要な旧出力を手動で確認・整理してください。新しいcheckoutからのbuildでは新しい出力先だけを生成します。
 

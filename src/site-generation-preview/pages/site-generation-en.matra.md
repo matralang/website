@@ -17,7 +17,7 @@ site:
     heading: Site generation engine preview
     bodyText: This site uses Matra's preview site-generation engine for all pages and assets. This page demonstrates a shared layout, route output, and page data.
     detailsLabel: Trial scope
-    detailsText: This checks isolated page data, a shared layout, directory-style URLs, and the GitHub Pages base path. External data extensions and watch mode are not included.
+    detailsText: A Card component loaded through site.components is reused by both a page and its layout, then expanded to ordinary HTML. The preview also checks page data, shared layouts, directory-style URLs, and the GitHub Pages base path.
 ---
 ```page.matra
 div.site-generation-preview {
@@ -40,9 +40,9 @@ div.site-generation-preview {
         h2 { "One generation pipeline for every page" }
       }
       div.feature-grid {
-        article.feature-card {
+        Card({ className: "feature-card", title: "Shared component" }, [
           p { page.data.detailsText }
-        }
+        ])
       }
     }
   }

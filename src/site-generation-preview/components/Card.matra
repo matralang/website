@@ -1,0 +1,6 @@
+fn Card(props, children) {
+  article(class=props.className) {
+    h3 { props.title }
+    ...children
+  }
+}

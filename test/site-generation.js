@@ -64,6 +64,9 @@ try {
   await symlink(path.join(root, "node_modules"), path.join(project, "node_modules"), "dir")
   await writeFile(path.join(project, "package.json"), '{"type":"module"}\n')
   build()
+  const componentPage = await readFile(path.join(output, "site-generation-preview", "index.html"), "utf8")
+  assert.match(componentPage, /<article class="feature-card"><h3>共通部品<\/h3>/)
+  assert.match(componentPage, /<article class="footer-card"><h3>Matra<\/h3>/)
 
   const manifestPath = path.join(output, ".matra-site-manifest.json")
   const initialManifest = JSON.parse(await readFile(manifestPath, "utf8"))

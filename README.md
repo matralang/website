@@ -15,13 +15,15 @@ npm run build
 npm run serve
 ```
 
-All pages and assets are published through `@matra/site-generation`. `src/content/pages.mjs` provides bilingual page data, `src/content/page.matra` renders page bodies, and `src/content/site.md` is the shared document layout. `src/build.mjs` executes the runnable example, prepares demo data, and bundles browser scripts with esbuild before calling the site generator once.
+All pages and assets are published through `@matra/site-generation`. `src/content/pages.mjs` provides bilingual page data, `src/content/page.matra` renders page bodies, and `src/content/site.md` is the shared document layout. `src/build.mjs` executes the runnable example, prepares demo data, and bundles browser scripts with esbuild before calling the site generator once. The site-generation preview defines a `Card(props, children)` component in `src/site-generation-preview/components/` and reuses it from both a page and its layout.
 
 Source/output panels display the complete `src/content/example.md` beside its actual renderer output. Include the front matter and JavaScript value fence, not just the Matra entry: readers need to see where `content` comes from. The shared bilingual explanation describes the value binding.
 
 The example shares `content.title` with `h1` and calls the JavaScript `content.pageTitle` function to append the site name for `title`. Passing a function, rather than merely sharing static data, demonstrates why `.js.part` is used. The function runs during the build, not in the generated page.
 
 The latest Core and site-generation prereleases support named ESM module fences, imports between fences, and Python fences in literate documents. Site pages and layouts resolve prepared dependencies from the site root; the build-time example uses the repository root. This enables reusable helpers and richer build-time data processing, but does not reduce the current site's page-data boilerplate by itself. Python execution uses bundled Pyodide and is not a security sandbox.
+
+Site-generation components are compiled from `.matra` files in `site.components` and passed to pages and layouts. A component such as `fn Card(props, children) { ... }` can be called with `Card({ title: "Heading" }, [p { "Body" }])`; it expands to ordinary HTML without FrontMatter or Shadow DOM. The preview exercises this in both its page and layout.
 
 The interactive demos and Playground Worker use Core's asynchronous browser parser with ESM code splitting. Their initial static import graphs stay within the 32 KB and 128 KB budgets; Acorn is emitted as a separate chunk and loaded only when a document contains JavaScript syntax. The tokenizer chunk is still downloaded when needed, so this lowers initial transfer rather than total bytes. The browser builds must keep ESM splitting enabled and publish all emitted chunks.
 
@@ -69,7 +71,7 @@ GitHub Pages deploys only from `production`. Push the verified commit to `produc
 
 ## Scope
 
-The website build uses the prereleases `@matra/core@0.3.1-site.2`, `@matra/site-generation@0.1.0-site.3`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
+The website build uses the prereleases `@matra/core@0.3.1-site.3`, `@matra/site-generation@0.1.0-site.4`, and `@matra/html@0.3.1-site.0`. These versions are for trial use, not stable support. The literate API targets Node.js 22/24 and does not require Rust, a neighboring checkout, or an additional compiler download at runtime. The generated site is static HTML/CSS plus client/Worker assets for the Playground and focused demos.
 
 `dist/.matra-site-manifest.json` tracks generated pages and assets between builds. The build does not delete `dist/`: the generator removes only obsolete managed files and preserves files outside the manifest. Failed builds preserve the previous published output and manifest. When migrating an existing `dist/` without a manifest, review and remove obsolete old outputs such as `app.css` manually; a fresh checkout generates only the new output paths.
 

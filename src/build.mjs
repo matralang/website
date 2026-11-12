@@ -12,6 +12,7 @@ const root = process.cwd()
 const projectDir = path.join(root, ".matra-site")
 const pagesDir = path.join(projectDir, "pages")
 const layoutsDir = path.join(projectDir, "layouts")
+const componentsDir = path.join(projectDir, "components")
 const assetsDir = path.join(projectDir, "assets")
 const contentDir = path.join(root, "src", "content")
 const basePath = normalizeBasePath(process.env.SITE_BASE_PATH ?? "")
@@ -43,10 +44,16 @@ async function main() {
   await Promise.all([
     mkdir(pagesDir, { recursive: true }),
     mkdir(layoutsDir, { recursive: true }),
+    mkdir(componentsDir, { recursive: true }),
     mkdir(assetsDir, { recursive: true }),
   ])
   await Promise.all([
     cp(path.join(contentDir, "site.md"), path.join(layoutsDir, "site.matra.md")),
+    cp(
+      path.join(root, "src", "site-generation-preview", "components"),
+      path.join(componentsDir, "preview"),
+      { recursive: true },
+    ),
     cp(path.join(root, "src", "site-generation-preview", "pages"), path.join(pagesDir, "preview"), {
       recursive: true,
     }),
@@ -114,6 +121,7 @@ async function main() {
       site: {
         pages: ".matra-site/pages",
         layouts: ".matra-site/layouts",
+        components: ".matra-site/components",
         assets: ".matra-site/assets",
         defaultLayout: "site",
         output: "dist",
