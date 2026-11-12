@@ -1,13 +1,9 @@
----
-matra:
-  entry: layout.matra
----
+let content = page.data;
+# Shared document layout
 
-# Matra website
+This layout wraps each generated page with the document head, navigation, and footer.
 
-Shared document layout for site-generation. Page data is supplied by the build.
-
-```layout.matra
+````layout.matra
 let content = page.data;
 html(lang=content.lang) {
   head {
@@ -73,4 +69,4 @@ html(lang=content.lang) {
     }
   }
 }
-```
+````

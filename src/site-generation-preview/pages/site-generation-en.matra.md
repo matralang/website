@@ -1,25 +1,24 @@
 ---
-matra:
-  entry: page.matra
-site:
-  route: /en/site-generation-preview/
-  layout: preview
-  data:
-    title: Site generation engine preview — Matra
-    description: A preview page built with Matra's declarative site-generation engine.
-    lang: en
-    navigationLabel: Main navigation
-    homeLabel: Matra home
-    homeUrl: /en/
-    languageRoute: /site-generation-preview/
-    otherLang: ja
-    languageLabel: 日本語
-    heading: Site generation engine preview
-    bodyText: This site uses Matra's preview site-generation engine for all pages and assets. This page demonstrates a shared layout, route output, and page data.
-    detailsLabel: Trial scope
-    detailsText: A Card component loaded through site.components is reused by both a page and its layout, then expanded to ordinary HTML. The preview also checks page data, shared layouts, directory-style URLs, and the GitHub Pages base path.
+title: "Site generation engine preview — Matra"
+description: "A preview page built with Matra's declarative site-generation engine."
+lang: en
+navigationLabel: "Main navigation"
+homeLabel: "Matra home"
+homeUrl: /en/
+languageRoute: /site-generation-preview/
+otherLang: ja
+languageLabel: 日本語
+heading: "Site generation engine preview"
+bodyText: "This site uses Matra's preview site-generation engine for all pages and assets. This page demonstrates a shared layout, route output, and page data."
+detailsLabel: "Trial scope"
+detailsText: "A Card component loaded through site.components is reused by both a page and its layout, then expanded to ordinary HTML. The preview also checks page data, shared layouts, directory-style URLs, and the GitHub Pages base path."
 ---
-```page.matra
+
+# Site-generation preview (English)
+
+The page body is kept as a named Matra block; its bilingual copy is supplied separately.
+
+````page.matra
 div.site-generation-preview {
   section.hero {
     div.shell.hero-inner {
@@ -47,4 +46,4 @@ div.site-generation-preview {
     }
   }
 }
-```
+````

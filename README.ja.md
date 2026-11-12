@@ -15,7 +15,7 @@ npm run build
 npm run serve
 ```
 
-全ページとアセットを`@matra/site-generation`から出力します。`src/content/pages.mjs`が日英のページデータ、`src/content/page.matra`が本文、`src/content/site.md`が共通の文書layoutです。`src/build.mjs`は作例の実行、デモデータの準備、esbuildによるブラウザー用scriptのbundleを行い、サイト生成を1回呼び出します。site-generation previewは`src/site-generation-preview/components/`の`Card(props, children)`部品をpageとlayoutの両方から再利用します。
+全ページとアセットを`@matra/site-generation`から出力します。Matraのtemplateは読みやすいMarkdown文書内の名前付きcode fenceで管理し、`src/content/page.md`がページ本文、`src/content/site.md`が共通の文書layoutです。site-generation previewではページ固有のコピーを各MarkdownのYAML front matterに置き、`src/site-generation-preview/pages.mjs`にはrouteなどの設定だけを残します。CSSとbrowser JavaScriptはそれぞれ独立したファイルです。`src/build.mjs`は名前付きMatra blockとfront matterを読み込み、作例の実行、デモデータの準備、esbuildによるbrowser scriptのbundleを行って、ページdata・source・layout・componentを`generateSite()`へ直接渡します。site-generation previewは`src/site-generation-preview/components/`の`Card(props, children)`部品をpageとlayoutの両方から再利用します。
 
 ソースと出力の比較には、`src/content/example.md`全体と実際のrenderer出力を表示します。`content`の出どころが分かるように、Matraの入口だけでなくfront matterとJavaScriptの値fenceも含めます。値の接続は共通の日英説明で案内します。
 
@@ -23,13 +23,13 @@ npm run serve
 
 最新のCore・site-generation prereleaseは、literate文書内のnamed ESM module fence、fence間import、Python fenceに対応します。サイトのpage/layoutはsite rootから準備済み依存を解決し、build時の作例はrepository rootを指定します。共通helperやbuild時データ処理を分割・再利用できますが、現状のサイトのpage data記述がそれだけで短くなるわけではありません。Python実行は同梱Pyodideを使い、security sandboxではありません。
 
-site-generation componentは`site.components`で指定した`.matra` directoryからcompileし、pageとlayoutに渡します。`fn Card(props, children) { ... }`を`Card({ title: "見出し" }, [p { "本文" }])`として呼び出せます。通常のHTMLへ展開され、FrontMatterやShadow DOMは不要です。previewではpageとlayoutの両方で利用例を確認できます。
+`generateSite()`にはpage dataとMatra sourceをJavaScript objectとして渡せるため、中間ファイルとしてMarkdown front matterを生成する必要はありません。previewでは各ページに記述したYAML front matterを読み、そのままAPIへ渡します。site-generation componentは`site.components`で指定した`.matra` sourceからcompileし、pageとlayoutに渡します。`fn Card(props, children) { ... }`を`Card({ title: "見出し" }, [p { "本文" }])`として呼び出せます。通常のHTMLへ展開され、FrontMatterやShadow DOMは不要です。previewではpageとlayoutの両方で利用例を確認できます。
 
 対話デモとPlayground WorkerはCoreの非同期browser parserとESM code splittingを利用します。初期のstatic import graph全体を32 KB・128 KB以内に保ち、Acornは別chunkに出力して文書にJavaScript構文がある場合だけ読み込みます。必要時にはtokenizer chunkもdownloadするため、初期転送量を抑えるもので総bytesは減りません。browser buildではESM splittingを有効にし、すべてのchunkを公開する必要があります。
 
 内容と表示を保てる範囲ではpretty HTMLを優先します。比較用作例はrendererの`pretty: true`を使います。現行rendererはインライン要素間や入れ子の整形済み領域に意味を持つ空白を挿入する場合があるため、任意文書を扱うPlaygroundとデモは通常出力を維持します。サイト本体も現行site-generation packageがpretty設定を公開していないため通常出力です。生成HTMLの後処理でこれらの制約を回避しないでください。
 
-buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
+buildはbrowser bundleの一時stagingとして`.matra-site/assets/`を作り直し、そのpathを`generateSite()`へ渡します。ページ・layoutの生成ファイルやsite configは書き出さず、dataとsourceをmemory上で直接渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
 
 ロゴ素材は`src/assets/brand/`にまとめています。`logo-horizontal.svg`（マークの右にパス化したMatraLangの文字）はヘッダー・フッター用、`logo-stacked.svg`（マークの下に文字）は縦組み用、`logo-mark.svg`（マークのみ）はfavicon用、`og-image.png`はSNS用の1280×800画像です。ロゴを差し替える際は各SVGを更新し、PNGを再生成してください。例えばlibrsvgとImageMagickを使う場合は`rsvg-convert -w 1120 -h 560 src/assets/brand/logo-stacked.svg | magick png:- -background '#f3f7fd' -gravity center -extent 1280x800 -alpha remove -alpha off PNG24:src/assets/brand/og-image.png`を実行します。ロゴの縦横比は保ったまま1280×800のキャンバス中央に配置します。これらの素材はbuild時に`assets/brand/`へコピーされます。サイトUIはロゴの青（`#006fe5`）を基調に、濃い青と青みのある淡色を組み合わせています。OGP画像の絶対URLには`SITE_ORIGIN`（既定値は`https://www.matralang.org`、末尾のスラッシュなし）と`SITE_BASE_PATH`を使用します。
 
@@ -70,7 +70,7 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-website buildは`@matra/core@0.3.1-site.3`、`@matra/site-generation@0.1.0-site.4`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+website buildは`@matra/core@0.3.1-site.4`、`@matra/site-generation@0.1.0-site.5`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
 `dist/.matra-site-manifest.json`に生成したページとアセットを記録し、build間で保持します。buildは`dist/`全体を削除せず、不要になった一覧内のファイルだけを削除し、一覧外のファイルは保持します。build失敗時は旧出力と生成一覧を維持します。一覧のない既存`dist/`から移行するときは、古い`app.css`など不要な旧出力を手動で確認・整理してください。新しいcheckoutからのbuildでは新しい出力先だけを生成します。
 

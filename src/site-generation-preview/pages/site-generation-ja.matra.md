@@ -1,25 +1,24 @@
 ---
-matra:
-  entry: page.matra
-site:
-  route: /site-generation-preview/
-  layout: preview
-  data:
-    title: サイト生成エンジンの試験ページ — Matra
-    description: Matraの宣言的サイト生成エンジンを使った試験ページです。
-    lang: ja
-    navigationLabel: メインナビゲーション
-    homeLabel: Matra ホーム
-    homeUrl: /
-    languageRoute: /en/site-generation-preview/
-    otherLang: en
-    languageLabel: English
-    heading: サイト生成エンジンの試験ページ
-    bodyText: このサイトは、試験中のMatraサイト生成エンジンで全ページとアセットを生成しています。このページは、共通レイアウト、ルート出力、ページデータを確認するデモです。
-    detailsLabel: 試験範囲
-    detailsText: site.componentsで読み込むCard部品をpageとlayoutから再利用し、通常のHTMLへ展開します。ページデータ、共通layout、directory形式URL、GitHub Pages base pathも確認できます。
+title: "サイト生成エンジンの試験ページ — Matra"
+description: "Matraの宣言的サイト生成エンジンを使った試験ページです。"
+lang: ja
+navigationLabel: "メインナビゲーション"
+homeLabel: "Matra ホーム"
+homeUrl: /
+languageRoute: /en/site-generation-preview/
+otherLang: en
+languageLabel: English
+heading: "サイト生成エンジンの試験ページ"
+bodyText: "このサイトは、試験中のMatraサイト生成エンジンで全ページとアセットを生成しています。このページは、共通レイアウト、ルート出力、ページデータを確認するデモです。"
+detailsLabel: "試験範囲"
+detailsText: "site.componentsで読み込むCard部品をpageとlayoutから再利用し、通常のHTMLへ展開します。ページデータ、共通layout、directory形式URL、GitHub Pages base pathも確認できます。"
 ---
-```page.matra
+
+# Site-generation preview (Japanese)
+
+The page body is kept as a named Matra block; its bilingual copy is supplied separately.
+
+````page.matra
 div.site-generation-preview {
   section.hero {
     div.shell.hero-inner {
@@ -47,4 +46,4 @@ div.site-generation-preview {
     }
   }
 }
-```
+````

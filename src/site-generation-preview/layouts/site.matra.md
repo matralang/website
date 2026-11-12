@@ -1,13 +1,8 @@
----
-matra:
-  entry: layout.matra
----
-
 # Site-generation preview layout
 
-Document layout for the site-generation preview pages. Page data is supplied by the build.
+This layout demonstrates sharing a component between the page and the document shell.
 
-```layout.matra
+````layout.matra
 html(lang=page.data.lang) {
   head {
     meta(charset="utf-8") {}
@@ -51,4 +46,4 @@ html(lang=page.data.lang) {
     }
   }
 }
-```
+````

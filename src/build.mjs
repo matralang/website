@@ -1,20 +1,20 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises"
+import { cp, mkdir, readFile, rm } from "node:fs/promises"
 import path from "node:path"
-import { staticValueToAST } from "@matra/core"
+import { extractMatraMarkdown, staticValueToAST } from "@matra/core"
 import { buildLiterate, runLiterate } from "@matra/core/experimental/literate"
 import { toHTML } from "@matra/html"
-import { buildSite } from "@matra/site-generation"
+import { generateSite } from "@matra/site-generation"
 import { build as buildBrowserAssets } from "esbuild"
+import { load as loadYaml } from "js-yaml"
 import pages from "./content/pages.mjs"
 import { demoDefinitions, renderDemo } from "./demos/render.mjs"
+import previewPages from "./site-generation-preview/pages.mjs"
 
 const root = process.cwd()
 const projectDir = path.join(root, ".matra-site")
-const pagesDir = path.join(projectDir, "pages")
-const layoutsDir = path.join(projectDir, "layouts")
-const componentsDir = path.join(projectDir, "components")
 const assetsDir = path.join(projectDir, "assets")
 const contentDir = path.join(root, "src", "content")
+const previewDir = path.join(root, "src", "site-generation-preview")
 const basePath = normalizeBasePath(process.env.SITE_BASE_PATH ?? "")
 const siteOrigin = process.env.SITE_ORIGIN ?? "https://www.matralang.org"
 const canonicalBaseUrl = `${siteOrigin}${basePath}`
@@ -35,35 +35,59 @@ async function renderLiterate(markdown, document) {
   return toHTML(staticValueToAST(value), { basePath, pretty: true })
 }
 
+async function readMatraSource(markdownPath, entry) {
+  const markdown = await readFile(markdownPath, "utf8")
+  return extractMatraMarkdown(markdown, { entry }).source
+}
+
+async function readFrontMatter(markdownPath) {
+  const markdown = await readFile(markdownPath, "utf8")
+  const opening = /^(?:\uFEFF)?---[ \t]*\r?\n/.exec(markdown)
+  if (!opening) throw new Error(`${markdownPath}: expected YAML front matter`)
+  const rest = markdown.slice(opening[0].length)
+  const closing = /(?:^|\r?\n)---[ \t]*(?:\r?\n|$)/.exec(rest)
+  if (!closing) throw new Error(`${markdownPath}: unclosed YAML front matter`)
+  const data = loadYaml(rest.slice(0, closing.index))
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new TypeError(`${markdownPath}: YAML front matter must be an object`)
+  }
+  return data
+}
+
 async function main() {
-  const template = await readFile(path.join(contentDir, "page.matra"), "utf8")
-  const example = await readFile(path.join(contentDir, "example.md"), "utf8")
+  const [template, siteLayout, card, example] = await Promise.all([
+    readMatraSource(path.join(contentDir, "page.md"), "page.matra"),
+    readMatraSource(path.join(contentDir, "site.md"), "layout.matra"),
+    readFile(path.join(previewDir, "components", "Card.matra"), "utf8"),
+    readFile(path.join(contentDir, "example.md"), "utf8"),
+  ])
   const exampleSource = example.trim()
   const exampleOutput = await renderLiterate(example, "example.md")
-  await rm(projectDir, { recursive: true, force: true })
-  await Promise.all([
-    mkdir(pagesDir, { recursive: true }),
-    mkdir(layoutsDir, { recursive: true }),
-    mkdir(componentsDir, { recursive: true }),
-    mkdir(assetsDir, { recursive: true }),
-  ])
-  await Promise.all([
-    cp(path.join(contentDir, "site.md"), path.join(layoutsDir, "site.matra.md")),
-    cp(
-      path.join(root, "src", "site-generation-preview", "components"),
-      path.join(componentsDir, "preview"),
-      { recursive: true },
-    ),
-    cp(path.join(root, "src", "site-generation-preview", "pages"), path.join(pagesDir, "preview"), {
-      recursive: true,
-    }),
-    cp(
-      path.join(root, "src", "site-generation-preview", "layouts", "site.matra.md"),
-      path.join(layoutsDir, "preview.matra.md"),
-    ),
-  ])
 
-  for (const [index, page] of pages.entries()) {
+  await rm(projectDir, { recursive: true, force: true })
+  await mkdir(assetsDir, { recursive: true })
+  await Promise.all([
+    cp(path.join(root, "src", "styles", "app.css"), path.join(assetsDir, "app.css")),
+    cp(path.join(root, "src", "assets"), assetsDir, { recursive: true }),
+  ])
+  await buildBrowserAssets({
+    entryPoints: [
+      path.join(root, "src", "playground", "playground.js"),
+      path.join(root, "src", "playground", "playground-worker.js"),
+      path.join(root, "src", "demos", "demos.js"),
+    ],
+    outdir: assetsDir,
+    bundle: true,
+    splitting: true,
+    entryNames: "[name]",
+    chunkNames: "chunks/[name]-[hash]",
+    format: "esm",
+    minify: true,
+    platform: "browser",
+    target: "es2020",
+  })
+
+  const generatedPages = await Promise.all(pages.map(async page => {
     const data = {
       ...page,
       canonicalUrl: `${canonicalBaseUrl}${page.route}`,
@@ -86,57 +110,60 @@ async function main() {
       sampleSource: exampleSource,
       sampleOutput: exampleOutput,
     }
-    const metadata = {
-      matra: { entry: "page.matra" },
-      site: { route: page.route, data },
+    return {
+      kind: "matra",
+      route: page.route,
+      source: template,
+      data,
+      document: `pages${page.route === "/" ? "/index" : page.route.slice(0, -1)}.matra`,
     }
-    await writeFile(
-      path.join(pagesDir, `page-${index}.matra.md`),
-      `---\n${JSON.stringify(metadata)}\n---\n\`\`\`page.matra\n${template}\n\`\`\`\n`,
-    )
-  }
+  }))
+  const generatedPreviewPages = await Promise.all(previewPages.map(async page => {
+    const markdownPath = path.join(previewDir, page.source)
+    const [source, data] = await Promise.all([
+      readMatraSource(markdownPath, "page.matra"),
+      readFrontMatter(markdownPath),
+    ])
+    return {
+      kind: "matra",
+      route: page.route,
+      source,
+      layout: page.layout,
+      data,
+      document: page.document,
+    }
+  }))
 
-  await cp(path.join(root, "src", "styles", "app.css"), path.join(assetsDir, "app.css"))
-  await cp(path.join(root, "src", "assets"), assetsDir, { recursive: true })
-  await buildBrowserAssets({
-    entryPoints: [
-      path.join(root, "src", "playground", "playground.js"),
-      path.join(root, "src", "playground", "playground-worker.js"),
-      path.join(root, "src", "demos", "demos.js"),
-    ],
-    outdir: assetsDir,
-    bundle: true,
-    splitting: true,
-    entryNames: "[name]",
-    chunkNames: "chunks/[name]-[hash]",
-    format: "esm",
-    minify: true,
-    platform: "browser",
-    target: "es2020",
-  })
-  await writeFile(
-    path.join(root, "matra.site.json"),
-    `${JSON.stringify({
-      version: 1,
-      site: {
-        pages: ".matra-site/pages",
-        layouts: ".matra-site/layouts",
-        components: ".matra-site/components",
-        assets: ".matra-site/assets",
-        defaultLayout: "site",
-        output: "dist",
-        format: "directory",
-        basePath,
-        data: {
-          footerText: "Learn languages. Connect through structure.",
-          githubUrl: "https://github.com/matralang/matra",
-          canonicalBaseUrl,
-          ogImage: `${siteOrigin}${basePath}/assets/brand/og-image.png`,
-        },
+  const generated = await generateSite({
+    root,
+    output: "dist",
+    assets: ".matra-site/assets",
+    basePath,
+    defaultLayout: "site",
+    data: {
+      footerText: "Learn languages. Connect through structure.",
+      githubUrl: "https://github.com/matralang/matra",
+      canonicalBaseUrl,
+      ogImage: `${siteOrigin}${basePath}/assets/brand/og-image.png`,
+    },
+    layouts: {
+      site: { source: siteLayout, document: "src/content/site.md" },
+      preview: {
+        source: await readMatraSource(
+          path.join(previewDir, "layouts", "site.matra.md"),
+          "layout.matra",
+        ),
+        document: "src/site-generation-preview/layouts/site.matra.md",
       },
-    }, null, 2)}\n`,
-  )
-  const generated = await buildSite(root)
+    },
+    components: {
+      Card: {
+        source: card,
+        document: "src/site-generation-preview/components/Card.matra",
+      },
+    },
+    pages: [...generatedPages, ...generatedPreviewPages],
+  })
   for (const file of generated) console.log(`Generated ${path.relative(root, file)}`)
 }
 

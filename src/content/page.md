@@ -1,3 +1,8 @@
+# Shared page body
+
+The site renderer uses this Matra template for page content. Copy and styles remain in their own source files.
+
+````page.matra
 let content = page.data;
 main {
   section.hero {
@@ -233,3 +238,4 @@ main {
     }
   }
 }
+````
