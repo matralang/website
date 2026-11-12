@@ -1,8 +1,8 @@
 const github = "https://github.com/matralang/matra"
 const spec = `${github}/blob/develop/spec`
-const cliRelease = `${github}/blob/release/npm-cli-0.3.2-alpha.0/spec`
+const cliRelease = "https://www.npmjs.com/package/@matra/cli/v/0.3.2-alpha.1"
 const install = "npm install --save-exact @matra/core@0.3.0 @matra/html@0.3.0"
-const cliInstall = "npm install --global @matra/cli@0.3.2-alpha.0"
+const cliInstall = "npm install --global @matra/cli@0.3.2-alpha.1"
 
 const locales = {
   ja: {
@@ -592,7 +592,7 @@ const getStarted = (locale) => locale === "ja"
       sections: [
         { title: "1. Node.jsを用意", text: "WindowsまたはmacOSにNode.js 22または24とnpmをインストールし、ターミナルを開きます。PowerShellでも同じコマンドを使えます。", code: "node --version\nnpm --version", link: "https://nodejs.org/en/download", linkLabel: "Node.js公式ダウンロード" },
         { title: "2. CLIを導入", text: "次のコマンドで実験版をversion固定してインストールします。PowerShellのスクリプト実行制限で失敗する場合はnpm.cmdとmatra.cmdを使います。コマンドが見つからない場合はnpmのprefixとPATHを確認してください。", code: `${cliInstall}\nmatra --version`, link: "https://docs.npmjs.com/cli/v11/commands/npm-prefix", linkLabel: "npm prefixの説明" },
-        { title: "3. ページを作成", text: "helloは存在しないディレクトリを指定します。dist/index.htmlを開くか、表示されたlocalhostのURLでプレビューします。更新後のブラウザ再読み込みは手動、終了はCtrl+Cです。", code: "matra init hello\ncd hello\nmatra build\nmatra dev", link: `${cliRelease}/build-tools-release.ja.md#2026年11月7日の公開記録`, linkLabel: "配布状況と注意事項" },
+        { title: "3. ページを作成", text: "helloは存在しないディレクトリを指定します。dist/index.htmlを開くか、表示されたlocalhostのURLでプレビューします。更新後のブラウザ再読み込みは手動、終了はCtrl+Cです。", code: "matra init hello\ncd hello\nmatra build\nmatra dev", link: cliRelease, linkLabel: "npmの公開package" },
       ],
       notice: "実験版です。buildは文書内のJavaScriptを実行するため、信頼する文書だけを使ってください。OS sandboxや実行時間の保証はありません。キャンペーンの案内・サポート期間は別途お知らせします。",
     }
@@ -602,7 +602,7 @@ const getStarted = (locale) => locale === "ja"
       sections: [
         { title: "1. Install Node.js", text: "Install Node.js 22 or 24 and npm on Windows or macOS, then open a terminal. The same commands work in PowerShell.", code: "node --version\nnpm --version", link: "https://nodejs.org/en/download", linkLabel: "Official Node.js download" },
         { title: "2. Install the CLI", text: "Install the experimental version with this pinned command. If PowerShell blocks scripts, use npm.cmd and matra.cmd instead. If the global command is not found, check npm's prefix and PATH.", code: `${cliInstall}\nmatra --version`, link: "https://docs.npmjs.com/cli/v11/commands/npm-prefix", linkLabel: "About npm prefix" },
-        { title: "3. Create a page", text: "Choose a directory that does not exist for hello. Open dist/index.html or preview the displayed localhost URL. Refresh the browser manually after changes and stop with Ctrl+C.", code: "matra init hello\ncd hello\nmatra build\nmatra dev", link: `${cliRelease}/build-tools-release.md#publication-record-november-7-2026`, linkLabel: "Distribution status and limitations" },
+        { title: "3. Create a page", text: "Choose a directory that does not exist for hello. Open dist/index.html or preview the displayed localhost URL. Refresh the browser manually after changes and stop with Ctrl+C.", code: "matra init hello\ncd hello\nmatra build\nmatra dev", link: cliRelease, linkLabel: "Published npm package" },
       ],
       notice: "This is experimental. Builds execute document JavaScript, so use trusted documents only. No OS sandbox or execution timeout is guaranteed. Campaign information and support dates will be announced separately.",
     }

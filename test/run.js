@@ -157,7 +157,7 @@ for (const [home, status, link] of [
   [englishIndex, "Experimental CLI", "/en/docs/#get-started"],
 ]) {
   assert.ok(home.includes(status))
-  assert.ok(home.includes("<code>npm install --global @matra/cli@0.3.2-alpha.0</code>"))
+  assert.ok(home.includes("<code>npm install --global @matra/cli@0.3.2-alpha.1</code>"))
   assert.ok(home.includes(`href="${link}"`))
 }
 for (const [file, status] of [
@@ -167,7 +167,7 @@ for (const [file, status] of [
   const docs = await readPage(file)
   assert.ok(docs.includes('id="get-started"'))
   assert.ok(docs.includes(status))
-  assert.ok(docs.includes("npm install --global @matra/cli@0.3.2-alpha.0"))
+  assert.ok(docs.includes("npm install --global @matra/cli@0.3.2-alpha.1"))
   assert.ok(docs.includes("matra init hello"))
   assert.ok(docs.includes("matra dev"))
 }
