@@ -90,15 +90,6 @@ assert.deepEqual(
 const escapeHTML = value => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
 const exampleSource = (await readFile(path.join(root, "src/content/example.md"), "utf8")).trim()
-const exampleOutput = `<html lang="en">
-  <head>
-    <title>A page with Matra | Matra</title>
-  </head>
-  <body>
-    <h1>A page with Matra</h1>
-    <p>Describe the document, then generate semantic HTML.</p>
-  </body>
-</html>`
 for (const page of pages) {
   const html = await readPage(`${page.route.slice(1)}index.html`)
   const canonicalUrl = `https://www.matralang.org${page.route}`
@@ -127,7 +118,10 @@ for (const page of pages) {
   assert.equal(page.navigation[1].href, `${page.lang === "ja" ? "" : "/en"}/spec/`)
   if (page.sampleEnabled && !page.playgroundEnabled && !page.specSections) {
     assert.ok(html.includes(`<code>${escapeHTML(exampleSource)}</code>`), page.route)
-    assert.ok(html.includes(`<code>${escapeHTML(exampleOutput)}</code>`), page.route)
+    assert.ok(html.includes("<code>&lt;html lang=&quot;en&quot;&gt;"), page.route)
+    for (const packageName of ["@matra/cli", "@matra/core", "@matra/site-generation"]) {
+      assert.ok(html.includes(`&lt;h2&gt;${packageName}&lt;/h2&gt;`), page.route)
+    }
     assert.ok(html.includes(escapeHTML(page.sampleExplanation)), page.route)
     assert.ok(html.includes("<small>example.md</small>"), page.route)
   }
@@ -161,7 +155,7 @@ for (const [home, status, link] of [
   [englishIndex, "Experimental CLI", "/en/docs/#get-started"],
 ]) {
   assert.ok(home.includes(status))
-  assert.ok(home.includes("<code>npm install --global @matra/cli@0.3.2-alpha.1</code>"))
+  assert.ok(home.includes("<code>npm install --global @matra/cli@0.3.2-alpha.3</code>"))
   assert.ok(home.includes(`href="${link}"`))
 }
 for (const [file, status] of [
@@ -171,7 +165,7 @@ for (const [file, status] of [
   const docs = await readPage(file)
   assert.ok(docs.includes('id="get-started"'))
   assert.ok(docs.includes(status))
-  assert.ok(docs.includes("npm install --global @matra/cli@0.3.2-alpha.1"))
+  assert.ok(docs.includes("npm install --global @matra/cli@0.3.2-alpha.3"))
   assert.ok(docs.includes("matra init hello"))
   assert.ok(docs.includes("matra dev"))
 }
@@ -349,8 +343,13 @@ for (const locale of ["", "en/"]) {
   const examples = await readPage(`${locale}examples/index.html`)
   const packages = await readPage(`${locale}packages/index.html`)
   assert.match(examples, /npm install --save-exact @matra\/core@0\.3\.0 @matra\/html@0\.3\.0/)
-  assert.doesNotMatch(packages, /alpha|prerelease|先行配布版/)
-  assert.match(packages, /v0\.3\.0/)
+  assert.match(packages, /@matra\/core/)
+  assert.match(packages, /@matra\/cli/)
+  assert.match(packages, /@matra\/site-generation/)
+  assert.match(packages, /@matra\/html/)
+  assert.match(packages, /0\.3\.2-alpha\.3/)
+  assert.match(packages, /0\.1\.0-site\.5/)
+  assert.match(packages, /provisional|暫定/)
 }
 for (const file of await htmlFiles(path.join(root, "dist"))) {
   assert.doesNotMatch(await readFile(file, "utf8"), /0\.3\.0-alpha/)

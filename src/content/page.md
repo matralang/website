@@ -218,6 +218,9 @@ main {
               p.card-index { card.index }
               h3 { card.title }
               p { card.text }
+              if (card.code) {
+                pre { code { card.code } }
+              }
               ...for (link in card.links) {
                 a.text-link(href=link.href) { link.label }
               }

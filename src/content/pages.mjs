@@ -1,8 +1,8 @@
 const github = "https://github.com/matralang/matra"
 const spec = `${github}/blob/develop/spec`
-const cliRelease = "https://www.npmjs.com/package/@matra/cli/v/0.3.2-alpha.1"
+const cliRelease = "https://www.npmjs.com/package/@matra/cli/v/0.3.2-alpha.3"
 const install = "npm install --save-exact @matra/core@0.3.0 @matra/html@0.3.0"
-const cliInstall = "npm install --global @matra/cli@0.3.2-alpha.1"
+const cliInstall = "npm install --global @matra/cli@0.3.2-alpha.3"
 
 const locales = {
   ja: {
@@ -43,7 +43,7 @@ const locales = {
     ],
     footerText: "文書構造を記述し、評価し、変換する。",
     brandLabel: "Matra ホーム",
-    sampleExplanation: "左は入力Markdown文書の全体です。matra.entryがmain.matraを入口に選び、matra.valuesがcontent.js.partのJavaScript式の結果をcontentとして渡します。contentは組み込み変数ではありません。h1はcontent.titleをそのまま使い、titleはJavaScript関数content.pageTitleを呼び出してサイト名を付けます。値の共有だけならJSONで足りますが、この例では関数を渡すために.js.partを使っています。関数はbuild時に実行され、生成HTMLには含まれません。",
+    sampleExplanation: "左は入力Markdown文書の全体です。matra.entryがmain.matraを選び、matra.valuesのJavaScript式をcontentとして渡します。@matra/coreが文書を評価し、@matra/site-generationがページ・共通layout・データからサイトを生成します。CLIは新規プロジェクトの作成とbuild/previewに使います。下のコードは各packageの利用例です。",
   },
   en: {
     lang: "en",
@@ -83,7 +83,7 @@ const locales = {
     ],
     footerText: "Describe, evaluate, and transform document structure.",
     brandLabel: "Matra home",
-    sampleExplanation: "The left panel shows the complete input Markdown document. matra.entry selects main.matra; matra.values makes the result of the content.js.part JavaScript expression available as content, not a built-in variable. h1 uses content.title directly; title calls the JavaScript function content.pageTitle to append the site name. Sharing a value alone would only need JSON, but this example uses .js.part to pass a function. The function runs at build time and is not included in the generated HTML.",
+    sampleExplanation: "The left panel shows the complete Markdown source. matra.entry selects main.matra, and matra.values exposes the JavaScript expression as content. @matra/core evaluates the document, while @matra/site-generation builds a site from pages, shared layouts, and data. The CLI creates and builds starter projects. The code below shows each package in use.",
   },
 }
 
@@ -100,6 +100,7 @@ function page(locale, route, languageRoute, copy) {
     getStarted: null,
     quickInstall: null,
     ...copy,
+    cards: copy.cards?.map(card => ({ ...card, code: card.code ?? null })),
     route,
     languageUrl: languageRoute,
     githubUrl: github,
@@ -419,12 +420,12 @@ const docsCards = (locale) => locale === "ja"
   ? [
       { index: "01", title: "作例", text: "Matra、JavaScript、HTML rendererをつなぐ最小の実行例です。", links: [{ href: "/examples/", label: "作例を見る →" }] },
       { index: "02", title: "v0.3仕様", text: "文書data model、文法、公開literate APIの一次資料です。", links: [{ href: "/spec/", label: "仕様一覧 →" }] },
-      { index: "03", title: "パッケージ", text: "検証対象となるCoreとHTMLの公開packageを案内します。", links: [{ href: "/packages/", label: "package一覧 →" }] },
+      { index: "03", title: "パッケージ", text: "Core・CLI・HTML・site-generationの役割と、暫定APIを含む利用例を案内します。", links: [{ href: "/packages/", label: "package一覧 →" }] },
     ]
   : [
       { index: "01", title: "Examples", text: "A minimal runnable path connecting Matra, JavaScript, and the HTML renderer.", links: [{ href: "/en/examples/", label: "View examples →" }] },
       { index: "02", title: "v0.3 specifications", text: "Primary sources for the document data model, grammar, and public literate API.", links: [{ href: "/en/spec/", label: "Browse specifications →" }] },
-      { index: "03", title: "Packages", text: "Published Core and HTML packages included in the verification scope.", links: [{ href: "/en/packages/", label: "View packages →" }] },
+      { index: "03", title: "Packages", text: "Roles and provisional usage examples for Core, CLI, HTML, and site-generation.", links: [{ href: "/en/packages/", label: "View packages →" }] },
     ]
 
 const docsCopy = (locale) => locale === "ja"
@@ -433,11 +434,11 @@ const docsCopy = (locale) => locale === "ja"
       description: "Matra v0.3の導入、作例、仕様、packageの入口。",
       eyebrow: "ドキュメント",
       heading: "CLIで動かし、APIで組み込む。",
-      intro: "技術書で読んだ構造を、自分の環境で確かめるための入口です。まずGet Startedでページを生成し、次にJavaScriptと接続する実行例、Core・HTMLの公開API、文法と評価の契約へ進んでください。",
+      intro: "技術書で読んだ構造を、自分の環境で確かめるための入口です。まずGet StartedでCLIからページを生成し、次にCore・site-generation・HTMLを使う例と、文法・評価の契約へ進んでください。",
       actions: [{ href: "/docs/#get-started", label: "Get Started", className: "button primary" }, { href: "/examples/", label: "実行例を見る", className: "button secondary" }, { href: "/spec/", label: "仕様を読む", className: "button secondary" }],
       releaseNote: "対応環境: Node.js 22/24。literate APIは実験的なNode.js APIです。",
       sampleEyebrow: "最初の一歩",
-      sampleTitle: "CoreとHTMLを導入",
+      sampleTitle: "CLIとCore・HTMLを使う",
       sampleDescription: "固定versionで導入し、READMEと公開API契約を参照します。",
       featuresEyebrow: "読む・試す",
       featuresTitle: "目的に合わせて進む。",
@@ -453,11 +454,11 @@ const docsCopy = (locale) => locale === "ja"
       description: "Entry points for Matra v0.3 setup, examples, specifications, and packages.",
       eyebrow: "DOCUMENTATION",
       heading: "Run the CLI. Integrate the APIs.",
-      intro: "Test the structures you read about in the technical book on your own machine. Generate a page with Get Started, then explore the runnable JavaScript integration, Core/HTML public APIs, and grammar and evaluation contracts.",
+      intro: "Test the structures you read about in the technical book on your own machine. Create a page with the CLI, then explore examples using Core, site-generation, and HTML alongside grammar and evaluation contracts.",
       actions: [{ href: "/en/docs/#get-started", label: "Get Started", className: "button primary" }, { href: "/en/examples/", label: "Run the example", className: "button secondary" }, { href: "/en/spec/", label: "Read the specs", className: "button secondary" }],
       releaseNote: "Supported setup: Node.js 22/24. The literate API is experimental and Node.js-only.",
       sampleEyebrow: "First step",
-      sampleTitle: "Install Core and HTML",
+      sampleTitle: "Use the CLI, Core, and HTML",
       sampleDescription: "Install exact versions and refer to the README and public API contract.",
       featuresEyebrow: "Read and try",
       featuresTitle: "Choose your next step.",
@@ -531,28 +532,32 @@ const specCopy = (locale) => locale === "ja"
 
 const packageCards = (locale) => locale === "ja"
   ? [
-      { index: "01", title: "@matra/core", text: "文法、program評価、文書AST、文書nodeを指数と値の対応で表すMorphion形式への変換、browser API、experimental/literate API。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
-      { index: "02", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応。v0.3.0。", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
-      { index: "03", title: "別domain package", text: "Graphics・Math・Compute Engineは個別の検証対象です。このsiteの依存として、すべてを公開済み・完成済みとは扱いません。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "優先度と範囲 →" }] },
+      { index: "01", title: "@matra/core", text: "文法、評価、文書AST、browser API、experimental/literate APIを提供します。このサイトではliterate APIでMatra文書を評価します。", code: 'const value = await runLiterate(await buildLiterate(source))', links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "02", title: "@matra/cli", text: "新規projectの作成、build、ローカルpreview向けの実験版CLIです。", code: `${cliInstall}\nmatra init hello\ncd hello && matra dev`, links: [{ href: cliRelease, label: "npm package →" }] },
+      { index: "03", title: "@matra/site-generation", text: "Matra template・共通layout・page dataからsiteを生成します。このwebsiteの各routeもこのpackageで出力します。APIとversionは暫定です。", code: 'await generateSite({ root, output: "dist", pages })', links: [{ href: `${github}/tree/develop/packages/site-generation`, label: "Site generation source →" }] },
+      { index: "04", title: "@matra/html", text: "文書ASTをHTMLへ変換し、文字列・属性のescapeとbase pathに対応します。このwebsiteはsite-generationを通じて利用します。", code: "const html = toHTML(documentAST)", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
+      { index: "05", title: "別domain package", text: "Graphics・Math・Compute Engineは個別の検証対象です。公開状態や完成度を一括して扱いません。", links: [{ href: `${spec}/release-v0.3.ja.md`, label: "優先度と範囲 →" }] },
     ]
   : [
-      { index: "01", title: "@matra/core", text: "Grammar, program evaluation, document AST, conversion to Matra's proposed exponent-to-value representation of document nodes (Morphion), browser API, and the experimental literate API. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
-      { index: "02", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. v0.3.0.", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
-      { index: "03", title: "Other domain packages", text: "Graphics, Math, and Compute Engine have separate verification scopes; this site does not present them all as published or complete.", links: [{ href: `${spec}/release-v0.3.md`, label: "Priorities and scope →" }] },
+      { index: "01", title: "@matra/core", text: "Provides grammar, evaluation, document AST, browser APIs, and the experimental literate API. This site uses the literate API to evaluate Matra documents.", code: 'const value = await runLiterate(await buildLiterate(source))', links: [{ href: `${github}/tree/develop/packages/core`, label: "Core source →" }] },
+      { index: "02", title: "@matra/cli", text: "An experimental CLI for creating, building, and locally previewing starter projects.", code: `${cliInstall}\nmatra init hello\ncd hello && matra dev`, links: [{ href: cliRelease, label: "npm package →" }] },
+      { index: "03", title: "@matra/site-generation", text: "Generates a site from Matra templates, shared layouts, and page data. This package generates every route on this website. Its API and version are provisional.", code: 'await generateSite({ root, output: "dist", pages })', links: [{ href: `${github}/tree/develop/packages/site-generation`, label: "Site generation source →" }] },
+      { index: "04", title: "@matra/html", text: "Renders document AST to HTML with text/attribute escaping and base-path support. This website uses it through site-generation.", code: "const html = toHTML(documentAST)", links: [{ href: `${github}/tree/develop/packages/html`, label: "HTML source →" }] },
+      { index: "05", title: "Other domain packages", text: "Graphics, Math, and Compute Engine have separate verification scopes; publication and completeness are assessed separately.", links: [{ href: `${spec}/release-v0.3.md`, label: "Priorities and scope →" }] },
     ]
 
 const packagesCopy = (locale) => locale === "ja"
   ? {
       title: "Packages — Matra",
-      description: "Matra v0.3の公開対象となるCoreとHTML package。",
+      description: "MatraのCore・CLI・HTML・site-generation packagesと、暫定的な利用例。",
       eyebrow: "PACKAGES",
       heading: "公開packageと検証範囲。",
-      intro: "websiteの再現可能なHTML出力経路は、npmで公開されたCore・HTML v0.3.0 packageをversion固定して利用します。その他のpackageの公開状況や完成度は、それぞれの配布物とrelease記録で確認してください。",
+      intro: "このwebsiteのページ本体はMatra templateとpage dataで構成し、@matra/coreで評価、@matra/site-generationで全routeを生成、@matra/htmlでHTML化します。@matra/cliは新規projectの作成・build・previewに使います。下の例は暫定APIを含むため、各packageのversionとrelease記録を確認してください。",
       actions: [{ href: "/docs/", label: "導入する", className: "button primary" }, { href: `${github}/tree/develop/packages`, label: "全packageを見る", className: "button secondary" }],
-      releaseNote: "v0.3.0の正式公開対象はCoreとHTMLです。全packageの完成を意味しません。",
+      releaseNote: "Core 0.3.1-site.4 / HTML 0.3.1-site.0 / CLI 0.3.2-alpha.3 / site-generation 0.1.0-site.5。互換性・APIは暫定です。",
       sampleEyebrow: "検証対象",
       sampleTitle: "websiteのbuildを再現する依存",
-      sampleDescription: "正確なversionと配布上の制限を確認してから導入してください。",
+      sampleDescription: "各packageの役割と、最小限の利用例を確認できます。",
       featuresEyebrow: "パッケージ",
       featuresTitle: "役割と公開状態を分けて確認。",
       cards: packageCards(locale),
@@ -564,15 +569,15 @@ const packagesCopy = (locale) => locale === "ja"
     }
   : {
       title: "Packages — Matra",
-      description: "Published Core and HTML packages in the Matra v0.3 scope.",
+      description: "Matra Core, CLI, HTML, and site-generation packages with provisional usage examples.",
       eyebrow: "PACKAGES",
       heading: "Published packages and verification scope.",
-      intro: "The website's reproducible HTML path uses the npm-published Core and HTML v0.3.0 packages at pinned versions. Check each package's distribution and release notes for the publication status and completeness of other packages.",
+      intro: "This website's page bodies are Matra templates composed with page data, evaluated by @matra/core, generated across routes by @matra/site-generation, and rendered as HTML by @matra/html. The @matra/cli creates, builds, and previews starter projects. The examples below include provisional APIs; check each package's version and release notes.",
       actions: [{ href: "/en/docs/", label: "Get started", className: "button primary" }, { href: `${github}/tree/develop/packages`, label: "Browse all packages", className: "button secondary" }],
-      releaseNote: "The formal v0.3.0 publication covers Core and HTML, not completion of every package.",
+      releaseNote: "Examples use Core 0.3.1-site.4, HTML 0.3.1-site.0, CLI 0.3.2-alpha.3, and site-generation 0.1.0-site.5; compatibility and APIs are provisional.",
       sampleEyebrow: "Verification target",
       sampleTitle: "Dependencies used by the website build",
-      sampleDescription: "Check exact versions and distribution limitations before installing.",
+      sampleDescription: "Review each package's role and a minimal usage example.",
       featuresEyebrow: "Packages",
       featuresTitle: "Check role and publication status separately.",
       cards: packageCards(locale),
