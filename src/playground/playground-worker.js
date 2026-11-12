@@ -1,7 +1,7 @@
-import { evaluate, parse, staticValueToAST } from "@matra/core/browser"
+import { evaluate, parse, staticValueToAST } from "@matra/core/browser-async"
 import { toHTML } from "@matra/html"
 
-self.addEventListener("message", event => {
+self.addEventListener("message", async event => {
   const source = event.data?.source
   if (typeof source !== "string") {
     self.postMessage({ type: "error", name: "TypeError", message: "Expected Matra source text." })
@@ -9,7 +9,7 @@ self.addEventListener("message", event => {
   }
 
   try {
-    const ast = staticValueToAST(evaluate(parse(source)))
+    const ast = staticValueToAST(evaluate(await parse(source)))
     self.postMessage({ type: "result", html: toHTML(ast) })
   } catch (error) {
     self.postMessage({

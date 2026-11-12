@@ -29,8 +29,8 @@ function normalizeBasePath(value) {
 }
 
 async function renderLiterate(markdown, document) {
-  const bundle = await buildLiterate(markdown, { document })
-  const value = await runLiterate(bundle)
+  const bundle = await buildLiterate(markdown, { document, moduleRoot: root })
+  const value = await runLiterate(bundle, { moduleRoot: root })
   return toHTML(staticValueToAST(value), { basePath, pretty: true })
 }
 
@@ -62,7 +62,7 @@ async function main() {
       canonicalUrl: `${canonicalBaseUrl}${page.route}`,
       playgroundEnabled: page.playgroundEnabled ?? false,
       demosEnabled: page.demosEnabled ?? false,
-      demos: page.demosEnabled ? demoDefinitions.map(definition => {
+      demos: page.demosEnabled ? await Promise.all(demoDefinitions.map(async definition => {
         const copy = page.demoCopy[definition.id]
         const values = Object.fromEntries(definition.controls.map(control => [control.name, control.value]))
         return {
@@ -73,9 +73,9 @@ async function main() {
             label: copy.labels[control.name],
             inputId: `demo-${definition.id}-${control.name}`,
           })),
-          ...renderDemo(definition.id, values, copy.title),
+          ...await renderDemo(definition.id, values, copy.title),
         }
-      }) : [],
+      })) : [],
       sampleSource: exampleSource,
       sampleOutput: exampleOutput,
     }
@@ -99,7 +99,9 @@ async function main() {
     ],
     outdir: assetsDir,
     bundle: true,
+    splitting: true,
     entryNames: "[name]",
+    chunkNames: "chunks/[name]-[hash]",
     format: "esm",
     minify: true,
     platform: "browser",

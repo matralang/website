@@ -4,7 +4,7 @@ import { access, cp, mkdtemp, readFile, readdir, rm, symlink, writeFile } from "
 import { tmpdir } from "node:os"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
-import { buildSite } from "@matra/site-generation"
+import { buildSite, renderLiterateDocument } from "@matra/site-generation"
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const project = await mkdtemp(path.join(tmpdir(), "matra-website-migration-"))
@@ -31,6 +31,35 @@ async function snapshot(directory) {
 }
 
 try {
+  const modularDocument = [
+    "---",
+    "matra:",
+    "  entry: main.matra",
+    "  values:",
+    "    - content.js",
+    "---",
+    "",
+    "```main.matra",
+    "h1 { content.title }",
+    "```",
+    "",
+    "```content.js",
+    'import { title } from "./shared.js"',
+    "export { title }",
+    "```",
+    "",
+    "```shared.js",
+    'export const title = "Modular Matra"',
+    "```",
+  ].join("\n")
+  assert.deepEqual(
+    await renderLiterateDocument(modularDocument, {
+      document: "modular.matra.md",
+      moduleRoot: root,
+    }),
+    { tag: "h1", props: {}, children: ["Modular Matra"] },
+  )
+
   await cp(path.join(root, "src"), path.join(project, "src"), { recursive: true })
   await symlink(path.join(root, "node_modules"), path.join(project, "node_modules"), "dir")
   await writeFile(path.join(project, "package.json"), '{"type":"module"}\n')
@@ -38,7 +67,7 @@ try {
 
   const manifestPath = path.join(output, ".matra-site-manifest.json")
   const initialManifest = JSON.parse(await readFile(manifestPath, "utf8"))
-  assert.equal(initialManifest.files.length, 34)
+  assert.equal(initialManifest.files.length, 37)
   await writeFile(path.join(output, "unmanaged.txt"), "preserve")
 
   const extraAsset = path.join(project, ".matra-site", "assets", "obsolete.css")

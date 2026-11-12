@@ -21,6 +21,10 @@ npm run serve
 
 作例は`content.title`を`h1`で使い、JavaScript関数`content.pageTitle`でサイト名を付けて`title`に使います。静的データの共有ではなく関数を渡すことで、`.js.part`を使う理由を示します。関数はbuild時に実行し、生成ページには含めません。
 
+最新のCore・site-generation prereleaseは、literate文書内のnamed ESM module fence、fence間import、Python fenceに対応します。サイトのpage/layoutはsite rootから準備済み依存を解決し、build時の作例はrepository rootを指定します。共通helperやbuild時データ処理を分割・再利用できますが、現状のサイトのpage data記述がそれだけで短くなるわけではありません。Python実行は同梱Pyodideを使い、security sandboxではありません。
+
+対話デモとPlayground WorkerはCoreの非同期browser parserとESM code splittingを利用します。初期のstatic import graph全体を32 KB・128 KB以内に保ち、Acornは別chunkに出力して文書にJavaScript構文がある場合だけ読み込みます。必要時にはtokenizer chunkもdownloadするため、初期転送量を抑えるもので総bytesは減りません。browser buildではESM splittingを有効にし、すべてのchunkを公開する必要があります。
+
 内容と表示を保てる範囲ではpretty HTMLを優先します。比較用作例はrendererの`pretty: true`を使います。現行rendererはインライン要素間や入れ子の整形済み領域に意味を持つ空白を挿入する場合があるため、任意文書を扱うPlaygroundとデモは通常出力を維持します。サイト本体も現行site-generation packageがpretty設定を公開していないため通常出力です。生成HTMLの後処理でこれらの制約を回避しないでください。
 
 buildは中間入力として`.matra-site/`を作り直し、`SITE_BASE_PATH`を反映した`matra.site.json`を書き出します。どちらもgit管理外の生成物なので、source側を編集してください。ページデータはJavaScriptの注入ではなくMarkdown front matterで渡します。信頼できるMatra sourceだけをbuild対象にしてください。literate APIは実験的なNode.js APIです。
@@ -64,7 +68,7 @@ GitHub Pagesは`production`からのみデプロイします。検証済みcommi
 
 ## 対応範囲
 
-website buildは`@matra/core@0.3.1-site.0`、`@matra/site-generation@0.1.0-site.2`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
+website buildは`@matra/core@0.3.1-site.2`、`@matra/site-generation@0.1.0-site.3`、`@matra/html@0.3.1-site.0`のprereleaseを使います。prereleaseは試験利用向けで、安定版のサポートを示しません。literate APIはNode.js 22/24向けで、利用時のRust・隣接checkout・compilerの追加downloadは不要です。生成後のサイトは静的HTML/CSSとPlayground・限定デモ用のclient/Worker assetです。
 
 `dist/.matra-site-manifest.json`に生成したページとアセットを記録し、build間で保持します。buildは`dist/`全体を削除せず、不要になった一覧内のファイルだけを削除し、一覧外のファイルは保持します。build失敗時は旧出力と生成一覧を維持します。一覧のない既存`dist/`から移行するときは、古い`app.css`など不要な旧出力を手動で確認・整理してください。新しいcheckoutからのbuildでは新しい出力先だけを生成します。
 

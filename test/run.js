@@ -133,11 +133,15 @@ for (const page of pages) {
   }
 }
 const manifest = JSON.parse(await readPage(".matra-site-manifest.json"))
+const generatedChunks = manifest.files.filter(file => file.startsWith("assets/chunks/"))
+assert.ok(generatedChunks.some(file => file.includes("javascript-block-")))
+const generatedChunkSources = await Promise.all(generatedChunks.map(readPage))
+assert.ok(generatedChunkSources.some(source => /import\(["'][^"']*javascript-block-/.test(source)))
 assert.deepEqual(manifest, {
   version: 1,
   files: [...expectedPages, "assets/app.css", "assets/demos.js", "assets/playground.js", "assets/playground-worker.js",
     "assets/brand/logo-horizontal.svg", "assets/brand/logo-mark.svg", "assets/brand/logo-stacked.svg",
-    "assets/brand/og-image.png"].sort(),
+    "assets/brand/og-image.png", ...generatedChunks].sort(),
 })
 for (const name of ["logo-horizontal.svg", "logo-mark.svg", "logo-stacked.svg", "og-image.png"]) {
   assert.deepEqual(
@@ -265,6 +269,21 @@ assert.doesNotMatch(index, /assets\/demos\.js/)
 assert.doesNotMatch(play, /assets\/demos\.js/)
 assert.doesNotMatch(demosClient, /node:(fs|path|url)/)
 assert.ok(Buffer.byteLength(demosClient) < 32_000, "Focused demos bundle should stay under 32 KB")
+async function initialBundleBytes(entry, visited = new Set()) {
+  if (visited.has(entry)) return 0
+  visited.add(entry)
+  const source = await readPage(entry)
+  let bytes = Buffer.byteLength(source)
+  const imports = [...source.matchAll(/\bimport\s*(?:\{[^}]*\}\s*from\s*)?["']([^"']+)["']/g)]
+  for (const [, specifier] of imports) {
+    if (specifier.startsWith(".")) {
+      const target = path.posix.normalize(path.posix.join(path.posix.dirname(entry), specifier))
+      bytes += await initialBundleBytes(target, visited)
+    }
+  }
+  return bytes
+}
+assert.ok(await initialBundleBytes("assets/demos.js") < 32_000, "Demos' initial static bundle should stay under 32 KB")
 assert.match(index, /title \{ content\.pageTitle\(content\.title\) \}/)
 assert.match(index, /h1 \{ content\.title \}/)
 assert.match(play, /id="playground"/)
@@ -344,6 +363,10 @@ assert.ok(
 assert.ok(
   Buffer.byteLength(playgroundWorker) < 128_000,
   `Playground Worker bundle should stay under 128 KB (was ${Buffer.byteLength(playgroundWorker)} bytes)`,
+)
+assert.ok(
+  await initialBundleBytes("assets/playground-worker.js") < 128_000,
+  "Playground Worker's initial static bundle should stay under 128 KB",
 )
 assert.match(css, /prefers-reduced-motion/)
 assert.match(css, /--brand: #006fe5/)

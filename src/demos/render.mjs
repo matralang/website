@@ -1,4 +1,4 @@
-import { evaluate, parse, staticValueToAST } from "@matra/core/browser"
+import { evaluate, parse, staticValueToAST } from "@matra/core/browser-async"
 import { toHTML } from "@matra/html"
 
 export const demoDefinitions = [
@@ -67,6 +67,8 @@ math(display="block") {
   }
 }`
 
-  const preview = staticValueToAST(evaluate(parse(source)))
-  return { source, preview, html: toHTML(preview) }
+  return parse(source).then(module => {
+    const preview = staticValueToAST(evaluate(module))
+    return { source, preview, html: toHTML(preview) }
+  })
 }

@@ -7,7 +7,7 @@ for (const panel of document.querySelectorAll("[data-demo]")) {
   const status = panel.querySelector("[data-demo-status]")
   const japanese = document.documentElement.lang === "ja"
 
-  function update() {
+  async function update() {
     try {
       const values = {}
       for (const input of inputs) {
@@ -22,7 +22,7 @@ for (const panel of document.querySelectorAll("[data-demo]")) {
         values[input.name] = input.valueAsNumber
         panel.querySelector(`output[for="${input.id}"]`).textContent = input.value
       }
-      const result = renderDemo(panel.dataset.demo, values, panel.dataset.demoLabel)
+      const result = await renderDemo(panel.dataset.demo, values, panel.dataset.demoLabel)
       preview.innerHTML = result.html
       source.textContent = result.source
       status.dataset.state = "success"

@@ -12,9 +12,9 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@matra/core": "0.3.1-site.0",
+    "@matra/core": "0.3.1-site.2",
     "@matra/html": "0.3.1-site.0",
-    "@matra/site-generation": "0.1.0-site.2"
+    "@matra/site-generation": "0.1.0-site.3"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.2",
