@@ -40,7 +40,7 @@ async function readMatraSource(markdownPath, entry) {
   return extractMatraMarkdown(markdown, { entry }).source
 }
 
-async function readFrontMatter(markdownPath) {
+async function readPageDocument(markdownPath) {
   const markdown = await readFile(markdownPath, "utf8")
   const opening = /^(?:\uFEFF)?---[ \t]*\r?\n/.exec(markdown)
   if (!opening) throw new Error(`${markdownPath}: expected YAML front matter`)
@@ -51,7 +51,24 @@ async function readFrontMatter(markdownPath) {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new TypeError(`${markdownPath}: YAML front matter must be an object`)
   }
-  return data
+  const body = rest.slice(closing.index + closing[0].length)
+  const matraFence = extractMatraMarkdown(body, { entry: "page.matra" })
+  const matraStart = body.indexOf(matraFence.source)
+  const headings = [...body.slice(0, matraStart).matchAll(/^#\s+(.+?)\s*#*\s*$/gm)]
+  if (headings.length !== 1) {
+    throw new Error(`${markdownPath}: expected exactly one Markdown level-one heading before page.matra`)
+  }
+  const heading = headings[0][1].trim()
+  if (Object.hasOwn(data, "title") && (typeof data.title !== "string" || !data.title.trim())) {
+    throw new TypeError(`${markdownPath}: front matter title must be a non-empty string`)
+  }
+  return {
+    data: {
+      ...data,
+      heading,
+      title: Object.hasOwn(data, "title") ? data.title : heading,
+    },
+  }
 }
 
 async function main() {
@@ -120,16 +137,16 @@ async function main() {
   }))
   const generatedPreviewPages = await Promise.all(previewPages.map(async page => {
     const markdownPath = path.join(previewDir, page.source)
-    const [source, data] = await Promise.all([
+    const [source, pageDocument] = await Promise.all([
       readMatraSource(markdownPath, "page.matra"),
-      readFrontMatter(markdownPath),
+      readPageDocument(markdownPath),
     ])
     return {
       kind: "matra",
       route: page.route,
       source,
       layout: page.layout,
-      data,
+      data: pageDocument.data,
       document: page.document,
     }
   }))

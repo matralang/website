@@ -1,5 +1,4 @@
 ---
-title: "サイト生成エンジンの試験ページ — Matra"
 description: "Matraの宣言的サイト生成エンジンを使った試験ページです。"
 lang: ja
 navigationLabel: "メインナビゲーション"
@@ -8,13 +7,12 @@ homeUrl: /
 languageRoute: /en/site-generation-preview/
 otherLang: en
 languageLabel: English
-heading: "サイト生成エンジンの試験ページ"
 bodyText: "このサイトは、試験中のMatraサイト生成エンジンで全ページとアセットを生成しています。このページは、共通レイアウト、ルート出力、ページデータを確認するデモです。"
 detailsLabel: "試験範囲"
 detailsText: "site.componentsで読み込むCard部品をpageとlayoutから再利用し、通常のHTMLへ展開します。ページデータ、共通layout、directory形式URL、GitHub Pages base pathも確認できます。"
 ---
 
-# Site-generation preview (Japanese)
+# サイト生成エンジンの試験ページ
 
 The page body is kept as a named Matra block; its bilingual copy is supplied separately.
 

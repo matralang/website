@@ -69,20 +69,48 @@ try {
   const componentPage = await readFile(path.join(output, "site-generation-preview", "index.html"), "utf8")
   assert.match(componentPage, /<article class="feature-card"><h3>共通部品<\/h3>/)
   assert.match(componentPage, /<article class="footer-card"><h3>Matra<\/h3>/)
-  assert.match(componentPage, /<title>サイト生成エンジンの試験ページ — Matra<\/title>/)
+  assert.match(componentPage, /<title>サイト生成エンジンの試験ページ<\/title>/)
+  assert.match(componentPage, /<h1>サイト生成エンジンの試験ページ<\/h1>/)
+  const componentPageEn = await readFile(path.join(output, "en", "site-generation-preview", "index.html"), "utf8")
+  assert.match(componentPageEn, /<title>Site generation engine preview<\/title>/)
+  assert.match(componentPageEn, /<h1>Site generation engine preview<\/h1>/)
+  const previewMarkdownEn = path.join(project, "src", "site-generation-preview", "pages", "site-generation-en.matra.md")
+  const previewSourceEn = await readFile(previewMarkdownEn, "utf8")
+  await writeFile(previewMarkdownEn, previewSourceEn.replace(
+    "---\n",
+    '---\ntitle: "Custom preview title — Matra"\n',
+  ))
+  build()
+  assert.match(
+    await readFile(path.join(output, "en", "site-generation-preview", "index.html"), "utf8"),
+    /<title>Custom preview title — Matra<\/title>/,
+  )
+  await writeFile(previewMarkdownEn, previewSourceEn)
+  build()
+
   const previewMarkdown = path.join(project, "src", "site-generation-preview", "pages", "site-generation-ja.matra.md")
   const previewSource = await readFile(previewMarkdown, "utf8")
   const changedPreviewSource = previewSource.replace(
-    'heading: "サイト生成エンジンの試験ページ"',
-    'heading: "Front matterから読み込んだ見出し"',
+    "# サイト生成エンジンの試験ページ",
+    "# Front matterの見出しより優先されるMarkdown見出し",
   )
   assert.notEqual(changedPreviewSource, previewSource)
   await writeFile(previewMarkdown, changedPreviewSource)
   build()
   assert.match(
     await readFile(path.join(output, "site-generation-preview", "index.html"), "utf8"),
-    /<h1>Front matterから読み込んだ見出し<\/h1>/,
+    /<h1>Front matterの見出しより優先されるMarkdown見出し<\/h1>/,
   )
+  await writeFile(previewMarkdown, previewSource)
+  build()
+  await writeFile(previewMarkdown, previewSource.replace(
+    "# サイト生成エンジンの試験ページ",
+    "サイト生成エンジンの試験ページ",
+  ))
+  assert.throws(build, error => {
+    assert.match(error.stderr, /expected exactly one Markdown level-one heading/)
+    return true
+  })
   await writeFile(previewMarkdown, previewSource)
   build()
 

@@ -15,7 +15,7 @@ npm run build
 npm run serve
 ```
 
-全ページとアセットを`@matra/site-generation`から出力します。Matraのtemplateは読みやすいMarkdown文書内の名前付きcode fenceで管理し、`src/content/page.md`がページ本文、`src/content/site.md`が共通の文書layoutです。site-generation previewではページ固有のコピーを各MarkdownのYAML front matterに置き、`src/site-generation-preview/pages.mjs`にはrouteなどの設定だけを残します。CSSとbrowser JavaScriptはそれぞれ独立したファイルです。`src/build.mjs`は名前付きMatra blockとfront matterを読み込み、作例の実行、デモデータの準備、esbuildによるbrowser scriptのbundleを行って、ページdata・source・layout・componentを`generateSite()`へ直接渡します。site-generation previewは`src/site-generation-preview/components/`の`Card(props, children)`部品をpageとlayoutの両方から再利用します。
+全ページとアセットを`@matra/site-generation`から出力します。Matraのtemplateは読みやすいMarkdown文書内の名前付きcode fenceで管理し、`src/content/page.md`がページ本文、`src/content/site.md`が共通の文書layoutです。site-generation previewではページ固有のコピーを各MarkdownのYAML front matterに置き、`src/site-generation-preview/pages.mjs`にはrouteなどの設定だけを残します。各ページにはMarkdownの`#`見出しをちょうど1つ必須とし、表示上の`h1`と文書の`<title>`の既定値にします。front matterに`title`を明記した場合だけ、文書の`<title>`を個別に上書きします。CSSとbrowser JavaScriptはそれぞれ独立したファイルです。`src/build.mjs`は名前付きMatra blockとfront matterを読み込み、作例の実行、デモデータの準備、esbuildによるbrowser scriptのbundleを行って、ページdata・source・layout・componentを`generateSite()`へ直接渡します。site-generation previewは`src/site-generation-preview/components/`の`Card(props, children)`部品をpageとlayoutの両方から再利用します。
 
 ソースと出力の比較には、`src/content/example.md`全体と実際のrenderer出力を表示します。`content`の出どころが分かるように、Matraの入口だけでなくfront matterとJavaScriptの値fenceも含めます。値の接続は共通の日英説明で案内します。
 
